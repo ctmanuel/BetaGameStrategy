@@ -28,7 +28,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 
 	private boolean gameStarted;
 	private boolean gameOver;
-	private int PlayerTurn;
+	private int playerTurn;
 	private PieceLocationDescriptor currentPieceDescriptor = null;
 	PlayerColor playerColor;
 
@@ -49,7 +49,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 	public void startGame() throws StrategyException {
 		gameStarted = true;
 		gameOver = false;
-		PlayerTurn = 0;
+		playerTurn = 0;
 	}
 
 	@Override
@@ -75,13 +75,13 @@ public class BetaStrategyGameController implements StrategyGameController {
 
 		//check which color turn it is
 		playerColor = null;
-		if (PlayerTurn == 0) {
+		if (playerTurn == 0) {
 			playerColor = PlayerColor.RED;
-			PlayerTurn = 1;
+			playerTurn = 1;
 		}
 		else {
 			playerColor = PlayerColor.BLUE;
-			PlayerTurn = 0;
+			playerTurn = 0;
 		}
 
 		currentPieceDescriptor = new PieceLocationDescriptor(new Piece(piece, playerColor), from);
@@ -154,6 +154,18 @@ public class BetaStrategyGameController implements StrategyGameController {
 				|| currentXcoordinate - 1 == toXcoordinate && currentYcoordinate - 1 == toYcoordinate) {
 			throw new StrategyException("Illegal Diagonal move");
 		}
+		
+		//check if occupied
+		final Piece temp = getPieceAt(to);
+		if (temp != null) {
+			//check if the pieces are the same color
+			if (currentPieceDescriptor.getPiece().getOwner() == temp.getOwner()) {
+				throw new StrategyException("Space is occupied by same color piece");
+			}
+			
+			//go to battle method
+			//battle(currentPieceDescriptor.getPiece(), )
+		}
 	}
 
 	@Override
@@ -182,5 +194,15 @@ public class BetaStrategyGameController implements StrategyGameController {
 			}
 		}
 		return pieceAtLocation;
+	}
+	
+	/**
+	 * EPIC BATTLE FIGHT TO THE DEATH
+	 * @param playerPiece current player's piece
+	 * @param opponentPiece opponent's piece
+	 * @return status of winner
+	 */
+	private MoveResultStatus battle(Piece playerPiece, PieceLocationDescriptor opponentPiece){
+		return null;
 	}
 }

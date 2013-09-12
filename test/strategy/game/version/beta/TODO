@@ -11,6 +11,7 @@ X	make invalid move, bad x-coordinate in to (if moving more than one space)
 X	make invalid move, bad y-coordinate in to  (check for out of bounds) 
 X	make invalid move, bad y-coordinate in to (if moving more than one space)
 X	make invalid move, red moves blue piece
+	make invalid move, red moves to red piece location and blue to blue piece
 X	make invalid move, blue moves red piece
 /	Test valid battle move (if space is occupied, opposite color)
 X	Get piece at blue spot
