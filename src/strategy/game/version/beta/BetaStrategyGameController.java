@@ -11,6 +11,7 @@
 package strategy.game.version.beta;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import strategy.common.PlayerColor;
 import strategy.common.StrategyException;
@@ -35,7 +36,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 	private Collection<PieceLocationDescriptor> blueConfiguration;
 
 	public BetaStrategyGameController(Collection<PieceLocationDescriptor> redConfiguration,
-										Collection<PieceLocationDescriptor> blueConfiguration)
+			Collection<PieceLocationDescriptor> blueConfiguration)
 	{
 		gameStarted = false;
 		gameOver = false;
@@ -71,7 +72,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 				|| piece == PieceType.SERGEANT)) {
 			throw new StrategyException(piece + " is not a valid piece for the Beta Strategy.");
 		}
-		
+
 		//check which color turn it is
 		playerColor = null;
 		if (PlayerTurn == 0) {
@@ -88,7 +89,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 		checkLocationCoordinates(to);
 		final PieceLocationDescriptor newPiece =
 				new PieceLocationDescriptor(new Piece(piece, playerColor), to);
-		
+
 		if (playerColor == PlayerColor.RED) {
 			redConfiguration.remove(currentPieceDescriptor);
 			redConfiguration.add(newPiece);
@@ -145,7 +146,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 			throw new StrategyException("Invalid Y coordinate move from " 
 					+ currentYcoordinate + " to " + toYcoordinate);
 		}
-		
+
 		//check for diagonals moves
 		if(currentXcoordinate + 1 == toXcoordinate && currentYcoordinate + 1 == toYcoordinate
 				|| currentXcoordinate - 1 == toXcoordinate && currentYcoordinate + 1 == toYcoordinate
@@ -157,7 +158,29 @@ public class BetaStrategyGameController implements StrategyGameController {
 
 	@Override
 	public Piece getPieceAt(Location location) {
-		// TODO Auto-generated method stub
-		return null;
+		final Iterator<PieceLocationDescriptor> redIterator = redConfiguration.iterator();
+		final Iterator<PieceLocationDescriptor> blueIterator = blueConfiguration.iterator();
+
+		PieceLocationDescriptor currentRedIterPiece = null;
+		PieceLocationDescriptor currentBlueIterPiece = null;
+		Piece pieceAtLocation = null;
+
+		while (blueIterator.hasNext()) {
+			currentRedIterPiece = redIterator.next();
+			currentBlueIterPiece = blueIterator.next();
+			if (currentRedIterPiece.getLocation().getCoordinate(Coordinate.X_COORDINATE)
+					== location.getCoordinate(Coordinate.X_COORDINATE)
+				&& currentRedIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE)
+					== location.getCoordinate(Coordinate.Y_COORDINATE)) {
+				pieceAtLocation = currentRedIterPiece.getPiece();
+			}
+			if (currentBlueIterPiece.getLocation().getCoordinate(Coordinate.X_COORDINATE)
+					== location.getCoordinate(Coordinate.X_COORDINATE)
+				&& currentBlueIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE)
+					== location.getCoordinate(Coordinate.Y_COORDINATE)) {
+				pieceAtLocation = currentBlueIterPiece.getPiece();
+			}
+		}
+		return pieceAtLocation;
 	}
 }

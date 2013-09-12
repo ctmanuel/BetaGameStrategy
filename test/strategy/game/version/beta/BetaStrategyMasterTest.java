@@ -159,6 +159,13 @@ public class BetaStrategyMasterTest {
 		game.move(PieceType.SERGEANT, new Location2D(5,4), new Location2D(5,3));
 	}
 	
+	@Test(expected=StrategyException.class)
+	public void makeInvalidBlueMovesRed() throws StrategyException {
+		game.startGame();
+		game.move(PieceType.SERGEANT, new Location2D(3,1), new Location2D(3,2));
+		game.move(PieceType.SERGEANT, new Location2D(3,2), new Location2D(3,3));
+	}
+	
 	@Test
 	public void makeBattleMove() throws StrategyException
 	{
@@ -196,4 +203,21 @@ public class BetaStrategyMasterTest {
 		game.move(PieceType.MARSHAL, new Location2D(1,1), new Location2D(1,2));
 	}
 	
+	@Test
+	public void getBluePieceAtLocation() throws StrategyException {
+		game.startGame();
+		assertEquals(new Piece(PieceType.MARSHAL, PlayerColor.BLUE), game.getPieceAt(new Location2D(5,5)));
+	}
+	
+	@Test
+	public void getRedPieceAtLocation() throws StrategyException {
+		game.startGame();
+		assertEquals(new Piece(PieceType.MARSHAL, PlayerColor.RED), game.getPieceAt(new Location2D(0,1)));
+	}
+
+	@Test
+	public void getEmptyAtLocation() throws StrategyException {
+		game.startGame();
+		assertEquals(null, game.getPieceAt(new Location2D(3,3)));
+	}
 }
