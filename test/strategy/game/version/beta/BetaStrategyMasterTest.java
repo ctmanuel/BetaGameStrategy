@@ -102,43 +102,43 @@ public class BetaStrategyMasterTest {
 		game.move(PieceType.BOMB, new Location2D(0,1), new Location2D(0,2));
 	}
 	
-	@Test//(expected=StrategyException.class)
+	@Test(expected=StrategyException.class)
 	public void makeInvalidMoveDiagonal() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.SERGEANT, new Location2D(4,1), new Location2D(5,2));
 	}
 
-	@Test//(expected=StrategyException.class)
+	@Test(expected=StrategyException.class)
 	public void makeInvalidMoveXFrom() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.SERGEANT, new Location2D(2,1), new Location2D(2,2));
 	}
 	
-	@Test//(expected=StrategyException.class)
+	@Test(expected=StrategyException.class)
 	public void makeInvalidMoveYFrom() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.SERGEANT, new Location2D(3,2), new Location2D(3,3));
 	}
 	
-	@Test//(expected=StrategyException.class)
+	@Test(expected=StrategyException.class)
 	public void makeInvalidMoveXToBound() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.SERGEANT, new Location2D(5,1), new Location2D(6,1));
 	}
 	
-	@Test//(expected=StrategyException.class)
+	@Test(expected=StrategyException.class)
 	public void makeInvalidMoveYToBound() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.MARSHAL, new Location2D(5,5), new Location2D(5,6));
 	}
 	
-	@Test//(expected=StrategyException.class)
+	@Test(expected=StrategyException.class)
 	public void makeInvalidMoveYToMoreSpace() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,3));
 	}
 	
-	@Test//(expected=StrategyException.class)
+	@Test(expected=StrategyException.class)
 	public void makeInvalidMoveXToMoreSpace() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
@@ -146,30 +146,48 @@ public class BetaStrategyMasterTest {
 		game.move(PieceType.LIEUTENANT, new Location2D(1,2), new Location2D(3,2));
 	}
 	
-	@Test//(expected=StrategyException.class)
+	@Test(expected=StrategyException.class)
 	public void makeInvalidConsecutiveMove() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
 		game.move(PieceType.LIEUTENANT, new Location2D(1,2), new Location2D(2,2));
 	}
 	
-//	@Test
-//	public void makeBattleMove() throws StrategyException
-//	{
-//		return;
-//	}
-//	
-//	@Test
-//	public void makeRedWinningMove() throws StrategyException
-//	{
-//	
-//	}
-//	
-//	@Test
-//	public void makeBlueWinningMove() throws StrategyException
-//	{
-//	
-//	
-//	}
+	@Test
+	public void makeBattleMove() throws StrategyException
+	{
+		throw new StrategyException("Fail");
+	}
+	
+	@Test
+	public void makeRedWinningMove() throws StrategyException
+	{
+		throw new StrategyException("Fail");
+	}
+	
+	@Test
+	public void makeBlueWinningMove() throws StrategyException
+	{
+		throw new StrategyException("Fail");
+	
+	}
+	
+	//should fail
+	@Test//(expected=StrategyException.class)
+	public void makeMoveAfterGameIsComplete() throws StrategyException
+	{
+		game.startGame();
+		game.move(PieceType.MARSHAL, new Location2D(1,1), new Location2D(1,2));
+		game.move(PieceType.MARSHAL, new Location2D(1,1), new Location2D(1,2));
+	}
+	
+	@Test
+	public void playTwoGames() throws StrategyException
+	{
+		game.startGame();
+		game.move(PieceType.MARSHAL, new Location2D(1,1), new Location2D(1,2));
+		game.startGame();
+		game.move(PieceType.MARSHAL, new Location2D(1,1), new Location2D(1,2));
+	}
 	
 }

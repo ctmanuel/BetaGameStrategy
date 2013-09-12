@@ -11,9 +11,12 @@
 package strategy.game.version.alpha;
 
 import static org.junit.Assert.*;
+
 import org.junit.*;
+
 import strategy.common.*;
 import strategy.game.StrategyGameController;
+import strategy.game.StrategyGameFactory;
 import strategy.game.common.*;
 
 /**
@@ -36,7 +39,9 @@ public class AlphaStrategyMasterTest
 	@Before
 	public  void setup()
 	{
-		game = new AlphaStrategyGameController();
+		StrategyGameFactory AlphaStrategy = StrategyGameFactory.getInstance();	
+		game = AlphaStrategy.makeAlphaStrategyGame();
+
 	}
 	
 	@Test(expected=StrategyException.class)

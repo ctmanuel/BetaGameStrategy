@@ -11,7 +11,7 @@
 package strategy.game.version.beta;
 
 import java.util.Collection;
-import java.util.Iterator;
+//import java.util.Iterator;
 
 import strategy.common.PlayerColor;
 import strategy.common.StrategyException;
@@ -25,24 +25,26 @@ import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.common.PieceType;
 
 public class BetaStrategyGameController implements StrategyGameController {
-	
+
 	private boolean gameStarted;
 	private boolean gameOver;
 	private int PlayerTurn;
-	
+	private PieceLocationDescriptor tempDescriptor = null;
+	PlayerColor playerColor;
+
 	private Collection<PieceLocationDescriptor> redConfiguration;
 	private Collection<PieceLocationDescriptor> blueConfiguration;
 
 	public BetaStrategyGameController(Collection<PieceLocationDescriptor> redConfiguration,
-									  Collection<PieceLocationDescriptor> blueConfiguration)
+			Collection<PieceLocationDescriptor> blueConfiguration)
 	{
 		gameStarted = false;
 		gameOver = false;
-		
+
 		this.redConfiguration = redConfiguration;
 		this.blueConfiguration = blueConfiguration;
 	}
-	
+
 	@Override
 	public void startGame() throws StrategyException {
 		gameStarted = true;
@@ -52,10 +54,11 @@ public class BetaStrategyGameController implements StrategyGameController {
 
 	@Override
 	//TODO:
-	// fix chechCoordinates
+		// fix chechCoordinates
 	// check piece color
-	// 
+	// fix move result status
 	public MoveResult move(PieceType piece, Location from, Location to)
+
 			throws StrategyException {
 		if (gameOver) {
 			throw new StrategyException("The game is over, you cannot make a move");
@@ -70,7 +73,8 @@ public class BetaStrategyGameController implements StrategyGameController {
 				|| piece == PieceType.SERGEANT)) {
 			throw new StrategyException(piece + " is not a valid piece for the Beta Strategy.");
 		}
-		PlayerColor playerColor = null;
+		//check which color turn it is
+		playerColor = null;
 		if (PlayerTurn == 0) {
 			playerColor = PlayerColor.RED;
 			PlayerTurn = 1;
@@ -79,15 +83,23 @@ public class BetaStrategyGameController implements StrategyGameController {
 			playerColor = PlayerColor.BLUE;
 			PlayerTurn = 0;
 		}
-		
-		//TODO
-		checkLocationCoordinates(from, 0, 1);
-		checkLocationCoordinates(to, 0, 2);
+
+		tempDescriptor = new PieceLocationDescriptor(new Piece(piece, playerColor), from);
+
+		checkLocationCoordinates(to);
 		final PieceLocationDescriptor newPiece =
 				new PieceLocationDescriptor(new Piece(piece, playerColor), to);
+		if (playerColor == PlayerColor.RED) {
+			redConfiguration.remove(tempDescriptor);
+			redConfiguration.add(newPiece);
+		}
+		else {
+			blueConfiguration.remove(tempDescriptor);
+			blueConfiguration.add(newPiece);
+		}
 		return new MoveResult(MoveResultStatus.OK, newPiece);
 	}
-	
+
 	/**
 	 * Check a location for validity. Throws an exception if the coordinates
 	 * are not equal to the expected value.
@@ -97,17 +109,44 @@ public class BetaStrategyGameController implements StrategyGameController {
 	 * @throws StrategyException if the location's coordinates do not match
 	 * 		the expected values.
 	 */
-	private void checkLocationCoordinates(Location location, int x, int y) 
+	private void checkLocationCoordinates(Location to) 
 			throws StrategyException
-	{
-		final int locationX = location.getCoordinate(Coordinate.X_COORDINATE);
-		final int locationY = location.getCoordinate(Coordinate.Y_COORDINATE);
-		if (x != locationX || y != locationY) {
-			throw new StrategyException(
-					"Expected (" + x + ',' + y + ") and received ("
-							+ locationX + ',' + locationY + ')');
+			{
+		//if piece doesn't exsit within the either collection configuration
+		if (!(redConfiguration.contains(tempDescriptor) || blueConfiguration.contains(tempDescriptor))) {
+			throw new StrategyException(playerColor + "'s " + tempDescriptor.getPiece() + " at " 
+					+ tempDescriptor.getLocation() +" doesn't exist in this configuration");
 		}
-	}
+
+		//check for valid x coordinate. If X to isn't X from +-1 or the same, throw exception
+//		if (tempDescriptor.getLocation().getCoordinate(Coordinate.X_COORDINATE) + 1 
+//				!= to.getCoordinate(Coordinate.X_COORDINATE) ||
+//				tempDescriptor.getLocation().getCoordinate(Coordinate.X_COORDINATE) - 1 
+//				!= to.getCoordinate(Coordinate.X_COORDINATE) ||
+//				tempDescriptor.getLocation().getCoordinate(Coordinate.X_COORDINATE) 
+//				!= to.getCoordinate(Coordinate.X_COORDINATE)) {
+//			throw new StrategyException("Invalid X coordinate move from " 
+//					+ tempDescriptor.getLocation().getCoordinate(Coordinate.X_COORDINATE) + " to " 
+//					+ to.getCoordinate(Coordinate.X_COORDINATE));
+//		}
+
+//		if(!(to.getCoordinate(Coordinate.X_COORDINATE) >= 
+//				tempDescriptor.getLocation().getCoordinate(Coordinate.X_COORDINATE) + 1))
+//		
+//		//check for valid y coordinate. If Y to isn't Y from +-1 or the same, throw exception
+//		if (//tempDescriptor.getLocation().getCoordinate(Coordinate.Y_COORDINATE) + 1 
+//				//!= to.getCoordinate(Coordinate.Y_COORDINATE) ||
+//				//tempDescriptor.getLocation().getCoordinate(Coordinate.Y_COORDINATE) - 1 
+//				//!= to.getCoordinate(Coordinate.Y_COORDINATE) ||
+//				tempDescriptor.getLocation().getCoordinate(Coordinate.Y_COORDINATE) 
+//				!= to.getCoordinate(Coordinate.Y_COORDINATE)){
+//			throw new StrategyException("Invalid Y coordinate move from " 
+//					+ tempDescriptor.getLocation().getCoordinate(Coordinate.Y_COORDINATE) + " to " 
+//					+ to.getCoordinate(Coordinate.Y_COORDINATE));
+//		}
+
+
+			}
 
 
 	@Override
@@ -115,10 +154,5 @@ public class BetaStrategyGameController implements StrategyGameController {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	public Iterator<PieceLocationDescriptor> getPieceLocation()
-	{
-		Iterator<PieceLocationDescriptor> iter = redConfiguration.iterator();
-		return iter;
-	}
+
 }
