@@ -153,6 +153,12 @@ public class BetaStrategyMasterTest {
 		game.move(PieceType.LIEUTENANT, new Location2D(1,2), new Location2D(2,2));
 	}
 	
+	@Test(expected=StrategyException.class)
+	public void makeInvalidRedMovesBlue() throws StrategyException {
+		game.startGame();
+		game.move(PieceType.SERGEANT, new Location2D(5,4), new Location2D(5,3));
+	}
+	
 	@Test
 	public void makeBattleMove() throws StrategyException
 	{
