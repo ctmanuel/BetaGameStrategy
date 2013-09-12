@@ -22,4 +22,14 @@ X	Test for invalid consecutive player moves
 /	Test winning -> BLUE_WINS
 /	make second move before re-initializing -> Exception
 /	Play two games in a row
+
+Things to do:
+	count turns
+	do battle
+		check piece types
+		declare winner
+		remove losing piece
+			if player piece lose, remove piece and don't move
+		draw
+	return move status
 	
