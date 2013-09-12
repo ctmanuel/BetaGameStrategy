@@ -54,7 +54,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 
 	@Override
 	//TODO:
-		// fix chechCoordinates
+	// fix chechCoordinates
 	// check piece color
 	// fix move result status
 	public MoveResult move(PieceType piece, Location from, Location to)
@@ -112,41 +112,45 @@ public class BetaStrategyGameController implements StrategyGameController {
 	private void checkLocationCoordinates(Location to) 
 			throws StrategyException
 			{
+		//local variables
+		int tempDescriptorXcoordinate = tempDescriptor.getLocation().getCoordinate(Coordinate.X_COORDINATE);
+		int tempDescriptorYcoordinate = tempDescriptor.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
+		int toXcoordinate = to.getCoordinate(Coordinate.X_COORDINATE);
+		int toYcoordinate = to.getCoordinate(Coordinate.Y_COORDINATE);
+
 		//if piece doesn't exsit within the either collection configuration
 		if (!(redConfiguration.contains(tempDescriptor) || blueConfiguration.contains(tempDescriptor))) {
 			throw new StrategyException(playerColor + "'s " + tempDescriptor.getPiece() + " at " 
 					+ tempDescriptor.getLocation() +" doesn't exist in this configuration");
 		}
 
+		//check if out of bounds
+		if(toXcoordinate > 5 || toXcoordinate < 0)
+			throw new StrategyException("X Coordinate out of bounds");
+
+		if(toYcoordinate > 5 || toYcoordinate < 0)
+			throw new StrategyException("Y Coordinate out of bounds");
+
 		//check for valid x coordinate. If X to isn't X from +-1 or the same, throw exception
-//		if (tempDescriptor.getLocation().getCoordinate(Coordinate.X_COORDINATE) + 1 
-//				!= to.getCoordinate(Coordinate.X_COORDINATE) ||
-//				tempDescriptor.getLocation().getCoordinate(Coordinate.X_COORDINATE) - 1 
-//				!= to.getCoordinate(Coordinate.X_COORDINATE) ||
-//				tempDescriptor.getLocation().getCoordinate(Coordinate.X_COORDINATE) 
-//				!= to.getCoordinate(Coordinate.X_COORDINATE)) {
-//			throw new StrategyException("Invalid X coordinate move from " 
-//					+ tempDescriptor.getLocation().getCoordinate(Coordinate.X_COORDINATE) + " to " 
-//					+ to.getCoordinate(Coordinate.X_COORDINATE));
-//		}
+		if (tempDescriptorXcoordinate + 1 != toXcoordinate && 
+				tempDescriptorXcoordinate - 1 != toXcoordinate && 
+				tempDescriptorXcoordinate != toXcoordinate) {
+			throw new StrategyException("Invalid X coordinate move from " 
+					+ tempDescriptorXcoordinate + " to " + toXcoordinate);
+		}
 
-//		if(!(to.getCoordinate(Coordinate.X_COORDINATE) >= 
-//				tempDescriptor.getLocation().getCoordinate(Coordinate.X_COORDINATE) + 1))
-//		
-//		//check for valid y coordinate. If Y to isn't Y from +-1 or the same, throw exception
-//		if (//tempDescriptor.getLocation().getCoordinate(Coordinate.Y_COORDINATE) + 1 
-//				//!= to.getCoordinate(Coordinate.Y_COORDINATE) ||
-//				//tempDescriptor.getLocation().getCoordinate(Coordinate.Y_COORDINATE) - 1 
-//				//!= to.getCoordinate(Coordinate.Y_COORDINATE) ||
-//				tempDescriptor.getLocation().getCoordinate(Coordinate.Y_COORDINATE) 
-//				!= to.getCoordinate(Coordinate.Y_COORDINATE)){
-//			throw new StrategyException("Invalid Y coordinate move from " 
-//					+ tempDescriptor.getLocation().getCoordinate(Coordinate.Y_COORDINATE) + " to " 
-//					+ to.getCoordinate(Coordinate.Y_COORDINATE));
-//		}
-
-
-			}
+		//check for valid y coordinate. If Y to isn't Y from +-1 or the same, throw exception
+		if (tempDescriptorYcoordinate + 1 != toYcoordinate &&
+				tempDescriptorYcoordinate - 1 != toYcoordinate &&
+				tempDescriptorYcoordinate != toYcoordinate){
+			throw new StrategyException("Invalid Y coordinate move from " 
+					+ tempDescriptorYcoordinate + " to " + toYcoordinate);
+		}
+		
+		//check for diagonals moves
+		if(tempDescriptorXcoordinate + 1 == toXcoordinate && tempDescriptorYcoordinate + 1 == toYcoordinate)
+			throw new StrategyException("Illegal Diagonal move");
+	}
 
 
 	@Override
