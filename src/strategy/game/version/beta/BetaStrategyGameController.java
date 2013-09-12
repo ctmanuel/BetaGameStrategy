@@ -29,7 +29,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 	private boolean gameStarted;
 	private boolean gameOver;
 	private int PlayerTurn;
-	private PieceLocationDescriptor tempDescriptor = null;
+	private PieceLocationDescriptor tempPieceDescriptor = null;
 	PlayerColor playerColor;
 
 	private Collection<PieceLocationDescriptor> redConfiguration;
@@ -84,17 +84,17 @@ public class BetaStrategyGameController implements StrategyGameController {
 			PlayerTurn = 0;
 		}
 
-		tempDescriptor = new PieceLocationDescriptor(new Piece(piece, playerColor), from);
+		tempPieceDescriptor = new PieceLocationDescriptor(new Piece(piece, playerColor), from);
 
 		checkLocationCoordinates(to);
 		final PieceLocationDescriptor newPiece =
 				new PieceLocationDescriptor(new Piece(piece, playerColor), to);
 		if (playerColor == PlayerColor.RED) {
-			redConfiguration.remove(tempDescriptor);
+			redConfiguration.remove(tempPieceDescriptor);
 			redConfiguration.add(newPiece);
 		}
 		else {
-			blueConfiguration.remove(tempDescriptor);
+			blueConfiguration.remove(tempPieceDescriptor);
 			blueConfiguration.add(newPiece);
 		}
 		return new MoveResult(MoveResultStatus.OK, newPiece);
@@ -109,19 +109,17 @@ public class BetaStrategyGameController implements StrategyGameController {
 	 * @throws StrategyException if the location's coordinates do not match
 	 * 		the expected values.
 	 */
-	private void checkLocationCoordinates(Location to) 
-			throws StrategyException
-			{
+	private void checkLocationCoordinates(Location to) throws StrategyException {
 		//local variables
-		int tempDescriptorXcoordinate = tempDescriptor.getLocation().getCoordinate(Coordinate.X_COORDINATE);
-		int tempDescriptorYcoordinate = tempDescriptor.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
+		int tempDescriptorXcoordinate = tempPieceDescriptor.getLocation().getCoordinate(Coordinate.X_COORDINATE);
+		int tempDescriptorYcoordinate = tempPieceDescriptor.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
 		int toXcoordinate = to.getCoordinate(Coordinate.X_COORDINATE);
 		int toYcoordinate = to.getCoordinate(Coordinate.Y_COORDINATE);
 
 		//if piece doesn't exsit within the either collection configuration
-		if (!(redConfiguration.contains(tempDescriptor) || blueConfiguration.contains(tempDescriptor))) {
-			throw new StrategyException(playerColor + "'s " + tempDescriptor.getPiece() + " at " 
-					+ tempDescriptor.getLocation() +" doesn't exist in this configuration");
+		if (!(redConfiguration.contains(tempPieceDescriptor) || blueConfiguration.contains(tempPieceDescriptor))) {
+			throw new StrategyException(playerColor + "'s " + tempPieceDescriptor.getPiece() + " at " 
+					+ tempPieceDescriptor.getLocation() +" doesn't exist in this configuration");
 		}
 
 		//check if out of bounds
@@ -152,11 +150,9 @@ public class BetaStrategyGameController implements StrategyGameController {
 			throw new StrategyException("Illegal Diagonal move");
 	}
 
-
 	@Override
 	public Piece getPieceAt(Location location) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

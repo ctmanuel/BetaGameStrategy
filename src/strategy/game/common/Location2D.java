@@ -60,9 +60,4 @@ public class Location2D implements Location
 	{
 		return "(" + xCoordinate + ',' + yCoordinate + ')';
 	}
-	
-//	public void setLocation(int xCoordinate, int yCoordinate){
-//		this.xCoordinate = xCoordinate;
-//		this.yCoordinate = yCoordinate;
-//	}
 }
