@@ -11,9 +11,9 @@
 package strategy.game.version.beta;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,8 +32,9 @@ import strategy.game.common.PieceType;
 public class BetaStrategyMasterTest {
 
 	private StrategyGameController game;
-	private Collection<PieceLocationDescriptor> redConfiguration = new ArrayList<PieceLocationDescriptor>();
-	private Collection<PieceLocationDescriptor> blueConfiguration = new ArrayList<PieceLocationDescriptor>();
+	private ArrayList<PieceLocationDescriptor> redConfiguration = new ArrayList<PieceLocationDescriptor>();
+	private ArrayList<PieceLocationDescriptor> blueConfiguration = new ArrayList<PieceLocationDescriptor>();
+	private final static StrategyGameFactory BetaStrategy = StrategyGameFactory.getInstance();
 	
 	@Before
 	public void setup() {
@@ -71,12 +72,75 @@ public class BetaStrategyMasterTest {
 		for (PieceLocationDescriptor piece : bluePieces) {
 			blueConfiguration.add(piece);		
 		}
-		StrategyGameFactory BetaStrategy = StrategyGameFactory.getInstance();	
+		
 		try {
 			game = BetaStrategy.makeBetaStrategyGame(redConfiguration, blueConfiguration);
 		} catch (StrategyException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void cannotCreateBetaStrategyWithNullConfigurations() throws StrategyException
+	{
+		game = BetaStrategy.makeBetaStrategyGame(null, null);
+	}
+	
+	@Test
+	public void createBetaStrategyController() throws StrategyException
+	{
+		assertNotNull(BetaStrategy.makeBetaStrategyGame(redConfiguration, blueConfiguration));
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void redConfigurationHasTooFewItem() throws StrategyException
+	{
+		redConfiguration.remove(0);
+		BetaStrategy.makeBetaStrategyGame(redConfiguration, blueConfiguration);
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void blueConfigurationHasTooManyItems() throws StrategyException
+	{
+		blueConfiguration.add(new PieceLocationDescriptor(
+				new Piece(PieceType.SERGEANT, PlayerColor.BLUE), new Location2D(3,3)));
+		BetaStrategy.makeBetaStrategyGame(redConfiguration, blueConfiguration);
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void placeRedPieceOnInvalidRow() throws StrategyException
+	{
+		redConfiguration.remove(0);	// Marshall @ (0, 1)
+		redConfiguration.add(new PieceLocationDescriptor(
+				new Piece(PieceType.MARSHAL, PlayerColor.RED), new Location2D(0,3)));
+		BetaStrategy.makeBetaStrategyGame(redConfiguration, blueConfiguration);
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void placeRedPieceOnInvalidColumn() throws StrategyException
+	{
+		redConfiguration.remove(0);	// Marshall @ (0, 1)
+		redConfiguration.add(new PieceLocationDescriptor(
+				new Piece(PieceType.MARSHAL, PlayerColor.RED), new Location2D(-1,1)));
+		BetaStrategy.makeBetaStrategyGame(redConfiguration, blueConfiguration);
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void placeBluePieceOnInvalidRow() throws StrategyException
+	{
+		blueConfiguration.remove(11);	// Sergeant @ (5, 4)
+		blueConfiguration.add(new PieceLocationDescriptor(
+				new Piece(PieceType.SERGEANT, PlayerColor.BLUE), new Location2D(5,3)));
+		BetaStrategy.makeBetaStrategyGame(redConfiguration, blueConfiguration);
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void placeBluePieceOnInvalidColumn() throws StrategyException
+	{
+		blueConfiguration.remove(11);	// Sergeant @ (5, 4)
+		blueConfiguration.add(new PieceLocationDescriptor(
+				new Piece(PieceType.SERGEANT, PlayerColor.BLUE), new Location2D(6,4)));
+		BetaStrategy.makeBetaStrategyGame(redConfiguration, blueConfiguration);
 	}
 	
 	@Test(expected=StrategyException.class)

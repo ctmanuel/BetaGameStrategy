@@ -11,8 +11,11 @@
 package strategy.game;
 
 import java.util.Collection;
+import java.util.Iterator;
 
-import strategy.common.*;
+import strategy.common.StrategyException;
+import strategy.common.StrategyRuntimeException;
+import strategy.game.common.Coordinate;
 import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.version.alpha.AlphaStrategyGameController;
 import strategy.game.version.beta.BetaStrategyGameController;
@@ -33,7 +36,7 @@ import strategy.game.version.beta.BetaStrategyGameController;
 public class StrategyGameFactory
 {
 	private final static StrategyGameFactory instance = new StrategyGameFactory();
-	
+
 	/**
 	 * Default private constructor to ensure this is a singleton.
 	 */
@@ -49,7 +52,7 @@ public class StrategyGameFactory
 	{
 		return instance;
 	}
-	
+
 	/**
 	 * Create an Alpha Strategy game.
 	 * @return the created Alpha Strategy game
@@ -57,14 +60,14 @@ public class StrategyGameFactory
 	public StrategyGameController makeAlphaStrategyGame()
 	{
 		StrategyGameController AlphaGame = new AlphaStrategyGameController();
-		
+
 		if(AlphaGame.getClass() != AlphaStrategyGameController.class) {
 			throw new StrategyRuntimeException("Change this implementation");
 		}
-		
+
 		return AlphaGame;
 	}
-	
+
 	/**
 	 * Create a new Beta Strategy game given the 
 	 * @param redConfiguration the initial starting configuration for the RED pieces
@@ -75,14 +78,62 @@ public class StrategyGameFactory
 	public StrategyGameController makeBetaStrategyGame(
 			Collection<PieceLocationDescriptor> redConfiguration,
 			Collection<PieceLocationDescriptor> blueConfiguration)
-		throws StrategyException
+					throws StrategyException
 	{
-		StrategyGameController BetaGame = new BetaStrategyGameController(redConfiguration, blueConfiguration);
+		//check configurations aren't null
+		if (redConfiguration == null || blueConfiguration == null) {
+			throw new StrategyException("Null configurations");
+		}
+		//check configurations have 12 items
+		if (redConfiguration.size() != 12 || blueConfiguration.size() != 12) {
+			throw new StrategyException("Incorrect configuration size.");
+		}
+
+		//check if pieces are placed out of bounds
+		final Iterator<PieceLocationDescriptor> redIterator = redConfiguration.iterator();
+		final Iterator<PieceLocationDescriptor> blueIterator = blueConfiguration.iterator();
+
+		PieceLocationDescriptor currentRedIterPiece = null;
+		PieceLocationDescriptor currentBlueIterPiece = null;
+		int currentRedX;
+		int currentRedY;
+		int currentBlueX;
+		int currentBlueY;
+
+		while (redIterator.hasNext()) {
+			currentRedIterPiece = redIterator.next();
+			
+			currentRedX = currentRedIterPiece.getLocation().getCoordinate(Coordinate.X_COORDINATE);
+			currentRedY = currentRedIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
+
+			if(currentRedX > 5 || currentRedX < 0) {
+				throw new StrategyException("X Coordinate out of bounds");
+			}
+			if(currentRedY > 1 || currentRedY < 0) {
+				throw new StrategyException("Y Coordinate out of bounds");
+			}
+		}
+		while (blueIterator.hasNext()) {
+			currentBlueIterPiece = blueIterator.next();
+
+			currentBlueX = currentBlueIterPiece.getLocation().getCoordinate(Coordinate.X_COORDINATE);
+			currentBlueY = currentBlueIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
+
+			if(currentBlueX > 5 || currentBlueX < 0) {
+				throw new StrategyException("X Coordinate out of bounds");
+			}
+			if(currentBlueY > 5 || currentBlueY < 4) {
+				throw new StrategyException("Y Coordinate out of bounds");
+			}
+		}
 		
+		StrategyGameController BetaGame = new BetaStrategyGameController(redConfiguration, blueConfiguration);
+
 		if(BetaGame.getClass() != BetaStrategyGameController.class) {
 			throw new StrategyRuntimeException("Change this implementation");
 		}
-		
+
 		return BetaGame;
 	}
+	
 }

@@ -36,7 +36,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 	private Collection<PieceLocationDescriptor> blueConfiguration;
 
 	public BetaStrategyGameController(Collection<PieceLocationDescriptor> redConfiguration,
-			Collection<PieceLocationDescriptor> blueConfiguration)
+			Collection<PieceLocationDescriptor> blueConfiguration) throws StrategyException
 	{
 		gameStarted = false;
 		gameOver = false;
@@ -172,24 +172,31 @@ public class BetaStrategyGameController implements StrategyGameController {
 	public Piece getPieceAt(Location location) {
 		final Iterator<PieceLocationDescriptor> redIterator = redConfiguration.iterator();
 		final Iterator<PieceLocationDescriptor> blueIterator = blueConfiguration.iterator();
-
+		
 		PieceLocationDescriptor currentRedIterPiece = null;
 		PieceLocationDescriptor currentBlueIterPiece = null;
 		Piece pieceAtLocation = null;
-
-		while (blueIterator.hasNext()) {
+		
+		int locationX = location.getCoordinate(Coordinate.X_COORDINATE);
+		int locationY = location.getCoordinate(Coordinate.Y_COORDINATE);
+		int currentRedX;
+		int currentRedY;
+		int currentBlueX;
+		int currentBlueY;
+		
+		while (redIterator.hasNext()) {
 			currentRedIterPiece = redIterator.next();
 			currentBlueIterPiece = blueIterator.next();
-			if (currentRedIterPiece.getLocation().getCoordinate(Coordinate.X_COORDINATE)
-					== location.getCoordinate(Coordinate.X_COORDINATE)
-				&& currentRedIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE)
-					== location.getCoordinate(Coordinate.Y_COORDINATE)) {
+			
+			currentRedX = currentRedIterPiece.getLocation().getCoordinate(Coordinate.X_COORDINATE);
+			currentRedY = currentRedIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
+			if (currentRedX == locationX && currentRedY == locationY) {
 				pieceAtLocation = currentRedIterPiece.getPiece();
 			}
-			if (currentBlueIterPiece.getLocation().getCoordinate(Coordinate.X_COORDINATE)
-					== location.getCoordinate(Coordinate.X_COORDINATE)
-				&& currentBlueIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE)
-					== location.getCoordinate(Coordinate.Y_COORDINATE)) {
+			
+			currentBlueX = currentBlueIterPiece.getLocation().getCoordinate(Coordinate.X_COORDINATE);
+			currentBlueY = currentBlueIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
+			if (currentBlueX == locationX && currentBlueY == locationY) {
 				pieceAtLocation = currentBlueIterPiece.getPiece();
 			}
 		}
