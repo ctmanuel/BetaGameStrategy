@@ -75,8 +75,8 @@ public class BetaStrategyGameController implements StrategyGameController {
 		gameStarted = true;
 		gameOver = false;
 		playerTurn = 0;
-		redConfiguration = origionalredConfiguration;
-		blueConfiguration = origionalblueConfiguration;
+		redConfiguration = new ArrayList<PieceLocationDescriptor>(origionalredConfiguration);
+		blueConfiguration = new ArrayList<PieceLocationDescriptor>(origionalblueConfiguration);
 	}
 
 	/*
