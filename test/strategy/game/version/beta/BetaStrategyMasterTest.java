@@ -329,4 +329,79 @@ public class BetaStrategyMasterTest {
 		game.startGame();
 		assertEquals(null, game.getPieceAt(new Location2D(3,3)));
 	}
+	
+	@Test
+	public void ColonelvsLieutenantandFlag() throws StrategyException
+	{
+		redConfiguration.remove(2);	// Colonel @ (2,0)
+		redConfiguration.add(new PieceLocationDescriptor(
+				new Piece(PieceType.COLONEL, PlayerColor.RED), new Location2D(2,2)));
+		blueConfiguration.remove(8);	// Lieutenant @ (2,4)
+		blueConfiguration.add(new PieceLocationDescriptor(
+				new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE), new Location2D(2,3)));
+		blueConfiguration.remove(1);	// Flag @ (0,5)
+		blueConfiguration.add(new PieceLocationDescriptor(
+				new Piece(PieceType.FLAG, PlayerColor.BLUE), new Location2D(2,4)));
+		game.startGame();
+		game.move(PieceType.COLONEL, new Location2D(2,2), new Location2D(2,3));
+		game.move(PieceType.LIEUTENANT, new Location2D(0,4), new Location2D(0,3));
+		
+		final MoveResult result = 
+				game.move(PieceType.COLONEL, new Location2D(2,3), new Location2D(2,4));
+		assertEquals(MoveResultStatus.RED_WINS, result.getStatus());
+	}
+	
+	@Test
+	public void CaptainvsLieutenantandFlag() throws StrategyException
+	{
+		redConfiguration.remove(4);	// Captain @ (4,0)
+		redConfiguration.add(new PieceLocationDescriptor(
+				new Piece(PieceType.CAPTAIN, PlayerColor.RED), new Location2D(2,2)));
+		blueConfiguration.remove(8);	// Lieutenant @ (2,4)
+		blueConfiguration.add(new PieceLocationDescriptor(
+				new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE), new Location2D(2,3)));
+		blueConfiguration.remove(1);	// Flag @ (0,5)
+		blueConfiguration.add(new PieceLocationDescriptor(
+				new Piece(PieceType.FLAG, PlayerColor.BLUE), new Location2D(2,4)));
+		game.startGame();
+		game.move(PieceType.CAPTAIN, new Location2D(2,2), new Location2D(2,3));
+		game.move(PieceType.LIEUTENANT, new Location2D(0,4), new Location2D(0,3));
+		
+		final MoveResult result = 
+				game.move(PieceType.CAPTAIN, new Location2D(2,3), new Location2D(2,4));
+		assertEquals(MoveResultStatus.RED_WINS, result.getStatus());
+	}
+	
+	@Test
+	public void LieutenantvsSergeantFlag() throws StrategyException
+	{
+//		redConfiguration.remove(9);	// Sergeant @ (3,1)
+//		redConfiguration.add(new PieceLocationDescriptor(
+//				new Piece(PieceType.SERGEANT, PlayerColor.RED), new Location2D(3,2)));
+//		blueConfiguration.remove(8);	// Lieutenant @ (2,4)
+//		blueConfiguration.add(new PieceLocationDescriptor(
+//				new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE), new Location2D(3,3)));
+//		redConfiguration.remove(1);	// Flag @ (1,0)
+//		redConfiguration.add(new PieceLocationDescriptor(
+//				new Piece(PieceType.FLAG, PlayerColor.RED), new Location2D(3,1)));
+//		game.startGame();
+//		game.move(PieceType.SERGEANT, new Location2D(4,1), new Location2D(4,2));
+//		game.move(PieceType.LIEUTENANT, new Location2D(3,3), new Location2D(3,2));
+//		game.move(PieceType.SERGEANT, new Location2D(4,2), new Location2D(4,3));
+//		final MoveResult result = 
+//				game.move(PieceType.LIEUTENANT, new Location2D(3,2), new Location2D(3,1));
+//		assertEquals(MoveResultStatus.BLUE_WINS, result.getStatus());
+		
+		redConfiguration.remove(9);
+		redConfiguration.add(new PieceLocationDescriptor(
+				new Piece(PieceType.SERGEANT, PlayerColor.RED), new Location2D(3,2)));
+		blueConfiguration.remove(8);
+		blueConfiguration.add(new PieceLocationDescriptor(
+				new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE), new Location2D(3,3)));
+		game.startGame();
+		game.move(PieceType.SERGEANT, new Location2D(4,1), new Location2D(4,2));
+		game.move(PieceType.LIEUTENANT, new Location2D(3,3), new Location2D(3,2));
+		//game.move(PieceType.SERGEANT, new Location2D(4,2), new Location2D(4,3));
+		
+	}
 }
