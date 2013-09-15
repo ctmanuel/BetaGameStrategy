@@ -249,13 +249,15 @@ public class BetaStrategyGameController implements StrategyGameController {
 	 */
 	private MoveResult battle(PieceLocationDescriptor playerPiece, PieceLocationDescriptor opponentPiece){
 		final PieceLocationDescriptor battleWinner = new PieceLocationDescriptor(playerPiece.getPiece(), opponentPiece.getLocation());
+		final PieceType opponentPieceType = opponentPiece.getPiece().getType();
+		final PlayerColor playerPieceOwner = playerPiece.getPiece().getOwner();
 		switch (playerPiece.getPiece().getType()){
-		case MARSHAL: if(MarshalBeatsThese.contains(opponentPiece.getPiece().getType())) {
-			if (opponentPiece.getPiece().getType().equals(PieceType.FLAG)){
+		case MARSHAL: if (MarshalBeatsThese.contains(opponentPieceType)) {
+			//if opponent piece is flag, set game over to true, remove flag from configuration, return battle winner
+			if (opponentPieceType.equals(PieceType.FLAG)){
 				return flagBattle(playerPiece, opponentPiece);
 			}
-			//if opponent piece is flag, set game over to true, remove flag from configuration, return battle winner
-			else if (playerPiece.getPiece().getOwner() == PlayerColor.RED) {
+			else if (playerPieceOwner == PlayerColor.RED) {
 				blueConfiguration.remove(opponentPiece);
 				return new MoveResult(MoveResultStatus.OK, battleWinner);
 			} 
@@ -264,12 +266,12 @@ public class BetaStrategyGameController implements StrategyGameController {
 				return new MoveResult(MoveResultStatus.OK, battleWinner);
 			}
 		}
-		case COLONEL: if (ColonelBeatsThese.contains(opponentPiece.getPiece().getType())) {
-			if (playerPiece.getPiece().getOwner() == PlayerColor.RED) {
+		case COLONEL: if (ColonelBeatsThese.contains(opponentPieceType)) {
+			if (playerPieceOwner == PlayerColor.RED) {
 				blueConfiguration.remove(opponentPiece);
 				return new MoveResult(MoveResultStatus.OK, battleWinner);
 			}
-			else if (opponentPiece.getPiece().getType().equals(PieceType.FLAG)){
+			else if (opponentPieceType.equals(PieceType.FLAG)){
 				return flagBattle(playerPiece, opponentPiece);
 			}
 			else {
@@ -277,12 +279,12 @@ public class BetaStrategyGameController implements StrategyGameController {
 				return new MoveResult(MoveResultStatus.OK, battleWinner);
 			}
 		}
-		case CAPTAIN: if (CaptainBeatsThese.contains(opponentPiece.getPiece().getType())) {
-			if (playerPiece.getPiece().getOwner() == PlayerColor.RED) {
+		case CAPTAIN: if (CaptainBeatsThese.contains(opponentPieceType)) {
+			if (playerPieceOwner == PlayerColor.RED) {
 				blueConfiguration.remove(opponentPiece);
 				return new MoveResult(MoveResultStatus.OK, battleWinner);
 			}
-			else if (opponentPiece.getPiece().getType().equals(PieceType.FLAG)){
+			else if (opponentPieceType.equals(PieceType.FLAG)){
 				return flagBattle(playerPiece, opponentPiece);
 			}
 			else {
@@ -290,12 +292,12 @@ public class BetaStrategyGameController implements StrategyGameController {
 				return new MoveResult(MoveResultStatus.OK, battleWinner);
 			}
 		}
-		case LIEUTENANT: if (LieutenantBeatsThese.contains(opponentPiece.getPiece().getType())) {
-			if (playerPiece.getPiece().getOwner() == PlayerColor.RED) {
+		case LIEUTENANT: if (LieutenantBeatsThese.contains(opponentPieceType)) {
+			if (playerPieceOwner == PlayerColor.RED) {
 				blueConfiguration.remove(opponentPiece);
 				return new MoveResult(MoveResultStatus.OK, battleWinner);
 			}
-			else if (opponentPiece.getPiece().getType().equals(PieceType.FLAG)){
+			else if (opponentPieceType.equals(PieceType.FLAG)){
 				return flagBattle(playerPiece, opponentPiece);
 			}
 			else {
@@ -304,7 +306,9 @@ public class BetaStrategyGameController implements StrategyGameController {
 			}
 		}
 		case SERGEANT: 
-			return null;
+			if (opponentPieceType.equals(PieceType.FLAG)){
+				return flagBattle(playerPiece, opponentPiece);
+			}
 		default:
 			//if(opponentPiece.getPiece().getType().equals(PieceType.FLAG))
 			if(opponentPiece.getPiece().getOwner() == PlayerColor.RED) {
