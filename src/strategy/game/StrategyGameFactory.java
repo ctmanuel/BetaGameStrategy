@@ -59,7 +59,7 @@ public class StrategyGameFactory
 	 */
 	public StrategyGameController makeAlphaStrategyGame()
 	{
-		StrategyGameController AlphaGame = new AlphaStrategyGameController();
+		final StrategyGameController AlphaGame = new AlphaStrategyGameController();
 
 		if(AlphaGame.getClass() != AlphaStrategyGameController.class) {
 			throw new StrategyRuntimeException("Change this implementation");
@@ -127,7 +127,7 @@ public class StrategyGameFactory
 			}
 		}
 		
-		StrategyGameController BetaGame = new BetaStrategyGameController(redConfiguration, blueConfiguration);
+		final StrategyGameController BetaGame = new BetaStrategyGameController(redConfiguration, blueConfiguration);
 
 		if(BetaGame.getClass() != BetaStrategyGameController.class) {
 			throw new StrategyRuntimeException("Change this implementation");
