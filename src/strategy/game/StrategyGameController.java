@@ -58,4 +58,5 @@ public interface StrategyGameController
 	 * @return the piece located at the specified location or null if there is none
 	 */
 	Piece getPieceAt(Location location);
+
 }

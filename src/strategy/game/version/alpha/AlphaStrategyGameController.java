@@ -112,4 +112,5 @@ public class AlphaStrategyGameController implements StrategyGameController
 		}
 		return result;
 	}
+
 }

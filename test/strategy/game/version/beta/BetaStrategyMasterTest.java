@@ -53,7 +53,7 @@ public class BetaStrategyMasterTest {
 				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.RED)), new Location2D(5,1))};
 		
 		final PieceLocationDescriptor[] bluePieces = {
-				new PieceLocationDescriptor((new Piece(PieceType.MARSHAL, PlayerColor.BLUE)), new Location2D(5,5)),
+				new PieceLocationDescriptor((new Piece(PieceType.MARSHAL, PlayerColor.BLUE)), new Location2D(5,4)),
 				new PieceLocationDescriptor((new Piece(PieceType.FLAG, PlayerColor.BLUE)), new Location2D(0,5)),
 				new PieceLocationDescriptor((new Piece(PieceType.COLONEL, PlayerColor.BLUE)), new Location2D(1,5)),
 				new PieceLocationDescriptor((new Piece(PieceType.COLONEL, PlayerColor.BLUE)), new Location2D(2,5)),
@@ -64,7 +64,7 @@ public class BetaStrategyMasterTest {
 				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE)), new Location2D(2,4)),
 				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(3,4)),
 				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(4,4)),
-				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(5,4))};
+				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(5,5))};
 		
 		for (PieceLocationDescriptor piece : redPieces) {
 			redConfiguration.add(piece);
@@ -231,22 +231,49 @@ public class BetaStrategyMasterTest {
 	}
 	
 	@Test
-	public void makeBattleMove() throws StrategyException
+	public void makeRedWinningBattleMove() throws StrategyException
 	{
-		throw new StrategyException("Fail");
+		game.startGame();
+		game.move(PieceType.MARSHAL, new Location2D(0,1), new Location2D(0,2));
+		game.move(PieceType.LIEUTENANT, new Location2D(0,4), new Location2D(0,3));
+		final MoveResult result = 
+				game.move(PieceType.MARSHAL, new Location2D(0,2), new Location2D(0,3));
+		assertEquals(MoveResultStatus.OK, result.getStatus());
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.MARSHAL, PlayerColor.RED), new Location2D(0,3)), 
+				result.getBattleWinner());
 	}
 	
 	@Test
-	public void makeRedWinningMove() throws StrategyException
+	public void makeBlueWinningBattleMove() throws StrategyException
 	{
-		throw new StrategyException("Fail");
+		game.startGame();
+		game.move(PieceType.MARSHAL, new Location2D(0,1), new Location2D(0,2));
+		game.move(PieceType.MARSHAL, new Location2D(5,4), new Location2D(5,3));
+		game.move(PieceType.SERGEANT, new Location2D(5,1), new Location2D(5,2));
+		final MoveResult result = 
+				game.move(PieceType.MARSHAL, new Location2D(5,3), new Location2D(5,2));
+		assertEquals(MoveResultStatus.OK, result.getStatus());
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.MARSHAL, PlayerColor.BLUE), new Location2D(5,2)), 
+				result.getBattleWinner());
+	
 	}
 	
 	@Test
-	public void makeBlueWinningMove() throws StrategyException
+	public void makeRedWinsGame() throws StrategyException
 	{
-		throw new StrategyException("Fail");
-	
+		game.startGame();
+		game.move(PieceType.MARSHAL, new Location2D(0,1), new Location2D(0,2));
+		game.move(PieceType.LIEUTENANT, new Location2D(0,4), new Location2D(0,3));
+		game.move(PieceType.MARSHAL, new Location2D(0,2), new Location2D(0,3));
+		game.move(PieceType.MARSHAL, new Location2D(5,4), new Location2D(5,3));
+		game.move(PieceType.MARSHAL, new Location2D(0,3), new Location2D(0,4));
+		game.move(PieceType.MARSHAL, new Location2D(5,3), new Location2D(5,2));
+		final MoveResult result = 
+				game.move(PieceType.MARSHAL, new Location2D(0,4), new Location2D(0,5));
+		assertEquals(MoveResultStatus.RED_WINS, result.getStatus());
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.MARSHAL, PlayerColor.RED), new Location2D(0,5)), 
+				result.getBattleWinner());
+		//assertEquals()
 	}
 	
 	//should fail
@@ -270,7 +297,7 @@ public class BetaStrategyMasterTest {
 	@Test
 	public void getBluePieceAtLocation() throws StrategyException {
 		game.startGame();
-		assertEquals(new Piece(PieceType.MARSHAL, PlayerColor.BLUE), game.getPieceAt(new Location2D(5,5)));
+		assertEquals(new Piece(PieceType.MARSHAL, PlayerColor.BLUE), game.getPieceAt(new Location2D(5,4)));
 	}
 	
 	@Test
