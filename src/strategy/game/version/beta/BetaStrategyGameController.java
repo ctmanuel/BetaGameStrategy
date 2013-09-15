@@ -34,6 +34,8 @@ public class BetaStrategyGameController implements StrategyGameController {
 	PlayerColor playerColor;
 	private MoveResult battleResult;
 
+	private Collection<PieceLocationDescriptor> origionalredConfiguration;
+	private Collection<PieceLocationDescriptor> origionalblueConfiguration;
 	private Collection<PieceLocationDescriptor> redConfiguration;
 	private Collection<PieceLocationDescriptor> blueConfiguration;
 
@@ -48,9 +50,10 @@ public class BetaStrategyGameController implements StrategyGameController {
 			{
 		gameStarted = false;
 		gameOver = false;
-
-		this.redConfiguration = redConfiguration;
-		this.blueConfiguration = blueConfiguration;
+		
+		origionalblueConfiguration = blueConfiguration;
+		origionalredConfiguration = redConfiguration;
+		fillBattleLists();
 			}
 
 	@Override
@@ -58,7 +61,9 @@ public class BetaStrategyGameController implements StrategyGameController {
 		gameStarted = true;
 		gameOver = false;
 		playerTurn = 0;
-		fillBattleLists();
+		redConfiguration = origionalredConfiguration;
+		blueConfiguration = origionalblueConfiguration;
+
 	}
 
 	@Override
@@ -148,7 +153,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 
 		//if piece doesn't exist within the either collection configuration
 		if (!(redConfiguration.contains(currentPieceDescriptor) || blueConfiguration.contains(currentPieceDescriptor))) {
-			throw new StrategyException(playerColor + "'s " + currentPieceDescriptor.getPiece() + " at " 
+			throw new StrategyException(currentPieceDescriptor.getPiece() + " at " 
 					+ currentPieceDescriptor.getLocation() +" doesn't exist in this configuration");
 		}
 
@@ -202,7 +207,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 		int currentBlueX;
 		int currentBlueY;
 
-		while (redIterator.hasNext()) {
+		while (blueIterator.hasNext()) {
 			currentRedIterPiece = redIterator.next();
 			currentBlueIterPiece = blueIterator.next();
 
@@ -231,14 +236,15 @@ public class BetaStrategyGameController implements StrategyGameController {
 		PieceLocationDescriptor battleWinner = new PieceLocationDescriptor(playerPiece.getPiece(), opponentPiece.getLocation());
 		switch (playerPiece.getPiece().getType()){
 		case MARSHAL: if(MarshalBeatsThese.contains(opponentPiece.getPiece().getType())){
-			if(playerPiece.getPiece().getOwner()==PlayerColor.RED){
-				blueConfiguration.remove(opponentPiece);				
-				return new MoveResult(MoveResultStatus.OK, battleWinner);
-			}
-			//if opponent piece is flag, set game over to true, remove flag from configuration, return battle winner
-			else if (opponentPiece.getPiece().getType().equals(PieceType.FLAG)){
+			if (opponentPiece.getPiece().getType().equals(PieceType.FLAG)){
 				return flagBattle(playerPiece, opponentPiece);
 			}
+			//if opponent piece is flag, set game over to true, remove flag from configuration, return battle winner
+			else if(playerPiece.getPiece().getOwner()==PlayerColor.RED){
+				blueConfiguration.remove(opponentPiece);				
+				return new MoveResult(MoveResultStatus.OK, battleWinner);
+			} 
+
 			else{
 				redConfiguration.remove(opponentPiece);
 				return new MoveResult(MoveResultStatus.OK, battleWinner);
@@ -306,12 +312,16 @@ public class BetaStrategyGameController implements StrategyGameController {
 		MarshalBeatsThese.add(PieceType.LIEUTENANT);
 		MarshalBeatsThese.add(PieceType.CAPTAIN);
 		MarshalBeatsThese.add(PieceType.COLONEL);
+		MarshalBeatsThese.add(PieceType.FLAG);
 		ColonelBeatsThese.add(PieceType.LIEUTENANT);
 		ColonelBeatsThese.add(PieceType.CAPTAIN);
 		ColonelBeatsThese.add(PieceType.SERGEANT);
+		ColonelBeatsThese.add(PieceType.FLAG);
 		CaptainBeatsThese.add(PieceType.LIEUTENANT);
 		CaptainBeatsThese.add(PieceType.SERGEANT);
+		CaptainBeatsThese.add(PieceType.FLAG);
 		LieutenantBeatsThese.add(PieceType.SERGEANT);
+		LieutenantBeatsThese.add(PieceType.FLAG);
 	}
 
 	/**
