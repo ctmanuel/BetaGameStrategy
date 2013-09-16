@@ -366,7 +366,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 	/**
 	 * Fills the piece type lists
 	 */
-	private void fillBattleLists() {
+	private static void fillBattleLists() {
 		MarshalBeatsThese.add(PieceType.SERGEANT);
 		MarshalBeatsThese.add(PieceType.LIEUTENANT);
 		MarshalBeatsThese.add(PieceType.CAPTAIN);
