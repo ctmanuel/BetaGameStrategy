@@ -61,12 +61,12 @@ public class BetaStrategyGameController implements StrategyGameController {
 	{
 		gameStarted = false;
 		gameOver = false;
-		
+
 		origionalblueConfiguration = blueConfiguration;
 		origionalredConfiguration = redConfiguration;
 		fillBattleLists();
 	}
-	
+
 	/*
 	 * @see strategy.game.StrategyGameController#startGame()
 	 */
@@ -203,7 +203,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 				|| (currentXcoordinate - 1 == toXcoordinate && currentYcoordinate - 1 == toYcoordinate)) {
 			throw new StrategyException("Illegal Diagonal move");
 		}
-		
+
 	}
 
 	@Override
@@ -222,7 +222,11 @@ public class BetaStrategyGameController implements StrategyGameController {
 		int currentBlueX;
 		int currentBlueY;
 
-		while (blueIterator.hasNext()) {
+		//		for (PieceLocationDescriptor piece : redConfiguration){
+		//			piece.doSomething();
+		//		}
+
+		while (blueIterator.hasNext() && redIterator.hasNext()) {
 			currentRedIterPiece = redIterator.next();
 			currentBlueIterPiece = blueIterator.next();
 
@@ -251,12 +255,26 @@ public class BetaStrategyGameController implements StrategyGameController {
 		final PieceLocationDescriptor battleWinner = new PieceLocationDescriptor(playerPiece.getPiece(), opponentPiece.getLocation());
 		final PieceType opponentPieceType = opponentPiece.getPiece().getType();
 		final PlayerColor playerPieceOwner = playerPiece.getPiece().getOwner();
+
+		//if the pieces are the same type, remove both
+		if (playerPiece.getPiece().getType().equals(opponentPieceType)){
+			if (playerPieceOwner == PlayerColor.RED){
+				redConfiguration.remove(playerPiece);
+				blueConfiguration.remove(opponentPiece);
+			}
+			else{
+				blueConfiguration.remove(playerPiece);
+				redConfiguration.remove(opponentPiece);
+			}
+		}
+		//battle
 		switch (playerPiece.getPiece().getType()) {
 		case MARSHAL: if (MarshalBeatsThese.contains(opponentPieceType)) {
 			//if opponent piece is flag, set game over to true, remove flag from configuration, return battle winner
 			if (opponentPieceType.equals(PieceType.FLAG)) {
 				return flagBattle(playerPiece, opponentPiece);
 			}
+			//if red wins, remove from blue configuration
 			else if (playerPieceOwner == PlayerColor.RED) {
 				blueConfiguration.remove(opponentPiece);
 				return new MoveResult(MoveResultStatus.OK, battleWinner);
@@ -309,15 +327,15 @@ public class BetaStrategyGameController implements StrategyGameController {
 			if (opponentPieceType.equals(PieceType.FLAG)) {
 				return flagBattle(playerPiece, opponentPiece);
 			}
-		default:
-			if(opponentPiece.getPiece().getOwner() == PlayerColor.RED) {
-				redConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, opponentPiece);
-			}
-			else{
-				blueConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, opponentPiece);
-			}
+		}
+		//if moving piece loses, remove moving piece and return opponent
+		if(opponentPiece.getPiece().getOwner() == PlayerColor.RED) {
+			blueConfiguration.remove(playerPiece);
+			return new MoveResult(MoveResultStatus.OK, opponentPiece);
+		}
+		else{
+			redConfiguration.remove(playerPiece);
+			return new MoveResult(MoveResultStatus.OK, opponentPiece);
 		}
 	}
 
