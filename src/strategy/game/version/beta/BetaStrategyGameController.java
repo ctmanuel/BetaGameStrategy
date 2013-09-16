@@ -35,21 +35,22 @@ import strategy.game.common.PieceType;
 public class BetaStrategyGameController implements StrategyGameController {
 
 	private boolean gameStarted;
-	private boolean gameOver;
+	private static boolean gameOver = false;
 	private int playerTurn;
 	private PieceLocationDescriptor currentPieceDescriptor = null;
 	PlayerColor playerColor;
 	private MoveResult battleResult;
+	private int moveCounter;
 
 	private final Collection<PieceLocationDescriptor> origionalredConfiguration;
 	private final Collection<PieceLocationDescriptor> origionalblueConfiguration;
-	private Collection<PieceLocationDescriptor> redConfiguration;
-	private Collection<PieceLocationDescriptor> blueConfiguration;
+	private static Collection<PieceLocationDescriptor> redConfiguration = null;
+	private static Collection<PieceLocationDescriptor> blueConfiguration = null;
 
-	private final List<PieceType> MarshalBeatsThese = new ArrayList<PieceType>();
-	private final List<PieceType> ColonelBeatsThese = new ArrayList<PieceType>();
-	private final List<PieceType> CaptainBeatsThese = new ArrayList<PieceType>();
-	private final List<PieceType> LieutenantBeatsThese = new ArrayList<PieceType>();
+	private static final List<PieceType> MarshalBeatsThese = new ArrayList<PieceType>();
+	private static final List<PieceType> ColonelBeatsThese = new ArrayList<PieceType>();
+	private static final List<PieceType> CaptainBeatsThese = new ArrayList<PieceType>();
+	private static final List<PieceType> LieutenantBeatsThese = new ArrayList<PieceType>();
 
 	/**
 	 * Constructor for the Beta Game Strategy
@@ -75,6 +76,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 		gameStarted = true;
 		gameOver = false;
 		playerTurn = 0;
+		moveCounter = 0;
 		redConfiguration = new ArrayList<PieceLocationDescriptor>(origionalredConfiguration);
 		blueConfiguration = new ArrayList<PieceLocationDescriptor>(origionalblueConfiguration);
 	}
@@ -83,11 +85,11 @@ public class BetaStrategyGameController implements StrategyGameController {
 	 * @see strategy.game.StrategyGameController#move(strategy.game.common.PieceType, strategy.game.common.Location, strategy.game.common.Location)
 	 */
 	@Override
-	//TODO:
-	// fix move result status
 	public MoveResult move(PieceType piece, Location from, Location to)
-
 			throws StrategyException {
+		
+		moveCounter += 1;
+		
 		if (gameOver) {
 			throw new StrategyException("The game is over, you cannot make a move");
 		}
@@ -98,8 +100,13 @@ public class BetaStrategyGameController implements StrategyGameController {
 				|| piece == PieceType.LIEUTENANT
 				|| piece == PieceType.COLONEL
 				|| piece == PieceType.CAPTAIN
-				|| piece == PieceType.SERGEANT)) {
+				|| piece == PieceType.SERGEANT
+				|| piece == PieceType.FLAG)) {
 			throw new StrategyException(piece + " is not a valid piece for the Beta Strategy.");
+		}
+		
+		if(piece == PieceType.FLAG) {
+			throw new StrategyException("Cannot move the Flag");
 		}
 
 		//check which color turn it is
@@ -118,24 +125,37 @@ public class BetaStrategyGameController implements StrategyGameController {
 		checkLocationCoordinates(to);
 
 		//check if occupied
-		final Piece temp = getPieceAt(to);
-		if (temp != null) {
+		final Piece tempPieceAtTo = getPieceAt(to);
+		if (tempPieceAtTo != null) {
 			//check if the pieces are the same color
-			if (currentPieceDescriptor.getPiece().getOwner() == temp.getOwner()) {
+			if (currentPieceDescriptor.getPiece().getOwner() == tempPieceAtTo.getOwner()) {
 				throw new StrategyException("Space is occupied by same color piece");
 			}
 
 			//go to battle method
-			battleResult = battle(currentPieceDescriptor, new PieceLocationDescriptor(temp, to));
+			battleResult = battle(currentPieceDescriptor, new PieceLocationDescriptor(tempPieceAtTo, to));
+			if(battleResult.getBattleWinner() == null) { 
+				return battleResult;
+			}
 			if(playerColor == PlayerColor.RED){
+				redConfiguration.remove(currentPieceDescriptor);
 				redConfiguration.add(battleResult.getBattleWinner());
 			}
 			else{
+				blueConfiguration.remove(currentPieceDescriptor);
 				blueConfiguration.add(battleResult.getBattleWinner());
 			}
+			
+			if (moveCounter == 12 && !gameOver) {
+				gameOver = true;
+				return new MoveResult(MoveResultStatus.DRAW, battleResult.getBattleWinner());
+			}
+			
 			return battleResult;
-		}
 
+		}
+		
+		//if no battle go here
 		final PieceLocationDescriptor newPiece =
 				new PieceLocationDescriptor(new Piece(piece, playerColor), to);
 
@@ -147,6 +167,12 @@ public class BetaStrategyGameController implements StrategyGameController {
 			blueConfiguration.remove(currentPieceDescriptor);
 			blueConfiguration.add(newPiece);
 		}
+		
+		if (moveCounter == 12) {
+			gameOver = true;
+			return new MoveResult(MoveResultStatus.DRAW, newPiece);
+		}
+
 		return new MoveResult(MoveResultStatus.OK, newPiece);
 	}
 
@@ -203,7 +229,6 @@ public class BetaStrategyGameController implements StrategyGameController {
 				|| (currentXcoordinate - 1 == toXcoordinate && currentYcoordinate - 1 == toYcoordinate)) {
 			throw new StrategyException("Illegal Diagonal move");
 		}
-
 	}
 
 	@Override
@@ -221,10 +246,6 @@ public class BetaStrategyGameController implements StrategyGameController {
 		int currentRedY;
 		int currentBlueX;
 		int currentBlueY;
-
-		//		for (PieceLocationDescriptor piece : redConfiguration){
-		//			piece.doSomething();
-		//		}
 
 		while (blueIterator.hasNext() && redIterator.hasNext()) {
 			currentRedIterPiece = redIterator.next();
@@ -251,7 +272,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 	 * @param opponentPiece opponent's piece
 	 * @return status of winner
 	 */
-	private MoveResult battle(PieceLocationDescriptor playerPiece, PieceLocationDescriptor opponentPiece){
+	public static MoveResult battle(PieceLocationDescriptor playerPiece, PieceLocationDescriptor opponentPiece){
 		final PieceLocationDescriptor battleWinner = new PieceLocationDescriptor(playerPiece.getPiece(), opponentPiece.getLocation());
 		final PieceType opponentPieceType = opponentPiece.getPiece().getType();
 		final PlayerColor playerPieceOwner = playerPiece.getPiece().getOwner();
@@ -261,10 +282,12 @@ public class BetaStrategyGameController implements StrategyGameController {
 			if (playerPieceOwner == PlayerColor.RED){
 				redConfiguration.remove(playerPiece);
 				blueConfiguration.remove(opponentPiece);
+				return new MoveResult(MoveResultStatus.OK, null);
 			}
 			else{
 				blueConfiguration.remove(playerPiece);
 				redConfiguration.remove(opponentPiece);
+				return new MoveResult(MoveResultStatus.OK, null);
 			}
 		}
 		//battle
@@ -323,19 +346,20 @@ public class BetaStrategyGameController implements StrategyGameController {
 				return new MoveResult(MoveResultStatus.OK, battleWinner);
 			}
 		}
-		case SERGEANT: 
-			if (opponentPieceType.equals(PieceType.FLAG)) {
+		case SERGEANT: if (opponentPieceType.equals(PieceType.FLAG)) {
 				return flagBattle(playerPiece, opponentPiece);
 			}
+		default:
+			break;
 		}
 		//if moving piece loses, remove moving piece and return opponent
 		if(opponentPiece.getPiece().getOwner() == PlayerColor.RED) {
 			blueConfiguration.remove(playerPiece);
-			return new MoveResult(MoveResultStatus.OK, opponentPiece);
+			return new MoveResult(MoveResultStatus.OK, new PieceLocationDescriptor(opponentPiece.getPiece(), playerPiece.getLocation()));
 		}
 		else{
 			redConfiguration.remove(playerPiece);
-			return new MoveResult(MoveResultStatus.OK, opponentPiece);
+			return new MoveResult(MoveResultStatus.OK, new PieceLocationDescriptor(opponentPiece.getPiece(), playerPiece.getLocation()));
 		}
 	}
 
@@ -365,7 +389,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 	 * @param opponentPiece
 	 * @return
 	 */
-	private MoveResult flagBattle(PieceLocationDescriptor playerPiece, PieceLocationDescriptor opponentPiece) {
+	private static MoveResult flagBattle(PieceLocationDescriptor playerPiece, PieceLocationDescriptor opponentPiece) {
 		final PieceLocationDescriptor battleWinner = new PieceLocationDescriptor(playerPiece.getPiece(), opponentPiece.getLocation());
 		gameOver = true;
 		if (playerPiece.getPiece().getOwner() == PlayerColor.RED) {

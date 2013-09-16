@@ -11,25 +11,25 @@ X	make invalid move, bad x-coordinate in to (if moving more than one space)
 X	make invalid move, bad y-coordinate in to  (check for out of bounds) 
 X	make invalid move, bad y-coordinate in to (if moving more than one space)
 X	make invalid move, red moves blue piece
-	make invalid move, red moves to red piece location and blue to blue piece
+x	make invalid move, red moves to red piece location and blue to blue piece
 X	make invalid move, blue moves red piece
 X	Test valid battle move (if space is occupied, opposite color)
 X	Get piece at blue spot
 X	Get piece at red spot
 X	Get piece at empty spot
 X	Test for invalid consecutive player moves
-/	Test winning -> RED_WINS
-/	Test winning -> BLUE_WINS
-/	make second move before re-initializing -> Exception
-/	Play two games in a row
+X	Test winning -> RED_WINS
+X	Test winning -> BLUE_WINS
+X	make second move before re-initializing -> Exception
+X	Play two games in a row
 
 Things to do:
-	count turns
-	do battle
-		check piece types
-		declare winner
-		remove losing piece
-			if player piece lose, remove piece and don't move
-		draw
-	return move status
+X	count turns
+X	do battle
+X		check piece types
+X		declare winner
+X		remove losing piece
+X			if player piece lose, remove piece and move other
+X		draw
+X	return move status
 	
