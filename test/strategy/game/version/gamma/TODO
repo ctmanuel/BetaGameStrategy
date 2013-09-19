@@ -1,0 +1,18 @@
+	check repetition rule
+		list with 2 elements
+			1st piece, move to, move from
+			2nd piece, move to, move from
+		compare 3rd move to list
+		if valid,
+			remove 1st element
+			move 2nd element to 1st position
+			add 3rd piece, move to, move from
+		if invalid
+			throw exception
+	check valid number of each piece
+	check valid choke points
+	check move to choke point
+	check move from choke point
+	check set piece at choke point
+	check draw if no legal moves left
+	
