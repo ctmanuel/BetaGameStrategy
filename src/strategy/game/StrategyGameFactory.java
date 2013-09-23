@@ -36,7 +36,7 @@ import strategy.game.version.gamma.GammaStrategyGameController;
  */
 public class StrategyGameFactory
 {
-	private final static StrategyGameFactory instance = new StrategyGameFactory();
+	private static final StrategyGameFactory instance = new StrategyGameFactory();
 
 	/**
 	 * Default private constructor to ensure this is a singleton.

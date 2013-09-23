@@ -155,4 +155,30 @@ public class GammaStrategyInvalidMoveTest {
 		game.startGame();
 		game.move(PieceType.FLAG, new Location2D(1,0), new Location2D(1,1));
 	}
+	
+	@Test(expected=StrategyException.class)
+	public void invalidMoveToChokePoint22() throws StrategyException
+	{
+		game.move(PieceType.LIEUTENANT, new Location2D(2,1), new Location2D(2,2));
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void invalidMoveToChokePoint23() throws StrategyException
+	{
+		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
+		game.move(PieceType.SERGEANT, new Location2D(2,4), new Location2D(2,3));
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void invalidMoveToChokePoint32() throws StrategyException
+	{
+		game.move(PieceType.LIEUTENANT, new Location2D(3,1), new Location2D(3,2));
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void invalidMoveToChokePoint33() throws StrategyException
+	{
+		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
+		game.move(PieceType.SERGEANT, new Location2D(3,4), new Location2D(3,3));
+	}
 }

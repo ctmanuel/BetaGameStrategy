@@ -11,7 +11,6 @@
 package strategy.game.common;
 
 import strategy.common.StrategyRuntimeException;
-import strategy.game.common.*;
 
 /**
  * Description
@@ -23,6 +22,11 @@ public class Location2D implements Location
 	private final int xCoordinate;
 	private final int yCoordinate;
 	
+	/**
+	 * The location
+	 * @param xCoordinate
+	 * @param yCoordinate
+	 */
 	public Location2D(int xCoordinate, int yCoordinate) {
 		this.xCoordinate = xCoordinate;
 		this.yCoordinate = yCoordinate;

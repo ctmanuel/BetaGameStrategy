@@ -197,7 +197,7 @@ public class GammaStrategyMasterTest {
 	@Test
 	public void getEmptyAtLocation() throws StrategyException {
 		game.startGame();
-		assertEquals(null, game.getPieceAt(new Location2D(3,3)));
+		assertEquals(null, game.getPieceAt(new Location2D(1,2)));
 	}
 /*	
 	//TODO draw if no possible moves left, not six moves

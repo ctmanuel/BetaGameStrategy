@@ -28,7 +28,7 @@ import strategy.game.common.*;
  * @author gpollice
  * @version Sep 12, 2013
  */
-public class GammaStrategyPolliceTest
+public class GammaStrategyPolliceBetaTest
 {
 	private ArrayList<PieceLocationDescriptor> redConfiguration;
 	private ArrayList<PieceLocationDescriptor> blueConfiguration;
@@ -47,7 +47,6 @@ public class GammaStrategyPolliceTest
 		loc14 = new Location2D(1, 4),
 		loc21 = new Location2D(2, 1),
 		loc22 = new Location2D(2, 2),
-		loc23 = new Location2D(2, 3),
 		loc24 = new Location2D(2, 4),
 		loc31 = new Location2D(3, 1),
 		loc51 = new Location2D(5, 1),
@@ -279,13 +278,17 @@ public class GammaStrategyPolliceTest
 		assertEquals(BLUE_WINS, moveResult.getStatus());
 	}
 	
+	//TODO
+	//removes blue piece
+	//adds battle winner to blue configuration
+	//  should be adding red piece to red configuration
 	@Test
 	public void attackerWinsStrike() throws StrategyException
 	{
-		blueConfiguration.remove(8);
-		blueConfiguration.remove(9);
-		addToConfiguration(SERGEANT, BLUE, 1, 4);
+		blueConfiguration.remove(9); //Sergeant (2,4)
 		addToConfiguration(LIEUTENANT, BLUE, 2, 4);
+		blueConfiguration.remove(8); //Lieutenant (1,4)
+		addToConfiguration(SERGEANT, BLUE, 1, 4);
 		factory.makeGammaStrategyGame(redConfiguration, blueConfiguration);
 		game.startGame();
 		game.move(LIEUTENANT, loc11, loc12);
@@ -299,28 +302,27 @@ public class GammaStrategyPolliceTest
 		assertEquals(new Piece(LIEUTENANT, RED), game.getPieceAt(loc13));
 	}
 	
-	@Test(expected=StrategyException.class)
-	public void invalidMoveToChokePoint23() throws StrategyException
-	{
-		game.move(LIEUTENANT, loc11, loc12);
-		game.move(SERGEANT, loc24, loc23);
-	}
-	
 	@Test
 	public void defenderWinsStrike() throws StrategyException
 	{
+		blueConfiguration.remove(9); //Sergeant (2,4)
+		addToConfiguration(LIEUTENANT, BLUE, 2, 4);
+		blueConfiguration.remove(8); //Lieutenant (1,4)
+		addToConfiguration(SERGEANT, BLUE, 1, 4);
+		factory.makeGammaStrategyGame(redConfiguration, blueConfiguration);
+		game.startGame();
 		game.move(LIEUTENANT, loc11, loc12);
-		game.move(SERGEANT, loc24, loc23);
+		game.move(SERGEANT, loc14, loc13);
 		game.move(LIEUTENANT, loc12, loc11);
-		game.move(SERGEANT, loc23, loc22);
-		game.move(LIEUTENANT, loc11, loc12);
-		final MoveResult moveResult = game.move(SERGEANT, loc22, loc21);
+		game.move(SERGEANT, loc13, loc12);
+		game.move(SERGEANT, loc51, loc52);
+		final MoveResult moveResult = game.move(SERGEANT, loc12, loc11);
 		assertEquals(OK, moveResult.getStatus());
 		assertEquals(
-				new PieceLocationDescriptor(new Piece(LIEUTENANT, RED), loc22),
+				new PieceLocationDescriptor(new Piece(LIEUTENANT, RED), loc12),
 				moveResult.getBattleWinner());
-		assertNull(game.getPieceAt(loc21));
-		assertEquals(new Piece(LIEUTENANT, RED), game.getPieceAt(loc22));
+		assertNull(game.getPieceAt(loc11));
+		assertEquals(new Piece(LIEUTENANT, RED), game.getPieceAt(loc12));
 	}
 	
 	@Test
@@ -357,24 +359,6 @@ public class GammaStrategyPolliceTest
 	public void attemptToMoveFlag() throws StrategyException
 	{
 		game.move(FLAG, loc01, loc02);
-	}
-	
-	@Test
-	public void blueWinsOnLastMove() throws StrategyException
-	{
-		game.move(LIEUTENANT, loc11, loc12);
-		game.move(SERGEANT, loc24, loc23);
-		game.move(LIEUTENANT, loc12, loc11);
-		game.move(SERGEANT, loc23, loc24);
-		game.move(LIEUTENANT, loc11, loc12);
-		game.move(SERGEANT, loc24, loc23);
-		game.move(LIEUTENANT, loc12, loc11);
-		game.move(LIEUTENANT, loc04, loc03);
-		game.move(LIEUTENANT, loc11, loc12);
-		game.move(LIEUTENANT, loc03, loc02);
-		game.move(LIEUTENANT, loc12, loc11);
-		final MoveResult result = game.move(LIEUTENANT, loc02, loc01);
-		assertEquals(BLUE_WINS, result.getStatus());
 	}
 	
 	@Test(expected=StrategyException.class)

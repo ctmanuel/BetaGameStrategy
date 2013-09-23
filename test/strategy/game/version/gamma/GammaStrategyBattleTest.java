@@ -17,6 +17,7 @@ import strategy.game.common.MoveResultStatus;
 import strategy.game.common.Piece;
 import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.common.PieceType;
+import strategy.game.version.Battle;
 
 public class GammaStrategyBattleTest {
 
@@ -118,8 +119,8 @@ public class GammaStrategyBattleTest {
 	public void RedColonelvsLieutenantandFlag() throws StrategyException
 	{
 		game.startGame();
-		final MoveResult result = GammaStrategyGameController.battle(redConfiguration.get(2), blueConfiguration.get(8));
-		final MoveResult resultFlag = GammaStrategyGameController.battle(redConfiguration.get(2), blueConfiguration.get(1));
+		final MoveResult result = Battle.battle(redConfiguration.get(2), blueConfiguration.get(8));
+		final MoveResult resultFlag = Battle.battle(redConfiguration.get(2), blueConfiguration.get(1));
 		assertEquals(MoveResultStatus.OK, result.getStatus());
 		assertEquals(MoveResultStatus.RED_WINS, resultFlag.getStatus());
 	}
@@ -128,8 +129,8 @@ public class GammaStrategyBattleTest {
 	public void BlueColonelvsLieutenantandFlag() throws StrategyException
 	{
 		game.startGame();
-		final MoveResult result = GammaStrategyGameController.battle(blueConfiguration.get(2), redConfiguration.get(8));
-		final MoveResult resultFlag = GammaStrategyGameController.battle(blueConfiguration.get(2), redConfiguration.get(1));
+		final MoveResult result = Battle.battle(blueConfiguration.get(2), redConfiguration.get(8));
+		final MoveResult resultFlag = Battle.battle(blueConfiguration.get(2), redConfiguration.get(1));
 		assertEquals(MoveResultStatus.OK, result.getStatus());
 		assertEquals(MoveResultStatus.BLUE_WINS, resultFlag.getStatus());
 	}
@@ -138,8 +139,8 @@ public class GammaStrategyBattleTest {
 	public void RedCaptainvsLieutenantandFlag() throws StrategyException
 	{
 		game.startGame();
-		final MoveResult result = GammaStrategyGameController.battle(redConfiguration.get(4), blueConfiguration.get(8));
-		final MoveResult resultFlag = GammaStrategyGameController.battle(redConfiguration.get(4), blueConfiguration.get(1));
+		final MoveResult result = Battle.battle(redConfiguration.get(4), blueConfiguration.get(8));
+		final MoveResult resultFlag = Battle.battle(redConfiguration.get(4), blueConfiguration.get(1));
 		assertEquals(MoveResultStatus.OK, result.getStatus());
 		assertEquals(MoveResultStatus.RED_WINS, resultFlag.getStatus());
 	}
@@ -148,8 +149,8 @@ public class GammaStrategyBattleTest {
 	public void BlueCaptainvsLieutenantandFlag() throws StrategyException
 	{
 		game.startGame();
-		final MoveResult result = GammaStrategyGameController.battle(blueConfiguration.get(4), redConfiguration.get(8));
-		final MoveResult resultFlag = GammaStrategyGameController.battle(blueConfiguration.get(4), redConfiguration.get(1));
+		final MoveResult result = Battle.battle(blueConfiguration.get(4), redConfiguration.get(8));
+		final MoveResult resultFlag = Battle.battle(blueConfiguration.get(4), redConfiguration.get(1));
 		assertEquals(MoveResultStatus.OK, result.getStatus());
 		assertEquals(MoveResultStatus.BLUE_WINS, resultFlag.getStatus());
 	}
@@ -158,8 +159,8 @@ public class GammaStrategyBattleTest {
 	public void BlueLieutenantvsSergeantFlag() throws StrategyException
 	{
 		game.startGame();
-		final MoveResult result = GammaStrategyGameController.battle(blueConfiguration.get(6), redConfiguration.get(9));
-		final MoveResult resultFlag = GammaStrategyGameController.battle(blueConfiguration.get(6), redConfiguration.get(1));
+		final MoveResult result = Battle.battle(blueConfiguration.get(6), redConfiguration.get(9));
+		final MoveResult resultFlag = Battle.battle(blueConfiguration.get(6), redConfiguration.get(1));
 		assertEquals(MoveResultStatus.OK, result.getStatus());
 		assertEquals(MoveResultStatus.BLUE_WINS, resultFlag.getStatus());
 	}
@@ -168,8 +169,8 @@ public class GammaStrategyBattleTest {
 	public void RedLieutenantvsSergeantFlag() throws StrategyException
 	{
 		game.startGame();
-		final MoveResult result = GammaStrategyGameController.battle(redConfiguration.get(6), blueConfiguration.get(9));
-		final MoveResult resultFlag = GammaStrategyGameController.battle(redConfiguration.get(6), blueConfiguration.get(1));
+		final MoveResult result = Battle.battle(redConfiguration.get(6), blueConfiguration.get(9));
+		final MoveResult resultFlag = Battle.battle(redConfiguration.get(6), blueConfiguration.get(1));
 		assertEquals(MoveResultStatus.OK, result.getStatus());
 		assertEquals(MoveResultStatus.RED_WINS, resultFlag.getStatus());
 	}
@@ -178,7 +179,7 @@ public class GammaStrategyBattleTest {
 	public void BlueSergeantvsFlag() throws StrategyException
 	{
 		game.startGame();
-		final MoveResult result = GammaStrategyGameController.battle(blueConfiguration.get(11), redConfiguration.get(1));
+		final MoveResult result = Battle.battle(blueConfiguration.get(11), redConfiguration.get(1));
 		assertEquals(MoveResultStatus.BLUE_WINS, result.getStatus());
 		
 	}
@@ -186,10 +187,10 @@ public class GammaStrategyBattleTest {
 	@Test
 	public void battleSameTypePiece() throws StrategyException {
 		game.startGame();
-		game.move(PieceType.SERGEANT, new Location2D(3,1), new Location2D(3,2));
-		game.move(PieceType.SERGEANT, new Location2D(3,4), new Location2D(3,3));
+		game.move(PieceType.SERGEANT, new Location2D(4,1), new Location2D(4,2));
+		game.move(PieceType.SERGEANT, new Location2D(4,4), new Location2D(4,3));
 		final MoveResult result = 
-				game.move(PieceType.SERGEANT, new Location2D(3,2), new Location2D(3,3));
+				game.move(PieceType.SERGEANT, new Location2D(4,2), new Location2D(4,3));
 		assertEquals(MoveResultStatus.OK, result.getStatus());
 		assertEquals(null, result.getBattleWinner());
 	}

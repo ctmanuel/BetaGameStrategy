@@ -13,8 +13,6 @@ package strategy.game.version.gamma;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import strategy.common.PlayerColor;
@@ -28,10 +26,7 @@ import strategy.game.common.MoveResultStatus;
 import strategy.game.common.Piece;
 import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.common.PieceType;
-import strategy.game.version.Initialize;
-import strategy.game.version.Validate;
 import strategy.game.version.Battle;
-import strategy.game.version.gamma.ValidateGamma;
 
 /**
  * The BetaStrategyGameController implements the game core for
@@ -53,9 +48,6 @@ public class GammaStrategyGameController implements StrategyGameController {
 	private PieceLocationDescriptor CP33;
 	
 	private final ValidateGamma validateGamma = new ValidateGamma();
-	private final InitializeGamma initializeGamma;
-	private final Battle gammaBattle;
-
 	private final Collection<PieceLocationDescriptor> origionalredConfiguration;
 	private final Collection<PieceLocationDescriptor> origionalblueConfiguration;
 	private static Collection<PieceLocationDescriptor> redConfiguration = null;
@@ -72,18 +64,17 @@ public class GammaStrategyGameController implements StrategyGameController {
 	public GammaStrategyGameController(Collection<PieceLocationDescriptor> redConfiguration,
 			Collection<PieceLocationDescriptor> blueConfiguration) throws StrategyException
 	{
-		//initialize
-		initializeGamma = new InitializeGamma();
+		new InitializeGamma();
 		validateGamma.validateConfiguration(redConfiguration, 0, 1);
 		validateGamma.validateConfiguration(blueConfiguration, 4, 5);
 		
-		gammaBattle = new Battle(redConfiguration, blueConfiguration);
-//		 
-//		//set game variables
+		new Battle(redConfiguration, blueConfiguration);
+		 
+		//set game variables
 		gameStarted = false;
 		gameOver = false;
-//
-//		//remember original configurations
+
+		//remember original configurations
 		origionalblueConfiguration = blueConfiguration;
 		origionalredConfiguration = redConfiguration;
 		makeChokePoints();
@@ -120,7 +111,7 @@ public class GammaStrategyGameController implements StrategyGameController {
 		for(PieceLocationDescriptor pieceLD : config) {
 			newPiece = pieceLD.getPiece();
 			//check if pieces are trying to be put on the same space
-			//TODO:move this to validator  
+			//TODO:move this to validator if time  
 			checkDestinationIsNotOccupied(pieceLD);
 			boardMap.put(pieceLD.getLocation(), newPiece);
 		}
@@ -201,14 +192,14 @@ public class GammaStrategyGameController implements StrategyGameController {
 				redConfiguration.remove(currentPieceDescriptor);
 				redConfiguration.add(battleResult.getBattleWinner());
 				boardMap.remove(currentPieceDescriptor.getLocation());
-				boardMap.put(to, battleResult.getBattleWinner().getPiece());
+				boardMap.put(battleResult.getBattleWinner().getLocation(), battleResult.getBattleWinner().getPiece());
 			}
 			else {
 				blueConfiguration.remove(currentPieceDescriptor);
 				blueConfiguration.add(battleResult.getBattleWinner());
 				boardMap.remove(currentPieceDescriptor.getLocation());
-				boardMap.put(to, battleResult.getBattleWinner().getPiece());
-			}			
+				boardMap.put(battleResult.getBattleWinner().getLocation(), battleResult.getBattleWinner().getPiece());
+			}
 			return battleResult;
 		}
 
@@ -255,7 +246,7 @@ public class GammaStrategyGameController implements StrategyGameController {
 		}
 
 		//check if choke point
-		PieceLocationDescriptor[] chokePointArray = new PieceLocationDescriptor[chokePointList.size()];
+		final PieceLocationDescriptor[] chokePointArray = new PieceLocationDescriptor[chokePointList.size()];
 		chokePointList.toArray(chokePointArray);
 		for (int i = 0; i < chokePointList.size(); i++) {
 			PieceLocationDescriptor chokePoint = chokePointArray[i];

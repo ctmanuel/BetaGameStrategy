@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * This files was developed for CS4233: Object-Oriented Analysis & Design.
+ * The course was taken at Worcester Polytechnic Institute.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+
 package strategy.game.version;
 
 import java.util.ArrayList;
@@ -18,14 +28,19 @@ import strategy.game.common.PieceType;
  */
 
 public class Battle {
-	private static Collection<PieceLocationDescriptor> redConfiguration;
-	private static Collection<PieceLocationDescriptor> blueConfiguration;
+	private static Collection<PieceLocationDescriptor> redConfiguration = null;
+	private static Collection<PieceLocationDescriptor> blueConfiguration = null;
 	
 	private static final List<PieceType> MarshalBeatsThese = new ArrayList<PieceType>();
 	private static final List<PieceType> ColonelBeatsThese = new ArrayList<PieceType>();
 	private static final List<PieceType> CaptainBeatsThese = new ArrayList<PieceType>();
 	private static final List<PieceType> LieutenantBeatsThese = new ArrayList<PieceType>();
 	
+	/**
+	 * The constructor for the battle initialization
+	 * @param redConfiguration
+	 * @param blueConfiguration
+	 */
 	public Battle(Collection<PieceLocationDescriptor> redConfiguration, 
 			Collection<PieceLocationDescriptor> blueConfiguration){
 		Battle.redConfiguration = redConfiguration;
@@ -39,7 +54,10 @@ public class Battle {
 	 * @return status of winner
 	 */
 	public static MoveResult battle(PieceLocationDescriptor playerPiece, PieceLocationDescriptor opponentPiece){
-		final PieceLocationDescriptor battleWinner = new PieceLocationDescriptor(playerPiece.getPiece(), opponentPiece.getLocation());
+		final PieceLocationDescriptor attackingBattleWinner = 
+				new PieceLocationDescriptor(playerPiece.getPiece(), opponentPiece.getLocation());
+		final PieceLocationDescriptor defendingBattleWinner = 
+				new PieceLocationDescriptor(opponentPiece.getPiece(), playerPiece.getLocation());
 		final PieceType opponentPieceType = opponentPiece.getPiece().getType();
 		final PlayerColor playerPieceOwner = playerPiece.getPiece().getOwner();
 
@@ -66,11 +84,11 @@ public class Battle {
 			//if red wins, remove from blue configuration
 			else if (playerPieceOwner == PlayerColor.RED) {
 				blueConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, battleWinner);
+				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
 			} 
 			else {
 				redConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, battleWinner);
+				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
 			}
 		}
 		case COLONEL: if (ColonelBeatsThese.contains(opponentPieceType)) {
@@ -79,11 +97,11 @@ public class Battle {
 			}
 			else if (playerPieceOwner == PlayerColor.RED) {
 				blueConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, battleWinner);
+				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
 			}
 			else {
 				redConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, battleWinner);
+				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
 			}
 		}
 		case CAPTAIN: if (CaptainBeatsThese.contains(opponentPieceType)) {
@@ -92,11 +110,11 @@ public class Battle {
 			}
 			else if (playerPieceOwner == PlayerColor.RED) {
 				blueConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, battleWinner);
+				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
 			}
 			else {
 				redConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, battleWinner);
+				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
 			}
 		}
 		case LIEUTENANT: if (LieutenantBeatsThese.contains(opponentPieceType)) {
@@ -105,11 +123,11 @@ public class Battle {
 			}
 			else if (playerPieceOwner == PlayerColor.RED) {
 				blueConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, battleWinner);
+				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
 			}
 			else {
 				redConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, battleWinner);
+				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
 			}
 		}
 		case SERGEANT: if (opponentPieceType.equals(PieceType.FLAG)) {
@@ -119,13 +137,14 @@ public class Battle {
 			break;
 		}
 		//if moving piece loses, remove moving piece and return opponent
+		
 		if(opponentPiece.getPiece().getOwner() == PlayerColor.RED) {
 			blueConfiguration.remove(playerPiece);
-			return new MoveResult(MoveResultStatus.OK, new PieceLocationDescriptor(opponentPiece.getPiece(), playerPiece.getLocation()));
+			return new MoveResult(MoveResultStatus.OK, defendingBattleWinner);
 		}
 		else{
 			redConfiguration.remove(playerPiece);
-			return new MoveResult(MoveResultStatus.OK, new PieceLocationDescriptor(opponentPiece.getPiece(), playerPiece.getLocation()));
+			return new MoveResult(MoveResultStatus.OK, defendingBattleWinner);
 		}
 	}
 	
