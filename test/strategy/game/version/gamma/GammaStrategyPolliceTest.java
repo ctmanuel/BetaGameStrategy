@@ -14,8 +14,11 @@ import static org.junit.Assert.*;
 import static strategy.common.PlayerColor.*;
 import static strategy.game.common.PieceType.*;
 import static strategy.game.common.MoveResultStatus.*;
+
 import java.util.ArrayList;
+
 import org.junit.*;
+
 import strategy.common.*;
 import strategy.game.*;
 import strategy.game.common.*;
@@ -51,8 +54,7 @@ public class GammaStrategyPolliceTest
 		loc52 = new Location2D(5, 2),
 		loc53 = new Location2D(5, 3),
 		loc54 = new Location2D(5, 4),
-		badLoc = new Location2D(-1, 6)
-		;
+		badLoc = new Location2D(-1, 6);
 	
 	/*
 	 * The board with the initial configuration looks like this:
@@ -62,9 +64,9 @@ public class GammaStrategyPolliceTest
 	 * - +-----+-----+-----+-----+-----+-----+
 	 * 4 | LT  | LT  | SGT | SGT | SGT |  F  |
 	 * - +-----+-----+-----+-----+-----+-----+
-	 * 3 |     |     |     |     |     |     |
+	 * 3 |     |     |  CP | CP  |     |     |
 	 * - +-----+-----+-----+-----+-----+-----+
-	 * 2 |     |     |     |     |     |     |
+	 * 2 |     |     |  CP | CP  |     |     |
 	 * - +-----+-----+-----+-----+-----+-----+
 	 * 1 |  F  | LT  | LT  | SGT | SGT | SGT |
 	 * - +-----+-----+-----+-----+-----+-----+
@@ -280,15 +282,28 @@ public class GammaStrategyPolliceTest
 	@Test
 	public void attackerWinsStrike() throws StrategyException
 	{
-		game.move(LIEUTENANT, loc21, loc22);
-		game.move(SERGEANT, loc24, loc23);
-		final MoveResult moveResult = game.move(LIEUTENANT, loc22, loc23);
+		blueConfiguration.remove(8);
+		blueConfiguration.remove(9);
+		addToConfiguration(SERGEANT, BLUE, 1, 4);
+		addToConfiguration(LIEUTENANT, BLUE, 2, 4);
+		factory.makeGammaStrategyGame(redConfiguration, blueConfiguration);
+		game.startGame();
+		game.move(LIEUTENANT, loc11, loc12);
+		game.move(SERGEANT, loc14, loc13);
+		final MoveResult moveResult = game.move(LIEUTENANT, loc12, loc13);
 		assertEquals(OK, moveResult.getStatus());
 		assertEquals(
-				new PieceLocationDescriptor(new Piece(LIEUTENANT, RED), loc23),
+				new PieceLocationDescriptor(new Piece(LIEUTENANT, RED), loc13),
 				moveResult.getBattleWinner());
-		assertNull(game.getPieceAt(loc22));
-		assertEquals(new Piece(LIEUTENANT, RED), game.getPieceAt(loc23));
+		assertNull(game.getPieceAt(loc12));
+		assertEquals(new Piece(LIEUTENANT, RED), game.getPieceAt(loc13));
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void invalidMoveToChokePoint23() throws StrategyException
+	{
+		game.move(LIEUTENANT, loc11, loc12);
+		game.move(SERGEANT, loc24, loc23);
 	}
 	
 	@Test

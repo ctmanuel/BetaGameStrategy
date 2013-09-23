@@ -149,13 +149,12 @@ public class StrategyGameFactory
 			Collection<PieceLocationDescriptor> blueConfiguration)
 					throws StrategyException
 	{
-		
 		final StrategyGameController GammaGame = new GammaStrategyGameController(redConfiguration, blueConfiguration);
 
 		if(GammaGame.getClass() != GammaStrategyGameController.class) {
 			throw new StrategyRuntimeException("Change this implementation");
 		}
-
+		
 		return GammaGame;
 	}
 	

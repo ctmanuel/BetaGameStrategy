@@ -34,7 +34,7 @@ import strategy.game.common.PieceType;
  */
 public class BetaStrategyGameController implements StrategyGameController {
 
-	private boolean gameStarted;
+	private static boolean gameStarted = false;
 	private static boolean gameOver = false;
 	private int playerTurn;
 	private PieceLocationDescriptor currentPieceDescriptor = null;
@@ -66,13 +66,18 @@ public class BetaStrategyGameController implements StrategyGameController {
 		origionalblueConfiguration = blueConfiguration;
 		origionalredConfiguration = redConfiguration;
 		fillBattleLists();
+		//check for pieces at starting locations
+		
 	}
 
 	/*
 	 * @see strategy.game.StrategyGameController#startGame()
 	 */
 	@Override
-	public void startGame() {
+	public void startGame() throws StrategyException {
+		if(gameStarted){
+			throw new StrategyException("Game already in progress");
+		}
 		gameStarted = true;
 		gameOver = false;
 		playerTurn = 0;
@@ -148,6 +153,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 			
 			if (moveCounter == 12 && !gameOver) {
 				gameOver = true;
+				gameStarted = false;
 				return new MoveResult(MoveResultStatus.DRAW, battleResult.getBattleWinner());
 			}
 			
@@ -170,6 +176,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 		
 		if (moveCounter == 12) {
 			gameOver = true;
+			gameStarted = false;
 			return new MoveResult(MoveResultStatus.DRAW, newPiece);
 		}
 
@@ -392,6 +399,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 	private static MoveResult flagBattle(PieceLocationDescriptor playerPiece, PieceLocationDescriptor opponentPiece) {
 		final PieceLocationDescriptor battleWinner = new PieceLocationDescriptor(playerPiece.getPiece(), opponentPiece.getLocation());
 		gameOver = true;
+		gameStarted = false;
 		if (playerPiece.getPiece().getOwner() == PlayerColor.RED) {
 			blueConfiguration.remove(opponentPiece);
 			return new MoveResult(MoveResultStatus.RED_WINS, battleWinner);
