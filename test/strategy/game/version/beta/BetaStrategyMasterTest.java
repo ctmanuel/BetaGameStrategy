@@ -157,29 +157,6 @@ public class BetaStrategyMasterTest {
 		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.MARSHAL, PlayerColor.RED), new Location2D(0,2)), 
 				result.getBattleWinner());
 		assertEquals(MoveResultStatus.OK, result.getStatus());
-	}	
-
-	@Test
-	public void playTwoGames() throws StrategyException
-	{
-		game.startGame();
-		game.move(PieceType.MARSHAL, new Location2D(0,1), new Location2D(0,2));
-		game.move(PieceType.LIEUTENANT, new Location2D(0,4), new Location2D(0,3));
-		game.move(PieceType.MARSHAL, new Location2D(0,2), new Location2D(0,3));
-		game.move(PieceType.MARSHAL, new Location2D(5,4), new Location2D(5,3));
-		game.move(PieceType.MARSHAL, new Location2D(0,3), new Location2D(0,4));
-		game.move(PieceType.MARSHAL, new Location2D(5,3), new Location2D(5,2));
-		game.move(PieceType.MARSHAL, new Location2D(0,4), new Location2D(0,5));
-		
-		game.startGame();
-		game.move(PieceType.MARSHAL, new Location2D(0,1), new Location2D(0,2));
-		game.move(PieceType.LIEUTENANT, new Location2D(0,4), new Location2D(0,3));
-		game.move(PieceType.MARSHAL, new Location2D(0,2), new Location2D(0,3));
-		game.move(PieceType.MARSHAL, new Location2D(5,4), new Location2D(5,3));
-		game.move(PieceType.MARSHAL, new Location2D(0,3), new Location2D(0,4));
-		game.move(PieceType.MARSHAL, new Location2D(5,3), new Location2D(5,2));
-		game.move(PieceType.MARSHAL, new Location2D(0,4), new Location2D(0,5));
-		
 	}
 
 	@Test

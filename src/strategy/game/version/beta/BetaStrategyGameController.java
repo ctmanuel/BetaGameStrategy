@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import strategy.common.PlayerColor;
 import strategy.common.StrategyException;
@@ -41,7 +43,19 @@ public class BetaStrategyGameController implements StrategyGameController {
 	PlayerColor playerColor;
 	private MoveResult battleResult;
 	private int moveCounter;
-
+	private int redmarshalCount=0;
+	private  int redcolonelCount=0;
+	private  int redcaptainCount=0;
+	private  int redlieutenantCount=0;
+	private int redsergeantCount=0;
+	private  int redflagCount=0;
+	private int bluemarshalCount=0;
+	private  int bluecolonelCount=0;
+	private  int bluecaptainCount=0;
+	private  int bluelieutenantCount=0;
+	private int bluesergeantCount=0;
+	private  int blueflagCount=0;
+	
 	private final Collection<PieceLocationDescriptor> origionalredConfiguration;
 	private final Collection<PieceLocationDescriptor> origionalblueConfiguration;
 	private static Collection<PieceLocationDescriptor> redConfiguration = null;
@@ -56,10 +70,86 @@ public class BetaStrategyGameController implements StrategyGameController {
 	 * Constructor for the Beta Game Strategy
 	 * @param redConfiguration the list of red pieces
 	 * @param blueConfiguration the list of blue pieces
+	 * @throws StrategyException 
 	 */
 	public BetaStrategyGameController(Collection<PieceLocationDescriptor> redConfiguration,
-			Collection<PieceLocationDescriptor> blueConfiguration)
+			Collection<PieceLocationDescriptor> blueConfiguration) throws StrategyException
 	{
+		//check for the same starting locations
+		Piece newPiece;
+		Map <Location, Piece> tempMap = new HashMap<Location, Piece> ();
+		for(PieceLocationDescriptor pieceLD : redConfiguration) {
+			newPiece = pieceLD.getPiece();
+			if (tempMap.containsKey(pieceLD.getLocation())) {
+				throw new StrategyException("Attempt to place " + pieceLD.getPiece()
+						+ " on occupied location " + pieceLD.getLocation());
+			}
+			tempMap.put(pieceLD.getLocation(), newPiece);
+			
+			if (!(newPiece.getType() == PieceType.MARSHAL 
+					|| newPiece.getType() == PieceType.LIEUTENANT
+					|| newPiece.getType() == PieceType.COLONEL
+					|| newPiece.getType() == PieceType.CAPTAIN
+					|| newPiece.getType() == PieceType.SERGEANT
+					|| newPiece.getType() == PieceType.FLAG)) {
+				throw new StrategyException(newPiece.getType() + " is not a valid piece for the Beta Strategy.");
+			}
+			
+			switch(pieceLD.getPiece().getType()){
+			case MARSHAL: redmarshalCount ++;
+			case SERGEANT: redsergeantCount ++;
+			case CAPTAIN: redcaptainCount++;
+			case LIEUTENANT: redlieutenantCount++;
+			case COLONEL: redcolonelCount++;
+			case FLAG: redflagCount++;
+			default:
+				break;
+			}
+//			if(redmarshalCount!=1
+//					|| redsergeantCount != 3
+//					|| redcaptainCount != 2
+//					|| redlieutenantCount !=3
+//					|| redcolonelCount != 2
+//					|| redflagCount != 1)
+//				throw new StrategyException("Incorrect number of piece types in configuration");
+		}
+		for(PieceLocationDescriptor pieceLD : blueConfiguration) {
+			newPiece = pieceLD.getPiece();
+			if (tempMap.containsKey(pieceLD.getLocation())) {
+				throw new StrategyException("Attempt to place " + pieceLD.getPiece()
+						+ " on occupied location " + pieceLD.getLocation());
+			}
+			tempMap.put(pieceLD.getLocation(), newPiece);
+			if (!(newPiece.getType() == PieceType.MARSHAL 
+					|| newPiece.getType() == PieceType.LIEUTENANT
+					|| newPiece.getType() == PieceType.COLONEL
+					|| newPiece.getType() == PieceType.CAPTAIN
+					|| newPiece.getType() == PieceType.SERGEANT
+					|| newPiece.getType() == PieceType.FLAG)) {
+				throw new StrategyException(newPiece.getType() + " is not a valid piece for the Beta Strategy.");
+			}
+			
+			switch(pieceLD.getPiece().getType()){
+			case MARSHAL: bluemarshalCount ++;
+			case SERGEANT: bluesergeantCount ++;
+			case CAPTAIN: bluecaptainCount++;
+			case LIEUTENANT: bluelieutenantCount++;
+			case COLONEL: bluecolonelCount++;
+			case FLAG: blueflagCount++;
+			default:
+				break;
+			}
+			
+//			if(bluemarshalCount!=1
+//					|| bluesergeantCount != 3
+//					|| bluecaptainCount != 2
+//					|| bluelieutenantCount !=3
+//					|| bluecolonelCount != 2
+//					|| blueflagCount != 1)
+//				throw new StrategyException("Incorrect number of piece types in configuration");
+		}
+
+		
 		gameStarted = false;
 		gameOver = false;
 
@@ -142,12 +232,10 @@ public class BetaStrategyGameController implements StrategyGameController {
 			if(battleResult.getBattleWinner() == null) { 
 				return battleResult;
 			}
-			if(playerColor == PlayerColor.RED){
-				redConfiguration.remove(currentPieceDescriptor);
+			if(battleResult.getBattleWinner().getPiece().getOwner() == PlayerColor.RED){
 				redConfiguration.add(battleResult.getBattleWinner());
 			}
 			else{
-				blueConfiguration.remove(currentPieceDescriptor);
 				blueConfiguration.add(battleResult.getBattleWinner());
 			}
 			
@@ -362,10 +450,12 @@ public class BetaStrategyGameController implements StrategyGameController {
 		//if moving piece loses, remove moving piece and return opponent
 		if(opponentPiece.getPiece().getOwner() == PlayerColor.RED) {
 			blueConfiguration.remove(playerPiece);
+			redConfiguration.remove(opponentPiece);
 			return new MoveResult(MoveResultStatus.OK, new PieceLocationDescriptor(opponentPiece.getPiece(), playerPiece.getLocation()));
 		}
 		else{
 			redConfiguration.remove(playerPiece);
+			blueConfiguration.remove(opponentPiece);
 			return new MoveResult(MoveResultStatus.OK, new PieceLocationDescriptor(opponentPiece.getPiece(), playerPiece.getLocation()));
 		}
 	}
@@ -399,7 +489,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 	private static MoveResult flagBattle(PieceLocationDescriptor playerPiece, PieceLocationDescriptor opponentPiece) {
 		final PieceLocationDescriptor battleWinner = new PieceLocationDescriptor(playerPiece.getPiece(), opponentPiece.getLocation());
 		gameOver = true;
-		gameStarted = false;
+		gameStarted = true;
 		if (playerPiece.getPiece().getOwner() == PlayerColor.RED) {
 			blueConfiguration.remove(opponentPiece);
 			return new MoveResult(MoveResultStatus.RED_WINS, battleWinner);

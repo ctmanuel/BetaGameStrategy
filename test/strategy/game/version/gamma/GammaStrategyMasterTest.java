@@ -142,6 +142,15 @@ public class GammaStrategyMasterTest {
 				new Piece(PieceType.SERGEANT, PlayerColor.BLUE), new Location2D(6,4)));
 		GammaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
 	}
+	
+	@Test(expected=StrategyException.class)
+	public void placePieceOnChokePoint() throws StrategyException
+	{
+		blueConfiguration.remove(11);	// Sergeant @ (0, 4)
+		blueConfiguration.add(new PieceLocationDescriptor(
+				new Piece(PieceType.SERGEANT, PlayerColor.BLUE), new Location2D(2,2)));
+		GammaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
+	}
 
 	@Test(expected=StrategyException.class)
 	public void makeMoveBeforeInitalization() throws StrategyException {

@@ -9,16 +9,16 @@
 			add 3rd piece, move to, move from
 		if invalid
 			throw exception
-	check valid number of each piece
-	check valid choke points
-	check move to choke point
-	check move from choke point
-	check set piece at choke point
+X	check valid number of each piece
+X	check valid choke points
+X	check move to choke point
+X	check move from choke point
+X	check set piece at choke point
 	check draw if no legal moves left
 	
-	attempt to restart game in progress
+X	attempt to restart game in progress
 	attempt to restart completed game
-	check two pieces on same location, initial configuration
-	check valid pieces in starting configuration
-	check getPieceAt function
+X	check two pieces on same location, initial configuration
+X	check valid pieces in starting configuration
+X	check getPieceAt function
 	*check yellow flags*

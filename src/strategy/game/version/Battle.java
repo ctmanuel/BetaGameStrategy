@@ -140,10 +140,12 @@ public class Battle {
 		
 		if(opponentPiece.getPiece().getOwner() == PlayerColor.RED) {
 			blueConfiguration.remove(playerPiece);
+			redConfiguration.remove(opponentPiece);
 			return new MoveResult(MoveResultStatus.OK, defendingBattleWinner);
 		}
 		else{
 			redConfiguration.remove(playerPiece);
+			blueConfiguration.remove(opponentPiece);
 			return new MoveResult(MoveResultStatus.OK, defendingBattleWinner);
 		}
 	}
@@ -157,8 +159,6 @@ public class Battle {
 	 */
 	private static MoveResult flagBattle(PieceLocationDescriptor playerPiece, PieceLocationDescriptor opponentPiece) {
 		final PieceLocationDescriptor battleWinner = new PieceLocationDescriptor(playerPiece.getPiece(), opponentPiece.getLocation());
-//		gameOver = true;
-//		gameStarted = false;
 		if (playerPiece.getPiece().getOwner() == PlayerColor.RED) {
 			blueConfiguration.remove(opponentPiece);
 			return new MoveResult(MoveResultStatus.RED_WINS, battleWinner);
@@ -171,7 +171,6 @@ public class Battle {
 	
 	/**
 	 * Fills the piece battle lists
-	 * TODO: possibly "global" across versions
 	 */
 	public void fillBattleLists() {
 		MarshalBeatsThese.add(PieceType.SERGEANT);

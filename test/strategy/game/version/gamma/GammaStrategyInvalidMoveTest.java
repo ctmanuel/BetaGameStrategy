@@ -159,12 +159,14 @@ public class GammaStrategyInvalidMoveTest {
 	@Test(expected=StrategyException.class)
 	public void invalidMoveToChokePoint22() throws StrategyException
 	{
+		game.startGame();
 		game.move(PieceType.LIEUTENANT, new Location2D(2,1), new Location2D(2,2));
 	}
 	
 	@Test(expected=StrategyException.class)
 	public void invalidMoveToChokePoint23() throws StrategyException
 	{
+		game.startGame();
 		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
 		game.move(PieceType.SERGEANT, new Location2D(2,4), new Location2D(2,3));
 	}
@@ -172,13 +174,25 @@ public class GammaStrategyInvalidMoveTest {
 	@Test(expected=StrategyException.class)
 	public void invalidMoveToChokePoint32() throws StrategyException
 	{
+		game.startGame();
 		game.move(PieceType.LIEUTENANT, new Location2D(3,1), new Location2D(3,2));
 	}
 	
 	@Test(expected=StrategyException.class)
 	public void invalidMoveToChokePoint33() throws StrategyException
 	{
+		game.startGame();
 		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
 		game.move(PieceType.SERGEANT, new Location2D(3,4), new Location2D(3,3));
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void makeRepitionRulePlay() throws StrategyException {
+		game.startGame();
+		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
+		game.move(PieceType.SERGEANT, new Location2D(4,4), new Location2D(4,3));
+		game.move(PieceType.LIEUTENANT, new Location2D(1,2), new Location2D(1,1));
+		game.move(PieceType.MARSHAL, new Location2D(5,4), new Location2D(5,3));
+		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
 	}
 }

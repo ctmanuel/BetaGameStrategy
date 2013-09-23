@@ -29,10 +29,10 @@ import strategy.game.common.PieceType;
 import strategy.game.version.Battle;
 
 /**
- * The BetaStrategyGameController implements the game core for
- * the Beta Strategy version.
+ * The GammaStrategyGameController implements the game core for
+ * the Gamma Strategy version.
  * @author dmlarose, ctmanuel
- * @version Sep 13, 2013
+ * @version Sep 22, 2013
  */
 public class GammaStrategyGameController implements StrategyGameController {
 
@@ -46,7 +46,7 @@ public class GammaStrategyGameController implements StrategyGameController {
 	private PieceLocationDescriptor CP23;
 	private PieceLocationDescriptor CP32;
 	private PieceLocationDescriptor CP33;
-	
+
 	private final ValidateGamma validateGamma = new ValidateGamma();
 	private final Collection<PieceLocationDescriptor> origionalredConfiguration;
 	private final Collection<PieceLocationDescriptor> origionalblueConfiguration;
@@ -67,9 +67,9 @@ public class GammaStrategyGameController implements StrategyGameController {
 		new InitializeGamma();
 		validateGamma.validateConfiguration(redConfiguration, 0, 1);
 		validateGamma.validateConfiguration(blueConfiguration, 4, 5);
-		
+
 		new Battle(redConfiguration, blueConfiguration);
-		 
+
 		//set game variables
 		gameStarted = false;
 		gameOver = false;
@@ -82,7 +82,7 @@ public class GammaStrategyGameController implements StrategyGameController {
 		//set up board and pieces
 		boardMap = new HashMap<Location, Piece>();
 		boardMap.clear();
-		
+
 		//map configurations 
 		mapConfigurationBoard(redConfiguration);
 		mapConfigurationBoard(blueConfiguration);
@@ -159,6 +159,9 @@ public class GammaStrategyGameController implements StrategyGameController {
 		if(piece == PieceType.FLAG || piece == PieceType.CHOKE_POINT) {
 			throw new StrategyException("Cannot move the " + piece);
 		}
+		
+		//check for repetition rule
+		
 
 		//check which color turn it is
 		playerColor = null;
@@ -186,20 +189,20 @@ public class GammaStrategyGameController implements StrategyGameController {
 			//go to battle method
 			battleResult = Battle.battle(currentPieceDescriptor, new PieceLocationDescriptor(tempPieceAtTo, to));
 			if(battleResult.getBattleWinner() == null) { 
+				boardMap.remove(currentPieceDescriptor.getLocation());
+				boardMap.remove(to);
 				return battleResult;
 			}
-			if(playerColor == PlayerColor.RED) {
-				redConfiguration.remove(currentPieceDescriptor);
+
+			if(battleResult.getBattleWinner().getPiece().getOwner() == PlayerColor.RED) {
 				redConfiguration.add(battleResult.getBattleWinner());
-				boardMap.remove(currentPieceDescriptor.getLocation());
-				boardMap.put(battleResult.getBattleWinner().getLocation(), battleResult.getBattleWinner().getPiece());
 			}
 			else {
-				blueConfiguration.remove(currentPieceDescriptor);
 				blueConfiguration.add(battleResult.getBattleWinner());
-				boardMap.remove(currentPieceDescriptor.getLocation());
-				boardMap.put(battleResult.getBattleWinner().getLocation(), battleResult.getBattleWinner().getPiece());
 			}
+			boardMap.remove(currentPieceDescriptor.getLocation());
+			boardMap.remove(to);
+			boardMap.put(battleResult.getBattleWinner().getLocation(), battleResult.getBattleWinner().getPiece());
 			return battleResult;
 		}
 
@@ -263,7 +266,7 @@ public class GammaStrategyGameController implements StrategyGameController {
 		//check for diagonals moves
 		validateGamma.validateDiagonalMove(currentXcoordinate, currentYcoordinate,
 				toXcoordinate, toYcoordinate);
-		
+
 		//check for valid X,Y coordinates
 		validateGamma.validateCrossMove(currentPieceDescriptor.getLocation(),to);
 
@@ -271,46 +274,15 @@ public class GammaStrategyGameController implements StrategyGameController {
 
 	@Override
 	public Piece getPieceAt(Location location) {
-//		final Iterator<PieceLocationDescriptor> redIterator = redConfiguration.iterator();
-//		final Iterator<PieceLocationDescriptor> blueIterator = blueConfiguration.iterator();
-//
-//		PieceLocationDescriptor currentRedIterPiece = null;
-//		PieceLocationDescriptor currentBlueIterPiece = null;
-//		Piece pieceAtLocation = null;
-//
-//		final int locationX = location.getCoordinate(Coordinate.X_COORDINATE);
-//		final int locationY = location.getCoordinate(Coordinate.Y_COORDINATE);
-//		int currentRedX;
-//		int currentRedY;
-//		int currentBlueX;
-//		int currentBlueY;
-//
-//		while (blueIterator.hasNext() && redIterator.hasNext()) {
-//			currentRedIterPiece = redIterator.next();
-//			currentBlueIterPiece = blueIterator.next();
-//
-//			currentRedX = currentRedIterPiece.getLocation().getCoordinate(Coordinate.X_COORDINATE);
-//			currentRedY = currentRedIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
-//			if (currentRedX == locationX && currentRedY == locationY) {
-//				pieceAtLocation = currentRedIterPiece.getPiece();
-//			}
-//
-//			currentBlueX = currentBlueIterPiece.getLocation().getCoordinate(Coordinate.X_COORDINATE);
-//			currentBlueY = currentBlueIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
-//			if (currentBlueX == locationX && currentBlueY == locationY) {
-//				pieceAtLocation = currentBlueIterPiece.getPiece();
-//			}
-//		}
-//		return pieceAtLocation;
 		return boardMap.get(location);
 	}
-	
+
 	private void checkDestinationIsNotOccupied(PieceLocationDescriptor pld) 
 			throws StrategyException
 	{
 		if (getPieceAt(pld.getLocation()) != null) {
 			throw new StrategyException("Attempt to place " + pld.getPiece()
-				+ " on occupied location " + pld.getLocation());
+					+ " on occupied location " + pld.getLocation());
 		}
 	}
 }

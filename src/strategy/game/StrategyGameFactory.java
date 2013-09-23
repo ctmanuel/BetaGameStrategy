@@ -16,6 +16,7 @@ import java.util.Iterator;
 import strategy.common.StrategyException;
 import strategy.common.StrategyRuntimeException;
 import strategy.game.common.Coordinate;
+import strategy.game.common.Piece;
 import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.version.alpha.AlphaStrategyGameController;
 import strategy.game.version.beta.BetaStrategyGameController;
