@@ -149,7 +149,6 @@ public class Battle {
 			return new MoveResult(MoveResultStatus.OK, defendingBattleWinner);
 		}
 	}
-	
 
 	/**
 	 * If the current player runs into a flag, 

@@ -17,8 +17,8 @@ X	check set piece at choke point
 	check draw if no legal moves left
 	
 X	attempt to restart game in progress
-	attempt to restart completed game
+X	attempt to restart completed game
 X	check two pieces on same location, initial configuration
 X	check valid pieces in starting configuration
 X	check getPieceAt function
-	*check yellow flags*
+X	*check yellow flags*

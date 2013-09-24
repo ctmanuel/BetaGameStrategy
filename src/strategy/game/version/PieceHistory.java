@@ -51,10 +51,4 @@ public class PieceHistory {
 		return to;
 	}
 	
-	/**
-	 * print the history for the piece
-	 */
-	public void printHistory(){
-		System.out.print(piece + " " + from + " " + to + '\n');
-	}
 }

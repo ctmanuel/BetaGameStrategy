@@ -13,6 +13,7 @@ package strategy.game.version.gamma;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import strategy.common.PlayerColor;
@@ -40,6 +41,7 @@ public class GammaStrategyGameController implements StrategyGameController {
 	private static boolean gameStarted = false;
 	private static boolean gameOver = false;
 	private int playerTurn;
+	private MoveResult flagResult;
 	private PieceLocationDescriptor currentPieceDescriptor = null;
 	private PlayerColor playerColor;
 	private MoveResult battleResult;
@@ -51,8 +53,8 @@ public class GammaStrategyGameController implements StrategyGameController {
 	private final ValidateGamma validateGamma = new ValidateGamma();
 	private final Collection<PieceLocationDescriptor> origionalredConfiguration;
 	private final Collection<PieceLocationDescriptor> origionalblueConfiguration;
-	private static Collection<PieceLocationDescriptor> redConfiguration = null;
-	private static Collection<PieceLocationDescriptor> blueConfiguration = null;
+	private static List<PieceLocationDescriptor> redConfiguration = null;
+	private static List<PieceLocationDescriptor> blueConfiguration = null;
 	private final Map<Location, Piece> boardMap;
 	private final Collection<PieceLocationDescriptor> chokePointList = new ArrayList<PieceLocationDescriptor>();
 
@@ -64,7 +66,7 @@ public class GammaStrategyGameController implements StrategyGameController {
 	 */
 	public GammaStrategyGameController(Collection<PieceLocationDescriptor> redConfiguration,
 			Collection<PieceLocationDescriptor> blueConfiguration) throws StrategyException
-	{
+			{
 		new RepetitionRule();
 		new InitializeGamma();
 		validateGamma.validateConfiguration(redConfiguration, 0, 1);
@@ -89,7 +91,7 @@ public class GammaStrategyGameController implements StrategyGameController {
 		mapConfigurationBoard(redConfiguration);
 		mapConfigurationBoard(blueConfiguration);
 		mapConfigurationBoard(chokePointList);
-	}
+			}
 
 	private void makeChokePoints() {
 		CP22 = new PieceLocationDescriptor(new Piece(PieceType.CHOKE_POINT, null), new Location2D(2,2));
@@ -136,7 +138,6 @@ public class GammaStrategyGameController implements StrategyGameController {
 	/*
 	 * @see strategy.game.StrategyGameController#move(strategy.game.common.PieceType, strategy.game.common.Location, strategy.game.common.Location)
 	 */
-	//TODO: add DRAW
 	@Override
 	public MoveResult move(PieceType piece, Location from, Location to)
 			throws StrategyException {
@@ -160,16 +161,29 @@ public class GammaStrategyGameController implements StrategyGameController {
 		if(piece == PieceType.FLAG || piece == PieceType.CHOKE_POINT) {
 			throw new StrategyException("Cannot move the " + piece);
 		}
-		
+
 		//check which color turn it is
 		playerColor = null;
 		if (playerTurn == 0) {
 			playerColor = PlayerColor.RED;
 			playerTurn = 1;
+
+			//check if flag is the only piece left
+			flagResult = checkFlagOnly(PlayerColor.BLUE);
+			if(flagResult != null){
+				return flagResult;
+			}
+
 		}
 		else {
 			playerColor = PlayerColor.BLUE;
 			playerTurn = 0;
+
+			//check if flag is the only piece left
+			flagResult = checkFlagOnly(PlayerColor.RED);
+			if(flagResult != null){
+				return flagResult;
+			}
 		}
 
 		//check location for valid location
@@ -193,6 +207,11 @@ public class GammaStrategyGameController implements StrategyGameController {
 			if(battleResult.getBattleWinner() == null) { 
 				boardMap.remove(currentPieceDescriptor.getLocation());
 				boardMap.remove(to);
+				
+				flagResult = checkFlagOnly(playerColor);
+				if(flagResult != null){
+					return flagResult;
+				}
 				return battleResult;
 			}
 
@@ -205,6 +224,11 @@ public class GammaStrategyGameController implements StrategyGameController {
 			boardMap.remove(currentPieceDescriptor.getLocation());
 			boardMap.remove(to);
 			boardMap.put(battleResult.getBattleWinner().getLocation(), battleResult.getBattleWinner().getPiece());
+			
+			flagResult = checkFlagOnly(playerColor);
+			if(flagResult != null){
+				return flagResult;
+			}
 			return battleResult;
 		}
 
@@ -226,6 +250,49 @@ public class GammaStrategyGameController implements StrategyGameController {
 		}
 
 		return new MoveResult(MoveResultStatus.OK, newPiece);
+	}
+
+	/**
+	 * checks if the flag is the only piece left on the board
+	 * @return 
+	 */
+	private MoveResult checkFlagOnly(PlayerColor pc) {
+		Piece temp;
+		PieceType shouldBeBlueFlag = null;
+		PieceType shouldBeRedFlag = null;
+		int blueCount = 0;
+		int redCount = 0;
+		for (Location location : boardMap.keySet()) {
+			if(location != null) {
+				temp = boardMap.get(location);
+				if(temp.getOwner() != null && temp.getOwner().equals(PlayerColor.BLUE)) {
+					blueCount += 1;
+					if(temp.getType().equals(PieceType.FLAG)) {
+						shouldBeBlueFlag = temp.getType();
+					}
+				}
+				else if(temp.getOwner() != null && temp.getOwner().equals(PlayerColor.RED)) {
+					redCount += 1;
+					if(temp.getType().equals(PieceType.FLAG)) {
+						shouldBeRedFlag = temp.getType();
+					}
+				}
+			}
+		}
+		if((blueCount == 1 && shouldBeBlueFlag.equals(PieceType.FLAG))
+				&& (redCount == 1 && shouldBeRedFlag.equals(PieceType.FLAG))) {
+			return new MoveResult(MoveResultStatus.DRAW, null);
+		}
+		else if (blueCount == 1 && shouldBeBlueFlag.equals(PieceType.FLAG)) {
+			return new MoveResult(MoveResultStatus.RED_WINS, null);
+		}
+		else if (redCount == 1 && shouldBeRedFlag.equals(PieceType.FLAG)) {
+			return new MoveResult(MoveResultStatus.BLUE_WINS, null);
+		}
+		else {
+			return null;
+		}
+
 	}
 
 	/**
@@ -281,10 +348,10 @@ public class GammaStrategyGameController implements StrategyGameController {
 
 	private void checkDestinationIsNotOccupied(PieceLocationDescriptor pld) 
 			throws StrategyException
-	{
+			{
 		if (getPieceAt(pld.getLocation()) != null) {
 			throw new StrategyException("Attempt to place " + pld.getPiece()
 					+ " on occupied location " + pld.getLocation());
 		}
-	}
+			}
 }

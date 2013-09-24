@@ -298,10 +298,6 @@ public class GammaStrategyPolliceBetaTest
 		assertEquals(new Piece(LIEUTENANT, RED), game.getPieceAt(loc13));
 	}
 	
-	//TODO
-	//removes blue piece
-	//adds battle winner to blue configuration
-	//  should be adding red piece to red configuration
 	@Test
 	public void defenderWinsStrike() throws StrategyException
 	{

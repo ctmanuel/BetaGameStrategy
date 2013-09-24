@@ -167,30 +167,7 @@ public class GammaStrategyMasterTest {
 				result.getBattleWinner());
 		assertEquals(MoveResultStatus.OK, result.getStatus());
 	}	
-/*
-	@Test
-	public void playTwoGames() throws StrategyException
-	{
-		game.startGame();
-		game.move(PieceType.MARSHAL, new Location2D(0,1), new Location2D(0,2));
-		game.move(PieceType.LIEUTENANT, new Location2D(0,4), new Location2D(0,3));
-		game.move(PieceType.MARSHAL, new Location2D(0,2), new Location2D(0,3));
-		game.move(PieceType.MARSHAL, new Location2D(5,4), new Location2D(5,3));
-		game.move(PieceType.MARSHAL, new Location2D(0,3), new Location2D(0,4));
-		game.move(PieceType.MARSHAL, new Location2D(5,3), new Location2D(5,2));
-		game.move(PieceType.MARSHAL, new Location2D(0,4), new Location2D(0,5));
-		
-		game.startGame();
-		game.move(PieceType.MARSHAL, new Location2D(0,1), new Location2D(0,2));
-		game.move(PieceType.LIEUTENANT, new Location2D(0,4), new Location2D(0,3));
-		game.move(PieceType.MARSHAL, new Location2D(0,2), new Location2D(0,3));
-		game.move(PieceType.MARSHAL, new Location2D(5,4), new Location2D(5,3));
-		game.move(PieceType.MARSHAL, new Location2D(0,3), new Location2D(0,4));
-		game.move(PieceType.MARSHAL, new Location2D(5,3), new Location2D(5,2));
-		game.move(PieceType.MARSHAL, new Location2D(0,4), new Location2D(0,5));
-		
-	}
-*/
+
 	@Test
 	public void getBluePieceAtLocation() throws StrategyException {
 		game.startGame();
@@ -208,26 +185,4 @@ public class GammaStrategyMasterTest {
 		game.startGame();
 		assertEquals(null, game.getPieceAt(new Location2D(1,2)));
 	}
-/*	
-	//TODO draw if no possible moves left, not six moves
-	@Test
-	public void checkDrawGame() throws StrategyException
-	{
-		game.startGame();
-		game.move(PieceType.MARSHAL, new Location2D(0,1), new Location2D(0,2));
-		game.move(PieceType.LIEUTENANT, new Location2D(0,4), new Location2D(0,3));
-		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
-		game.move(PieceType.LIEUTENANT, new Location2D(1,4), new Location2D(1,3));
-		game.move(PieceType.LIEUTENANT, new Location2D(2,1), new Location2D(2,2));
-		game.move(PieceType.LIEUTENANT, new Location2D(2,4), new Location2D(2,3));
-		game.move(PieceType.SERGEANT, new Location2D(3,1), new Location2D(3,2));
-		game.move(PieceType.SERGEANT, new Location2D(3,4), new Location2D(3,3));
-		game.move(PieceType.SERGEANT, new Location2D(4,1), new Location2D(4,2));
-		game.move(PieceType.SERGEANT, new Location2D(4,4), new Location2D(4,3));
-		game.move(PieceType.SERGEANT, new Location2D(5,1), new Location2D(5,2));
-		final MoveResult result = 
-				game.move(PieceType.MARSHAL, new Location2D(5,4), new Location2D(5,3));
-		assertEquals(MoveResultStatus.DRAW, result.getStatus());
-		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.MARSHAL, PlayerColor.BLUE), new Location2D(5,3)), result.getBattleWinner());
-	} */
 }

@@ -43,24 +43,14 @@ public class BetaStrategyGameController implements StrategyGameController {
 	PlayerColor playerColor;
 	private MoveResult battleResult;
 	private int moveCounter;
-	private int redmarshalCount=0;
-	private  int redcolonelCount=0;
-	private  int redcaptainCount=0;
-	private  int redlieutenantCount=0;
-	private int redsergeantCount=0;
-	private  int redflagCount=0;
-	private int bluemarshalCount=0;
-	private  int bluecolonelCount=0;
-	private  int bluecaptainCount=0;
-	private  int bluelieutenantCount=0;
-	private int bluesergeantCount=0;
-	private  int blueflagCount=0;
+	private final Map<PieceType, Integer> startingPieces= new HashMap<PieceType, Integer>();
 	
 	private final Collection<PieceLocationDescriptor> origionalredConfiguration;
 	private final Collection<PieceLocationDescriptor> origionalblueConfiguration;
 	private static Collection<PieceLocationDescriptor> redConfiguration = null;
 	private static Collection<PieceLocationDescriptor> blueConfiguration = null;
-
+	private final Map<Location, Piece> boardMap;
+	
 	private static final List<PieceType> MarshalBeatsThese = new ArrayList<PieceType>();
 	private static final List<PieceType> ColonelBeatsThese = new ArrayList<PieceType>();
 	private static final List<PieceType> CaptainBeatsThese = new ArrayList<PieceType>();
@@ -95,24 +85,8 @@ public class BetaStrategyGameController implements StrategyGameController {
 				throw new StrategyException(newPiece.getType() + " is not a valid piece for the Beta Strategy.");
 			}
 			
-			switch(pieceLD.getPiece().getType()){
-			case MARSHAL: redmarshalCount ++;
-			case SERGEANT: redsergeantCount ++;
-			case CAPTAIN: redcaptainCount++;
-			case LIEUTENANT: redlieutenantCount++;
-			case COLONEL: redcolonelCount++;
-			case FLAG: redflagCount++;
-			default:
-				break;
-			}
-//			if(redmarshalCount!=1
-//					|| redsergeantCount != 3
-//					|| redcaptainCount != 2
-//					|| redlieutenantCount !=3
-//					|| redcolonelCount != 2
-//					|| redflagCount != 1)
-//				throw new StrategyException("Incorrect number of piece types in configuration");
 		}
+		
 		for(PieceLocationDescriptor pieceLD : blueConfiguration) {
 			newPiece = pieceLD.getPiece();
 			if (tempMap.containsKey(pieceLD.getLocation())) {
@@ -128,35 +102,31 @@ public class BetaStrategyGameController implements StrategyGameController {
 					|| newPiece.getType() == PieceType.FLAG)) {
 				throw new StrategyException(newPiece.getType() + " is not a valid piece for the Beta Strategy.");
 			}
-			
-			switch(pieceLD.getPiece().getType()){
-			case MARSHAL: bluemarshalCount ++;
-			case SERGEANT: bluesergeantCount ++;
-			case CAPTAIN: bluecaptainCount++;
-			case LIEUTENANT: bluelieutenantCount++;
-			case COLONEL: bluecolonelCount++;
-			case FLAG: blueflagCount++;
-			default:
-				break;
-			}
-			
-//			if(bluemarshalCount!=1
-//					|| bluesergeantCount != 3
-//					|| bluecaptainCount != 2
-//					|| bluelieutenantCount !=3
-//					|| bluecolonelCount != 2
-//					|| blueflagCount != 1)
-//				throw new StrategyException("Incorrect number of piece types in configuration");
 		}
+		
+		//check piece distribution
+		fillInitialPieces();
+		final Map<PieceType, Integer> redpiecesUsed = 
+				validateEachPiece(redConfiguration, 0, 1);
+		final Map<PieceType, Integer> bluepiecesUsed = 
+				validateEachPiece(blueConfiguration, 4, 5);
 
+		checkPieceDistribution(redpiecesUsed);
+		checkPieceDistribution(bluepiecesUsed);
 		
 		gameStarted = false;
 		gameOver = false;
 
+		//set up board and pieces
+		boardMap = new HashMap<Location, Piece>();
+		boardMap.clear();
+		
+		mapConfigurationBoard(redConfiguration);
+		mapConfigurationBoard(blueConfiguration);
+		
 		origionalblueConfiguration = blueConfiguration;
 		origionalredConfiguration = redConfiguration;
 		fillBattleLists();
-		//check for pieces at starting locations
 		
 	}
 
@@ -230,6 +200,8 @@ public class BetaStrategyGameController implements StrategyGameController {
 			//go to battle method
 			battleResult = battle(currentPieceDescriptor, new PieceLocationDescriptor(tempPieceAtTo, to));
 			if(battleResult.getBattleWinner() == null) { 
+				boardMap.remove(currentPieceDescriptor.getLocation());
+				boardMap.remove(to);
 				return battleResult;
 			}
 			if(battleResult.getBattleWinner().getPiece().getOwner() == PlayerColor.RED){
@@ -244,7 +216,9 @@ public class BetaStrategyGameController implements StrategyGameController {
 				gameStarted = false;
 				return new MoveResult(MoveResultStatus.DRAW, battleResult.getBattleWinner());
 			}
-			
+			boardMap.remove(currentPieceDescriptor.getLocation());
+			boardMap.remove(to);
+			boardMap.put(battleResult.getBattleWinner().getLocation(), battleResult.getBattleWinner().getPiece());
 			return battleResult;
 
 		}
@@ -256,10 +230,14 @@ public class BetaStrategyGameController implements StrategyGameController {
 		if (playerColor == PlayerColor.RED) {
 			redConfiguration.remove(currentPieceDescriptor);
 			redConfiguration.add(newPiece);
+			boardMap.remove(currentPieceDescriptor.getLocation());
+			boardMap.put(to, newPiece.getPiece());
 		}
 		else {
 			blueConfiguration.remove(currentPieceDescriptor);
 			blueConfiguration.add(newPiece);
+			boardMap.remove(currentPieceDescriptor.getLocation());
+			boardMap.put(to, newPiece.getPiece());
 		}
 		
 		if (moveCounter == 12) {
@@ -328,37 +306,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 
 	@Override
 	public Piece getPieceAt(Location location) {
-		final Iterator<PieceLocationDescriptor> redIterator = redConfiguration.iterator();
-		final Iterator<PieceLocationDescriptor> blueIterator = blueConfiguration.iterator();
-
-		PieceLocationDescriptor currentRedIterPiece = null;
-		PieceLocationDescriptor currentBlueIterPiece = null;
-		Piece pieceAtLocation = null;
-
-		final int locationX = location.getCoordinate(Coordinate.X_COORDINATE);
-		final int locationY = location.getCoordinate(Coordinate.Y_COORDINATE);
-		int currentRedX;
-		int currentRedY;
-		int currentBlueX;
-		int currentBlueY;
-
-		while (blueIterator.hasNext() && redIterator.hasNext()) {
-			currentRedIterPiece = redIterator.next();
-			currentBlueIterPiece = blueIterator.next();
-
-			currentRedX = currentRedIterPiece.getLocation().getCoordinate(Coordinate.X_COORDINATE);
-			currentRedY = currentRedIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
-			if (currentRedX == locationX && currentRedY == locationY) {
-				pieceAtLocation = currentRedIterPiece.getPiece();
-			}
-
-			currentBlueX = currentBlueIterPiece.getLocation().getCoordinate(Coordinate.X_COORDINATE);
-			currentBlueY = currentBlueIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
-			if (currentBlueX == locationX && currentBlueY == locationY) {
-				pieceAtLocation = currentBlueIterPiece.getPiece();
-			}
-		}
-		return pieceAtLocation;
+		return boardMap.get(location);
 	}
 
 	/**
@@ -497,6 +445,72 @@ public class BetaStrategyGameController implements StrategyGameController {
 		else {
 			redConfiguration.remove(opponentPiece);
 			return new MoveResult(MoveResultStatus.BLUE_WINS, battleWinner);
+		}
+	}
+	
+	/**
+	 * Places the configurations on the board map
+	 * @param config Configuration to place
+	 * @throws StrategyException 
+	 */
+	private void mapConfigurationBoard(Collection<PieceLocationDescriptor> config) {
+		Piece newPiece;
+		for(PieceLocationDescriptor pieceLD : config) {
+			newPiece = pieceLD.getPiece();
+			//check if pieces are trying to be put on the same space  
+			getPieceAt(pieceLD.getLocation());
+			boardMap.put(pieceLD.getLocation(), newPiece);
+		}
+	}
+	
+	/**
+	 * validate that the initial configurations have the
+	 * correct staring pieces
+	 * @param configuration the configuration to check
+	 * @param lowRow the lower row
+	 * @param highRow the higher row
+	 * @return Map<PieceType, Integer> a map of all the pieces
+	 *    in the configuration
+	 */
+	public Map<PieceType, Integer> validateEachPiece(
+			Collection<PieceLocationDescriptor> configuration, int lowRow,
+			int highRow) {
+		final Map<PieceType, Integer> piecesUsed = new HashMap<PieceType, Integer>();
+		for (PieceLocationDescriptor pld : configuration) {
+			final Piece piece = pld.getPiece();
+			final Integer nUsed = piecesUsed.get(piece.getType());
+			piecesUsed.put(piece.getType(), nUsed == null ? 1 : nUsed.intValue() + 1);
+		}
+		return piecesUsed;
+	}
+	
+	/**
+	 * fills the map with correct number of each piece
+	 */
+	public void fillInitialPieces() {
+		startingPieces.put(PieceType.MARSHAL, 1);
+		startingPieces.put(PieceType.COLONEL, 2);
+		startingPieces.put(PieceType.CAPTAIN, 2);
+		startingPieces.put(PieceType.LIEUTENANT, 3);
+		startingPieces.put(PieceType.SERGEANT, 3);
+		startingPieces.put(PieceType.FLAG, 1);
+		
+	}
+	
+	/**
+	 * check that the correct number of each piece is
+	 *   in the configuration
+	 * @param piecesUsed the pieces that have been used
+	 * @throws StrategyException
+	 */
+	public void checkPieceDistribution(Map<PieceType, Integer> piecesUsed)
+			throws StrategyException {
+		for (PieceType pt : startingPieces.keySet()) {
+			int required = startingPieces.get(pt).intValue();
+			Integer used = piecesUsed.get(pt);
+			if (used == null || used.intValue() != required) {
+				throw new StrategyException("Invalid number of " + pt);
+			}
 		}
 	}
 

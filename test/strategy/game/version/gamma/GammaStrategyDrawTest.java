@@ -1,5 +1,7 @@
 package strategy.game.version.gamma;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 
 import org.junit.Before;
@@ -9,7 +11,10 @@ import strategy.common.PlayerColor;
 import strategy.common.StrategyException;
 import strategy.game.StrategyGameController;
 import strategy.game.StrategyGameFactory;
+import strategy.game.common.Location;
 import strategy.game.common.Location2D;
+import strategy.game.common.MoveResult;
+import strategy.game.common.MoveResultStatus;
 import strategy.game.common.Piece;
 import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.common.PieceType;
@@ -32,38 +37,36 @@ public class GammaStrategyDrawTest {
 	private Piece blueCaptain = new Piece(PieceType.CAPTAIN, PlayerColor.BLUE);
 	private Piece blueLieutenant = new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE);
 	private Piece blueSergeant = new Piece(PieceType.SERGEANT, PlayerColor.BLUE);
-	private Location2D loc00 = new Location2D(0,0);
-	private Location2D loc10 = new Location2D(1,0);
-	private Location2D loc20 = new Location2D(2,0);
-	private Location2D loc30 = new Location2D(3,0);
-	private Location2D loc40 = new Location2D(4,0);
-	private Location2D loc50 = new Location2D(5,0);
-	private Location2D loc01 = new Location2D(0,1);
-	private Location2D loc11 = new Location2D(1,1);
-	private Location2D loc21 = new Location2D(2,1);
-	private Location2D loc31 = new Location2D(3,1);
-	private Location2D loc41 = new Location2D(4,1);
-	private Location2D loc51 = new Location2D(5,1);
-	private Location2D loc02 = new Location2D(0,2);
-	private Location2D loc12 = new Location2D(1,2);
-	private Location2D loc42 = new Location2D(4,2);
-	private Location2D loc52 = new Location2D(5,2);
-	private Location2D loc03 = new Location2D(0,3);
-	private Location2D loc13 = new Location2D(1,3);
-	private Location2D loc43 = new Location2D(4,3);
-	private Location2D loc53 = new Location2D(5,3);
-	private Location2D loc04 = new Location2D(0,4);
-	private Location2D loc14 = new Location2D(1,4);
-	private Location2D loc24 = new Location2D(2,4);
-	private Location2D loc34 = new Location2D(3,4);
-	private Location2D loc44 = new Location2D(4,4);
-	private Location2D loc54 = new Location2D(5,4);
-	private Location2D loc05 = new Location2D(0,5);
-	private Location2D loc15 = new Location2D(1,5);
-	private Location2D loc25 = new Location2D(2,5);
-	private Location2D loc35 = new Location2D(3,5);
-	private Location2D loc45 = new Location2D(4,5);
-	private Location2D loc55 = new Location2D(5,5);
+	private Location loc00 = new Location2D(0,0);
+	private Location loc10 = new Location2D(1,0);
+	private Location loc20 = new Location2D(2,0);
+	private Location loc30 = new Location2D(3,0);
+	private Location loc40 = new Location2D(4,0);
+	private Location loc50 = new Location2D(5,0);
+	private Location loc01 = new Location2D(0,1);
+	private Location loc11 = new Location2D(1,1);
+	private Location loc21 = new Location2D(2,1);
+	private Location loc31 = new Location2D(3,1);
+	private Location loc41 = new Location2D(4,1);
+	private Location loc51 = new Location2D(5,1);
+	private Location loc52 = new Location2D(5,2);
+	private Location loc02 = new Location2D(0,2);
+	private Location loc12 = new Location2D(1,2);
+	private Location loc13 = new Location2D(1,3);
+	private Location loc03 = new Location2D(0,3);
+	private Location loc53 = new Location2D(5,3);
+	private Location loc04 = new Location2D(0,4);
+	private Location loc14 = new Location2D(1,4);
+	private Location loc24 = new Location2D(2,4);
+	private Location loc34 = new Location2D(3,4);
+	private Location loc44 = new Location2D(4,4);
+	private Location loc54 = new Location2D(5,4);
+	private Location loc05 = new Location2D(0,5);
+	private Location loc15 = new Location2D(1,5);
+	private Location loc25 = new Location2D(2,5);
+	private Location loc35 = new Location2D(3,5);
+	private Location loc45 = new Location2D(4,5);
+	private Location loc55 = new Location2D(5,5);
 
 	@Before
 	public void setup() {
@@ -130,8 +133,95 @@ public class GammaStrategyDrawTest {
 	}
 	
 	@Test
-	public void RedTakesLastBluePiece() throws StrategyException {
-		
+	public void Draw() throws StrategyException {
+		game.move(redMarshal.getType(), loc01, loc02);
+		game.move(blueMarshal.getType(), loc54, loc53);
+		game.move(redMarshal.getType(), loc02, loc03);
+		game.move(blueMarshal.getType(), loc53, loc52);
+		game.move(redMarshal.getType(), loc03, loc04);
+		game.move(blueMarshal.getType(), loc52, loc51);
+		game.move(redMarshal.getType(), loc04, loc14);
+		game.move(blueMarshal.getType(), loc51, loc50);
+		game.move(redMarshal.getType(), loc14, loc15);
+		game.move(blueMarshal.getType(), loc50, loc40);
+		game.move(redMarshal.getType(), loc15, loc25);
+		game.move(blueMarshal.getType(), loc40, loc41);
+		game.move(redMarshal.getType(), loc25, loc24);
+		game.move(blueMarshal.getType(), loc41, loc31);
+		game.move(redMarshal.getType(), loc24, loc34);
+		game.move(blueMarshal.getType(), loc31, loc30);
+		game.move(redMarshal.getType(), loc34, loc35);
+		game.move(blueMarshal.getType(), loc30, loc20);
+		game.move(redMarshal.getType(), loc35, loc45);
+		game.move(blueMarshal.getType(), loc20, loc21);
+		game.move(redMarshal.getType(), loc45, loc44);
+		game.move(blueMarshal.getType(), loc21, loc11);
+		game.move(redMarshal.getType(), loc44, loc54);
+		game.move(blueMarshal.getType(), loc11, loc01);
+		game.move(redMarshal.getType(), loc54, loc55);
+		game.move(blueMarshal.getType(), loc01, loc00);
+		game.move(redMarshal.getType(), loc55, loc54);
+		game.move(blueMarshal.getType(), loc00, loc01);
+		game.move(redMarshal.getType(), loc54, loc53);
+		game.move(blueMarshal.getType(), loc01, loc11);
+		game.move(redMarshal.getType(), loc53, loc52);
+		game.move(blueMarshal.getType(), loc11, loc21);
+		game.move(redMarshal.getType(), loc52, loc51);
+		game.move(blueMarshal.getType(), loc21, loc31);
+		game.move(redMarshal.getType(), loc51, loc41);
+		final MoveResult result = game.move(blueMarshal.getType(), loc31, loc41);
+		assertEquals(MoveResultStatus.DRAW, result.getStatus());
 	}
+	
+	@Test
+	public void AllBluePiecesRemovedRedAttacks() throws StrategyException {
+		game.move(redMarshal.getType(), loc01, loc02);
+		game.move(blueLieutenant.getType(), loc04, loc03);
+		game.move(redMarshal.getType(), loc02, loc03);
+		game.move(blueLieutenant.getType(), loc14, loc13);
+		game.move(redMarshal.getType(), loc03, loc13);
+		game.move(blueColonel.getType(), loc15, loc14);
+		game.move(redMarshal.getType(), loc13, loc14);
+		game.move(blueMarshal.getType(), loc54, loc53);
+		game.move(redMarshal.getType(), loc14, loc24);
+		game.move(blueMarshal.getType(), loc53, loc52);
+		game.move(redMarshal.getType(), loc24, loc25);
+		game.move(blueMarshal.getType(), loc52, loc53);
+		game.move(redMarshal.getType(), loc25, loc35);
+		game.move(blueMarshal.getType(), loc53, loc54);
+		game.move(redMarshal.getType(), loc35, loc34);
+		game.move(blueMarshal.getType(), loc54, loc53);
+		game.move(redMarshal.getType(), loc34, loc44);
+		game.move(blueMarshal.getType(), loc53, loc52);
+		game.move(redMarshal.getType(), loc44, loc45);
+		game.move(blueMarshal.getType(), loc52, loc53);
+		game.move(redMarshal.getType(), loc45, loc55);
+		game.move(blueMarshal.getType(), loc53, loc54);
+		final MoveResult result = game.move(redMarshal.getType(), loc55, loc54);
+		assertEquals(MoveResultStatus.RED_WINS, result.getStatus());
+	}
+	
+	@Test
+	public void AllBluePiecesRemovedBlueAttacks() throws StrategyException {
+		game.move(redMarshal.getType(), loc01, loc02);
+		game.move(blueLieutenant.getType(), loc04, loc03);
+		game.move(redMarshal.getType(), loc02, loc03);
+		game.move(blueMarshal.getType(), loc54, loc53);
+		game.move(redMarshal.getType(), loc03, loc04);
+		game.move(blueLieutenant.getType(), loc14, loc04);
+		game.move(redMarshal.getType(), loc14, loc15);
+		game.move(blueColonel.getType(), loc25, loc15);
+		game.move(redMarshal.getType(), loc25, loc24);
+		game.move(blueSergeant.getType(), loc34, loc24);
+		game.move(redMarshal.getType(), loc34, loc35);
+		game.move(blueCaptain.getType(), loc45, loc35);
+		game.move(redMarshal.getType(), loc45, loc44);
+		game.move(blueSergeant.getType(), loc55, loc54);
+		game.move(redMarshal.getType(), loc44, loc54);
+		game.move(blueMarshal.getType(), loc53, loc54); 
+		final MoveResult result = game.move(redLieutenant.getType(), loc11, loc12);
+		assertEquals(MoveResultStatus.RED_WINS, result.getStatus());		
+	}
+	
 	
 }
