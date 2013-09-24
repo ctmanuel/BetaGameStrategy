@@ -46,7 +46,7 @@ public interface Validate {
 	 * @param highRow the highest row of the player's starting area
 	 * @return piecesUsed a map of the pieces that were used in the initial configuration and their distribution
 	 */
-	Map<PieceType, Integer> validateEachPiece(Collection<PieceLocationDescriptor> configuration, int lowRow, int highRow);
+	Map<PieceType, Integer> validatePieces(Collection<PieceLocationDescriptor> configuration, int lowRow, int highRow);
 
 	/**
 	 * Validate that the location is not out of bounds
@@ -86,6 +86,6 @@ public interface Validate {
 	 * 		from the configuration
 	 * @throws StrategyException if there is an incorrect distribution of pieces
 	 */
-	void checkPieceDistribution(Map<PieceType, Integer> piecesUsed)
+	void checkPiecesDistributed(Map<PieceType, Integer> piecesUsed)
 			throws StrategyException;
 }

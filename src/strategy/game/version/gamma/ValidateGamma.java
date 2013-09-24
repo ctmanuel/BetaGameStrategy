@@ -37,8 +37,8 @@ public class ValidateGamma implements Validate{
 
 	@Override
 	public void validateConfiguration(
-			Collection<PieceLocationDescriptor> configuration, int lowRow,
-			int highRow) throws StrategyException {
+			Collection<PieceLocationDescriptor> configuration, int bottomrow,
+			int toprow) throws StrategyException {
 		//check for null configurations
 		if (configuration == null) {
 			throw new StrategyException("Null configuration");
@@ -59,7 +59,7 @@ public class ValidateGamma implements Validate{
 
 			currentY = currentConfigIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
 
-			if(currentY > highRow || currentY < lowRow) {
+			if(currentY > toprow || currentY < bottomrow) {
 				throw new StrategyException("Piece out of starting configuration bounds");
 			}
 
@@ -68,15 +68,15 @@ public class ValidateGamma implements Validate{
 		}
 
 		//check piece distribution
-		final Map<PieceType, Integer> piecesUsed = 
-				validateEachPiece(configuration, lowRow, highRow);
+		final Map<PieceType, Integer> initialPieces = 
+				validatePieces(configuration, bottomrow, toprow);
 
-		checkPieceDistribution(piecesUsed);
+		checkPiecesDistributed(initialPieces);
 
 	}
 
 	@Override
-	public Map<PieceType, Integer> validateEachPiece(
+	public Map<PieceType, Integer> validatePieces(
 			Collection<PieceLocationDescriptor> configuration, int lowRow,
 			int highRow) {
 		final Map<PieceType, Integer> piecesUsed = new HashMap<PieceType, Integer>();
@@ -125,7 +125,7 @@ public class ValidateGamma implements Validate{
 	}
 
 	@Override
-	public void checkPieceDistribution(Map<PieceType, Integer> piecesUsed)
+	public void checkPiecesDistributed(Map<PieceType, Integer> piecesUsed)
 			throws StrategyException {
 		for (PieceType pt : initializeGamma.getStartingPieces().keySet()) {
 			int required = initializeGamma.getStartingPieces().get(pt).intValue();
