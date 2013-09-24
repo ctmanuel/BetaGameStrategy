@@ -47,7 +47,6 @@ public class GammaStrategyGameController implements StrategyGameController {
 	private PieceLocationDescriptor CP23;
 	private PieceLocationDescriptor CP32;
 	private PieceLocationDescriptor CP33;
-	int moveCount = 0;
 
 	private final ValidateGamma validateGamma = new ValidateGamma();
 	private final Collection<PieceLocationDescriptor> origionalredConfiguration;
@@ -142,9 +141,6 @@ public class GammaStrategyGameController implements StrategyGameController {
 	public MoveResult move(PieceType piece, Location from, Location to)
 			throws StrategyException {
 
-
-		System.out.println("Turn " + moveCount);
-		moveCount += 1;
 		if (gameOver) {
 			throw new StrategyException("The game is over, you cannot make a move");
 		}

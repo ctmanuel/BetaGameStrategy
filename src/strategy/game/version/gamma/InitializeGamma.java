@@ -30,7 +30,6 @@ public class InitializeGamma implements Initialize{
 	private final int CAPTAIN_COUNT = 2;
 	private final int LIEUTENANT_COUNT = 3;
 	private final int SERGEANT_COUNT = 3;
-	private final int CHOKEPOINT_COUNT = 4;
 
 	private final Map<PieceType, Integer> startingPieces;
 	
