@@ -77,7 +77,7 @@ public class BetaStrategyGameController implements StrategyGameController {
 	{
 		//check for the same starting locations
 		Piece newPiece;
-		Map <Location, Piece> tempMap = new HashMap<Location, Piece> ();
+		final Map <Location, Piece> tempMap = new HashMap<Location, Piece> ();
 		for(PieceLocationDescriptor pieceLD : redConfiguration) {
 			newPiece = pieceLD.getPiece();
 			if (tempMap.containsKey(pieceLD.getLocation())) {

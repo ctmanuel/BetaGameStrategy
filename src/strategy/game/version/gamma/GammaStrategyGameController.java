@@ -27,6 +27,7 @@ import strategy.game.common.Piece;
 import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.common.PieceType;
 import strategy.game.version.Battle;
+import strategy.game.version.RepetitionRule;
 
 /**
  * The GammaStrategyGameController implements the game core for
@@ -46,6 +47,7 @@ public class GammaStrategyGameController implements StrategyGameController {
 	private PieceLocationDescriptor CP23;
 	private PieceLocationDescriptor CP32;
 	private PieceLocationDescriptor CP33;
+	int moveCount = 0;
 
 	private final ValidateGamma validateGamma = new ValidateGamma();
 	private final Collection<PieceLocationDescriptor> origionalredConfiguration;
@@ -64,6 +66,7 @@ public class GammaStrategyGameController implements StrategyGameController {
 	public GammaStrategyGameController(Collection<PieceLocationDescriptor> redConfiguration,
 			Collection<PieceLocationDescriptor> blueConfiguration) throws StrategyException
 	{
+		new RepetitionRule();
 		new InitializeGamma();
 		validateGamma.validateConfiguration(redConfiguration, 0, 1);
 		validateGamma.validateConfiguration(blueConfiguration, 4, 5);
@@ -110,8 +113,7 @@ public class GammaStrategyGameController implements StrategyGameController {
 		Piece newPiece;
 		for(PieceLocationDescriptor pieceLD : config) {
 			newPiece = pieceLD.getPiece();
-			//check if pieces are trying to be put on the same space
-			//TODO:move this to validator if time  
+			//check if pieces are trying to be put on the same space  
 			checkDestinationIsNotOccupied(pieceLD);
 			boardMap.put(pieceLD.getLocation(), newPiece);
 		}
@@ -140,6 +142,9 @@ public class GammaStrategyGameController implements StrategyGameController {
 	public MoveResult move(PieceType piece, Location from, Location to)
 			throws StrategyException {
 
+
+		System.out.println("Turn " + moveCount);
+		moveCount += 1;
 		if (gameOver) {
 			throw new StrategyException("The game is over, you cannot make a move");
 		}
@@ -160,9 +165,6 @@ public class GammaStrategyGameController implements StrategyGameController {
 			throw new StrategyException("Cannot move the " + piece);
 		}
 		
-		//check for repetition rule
-		
-
 		//check which color turn it is
 		playerColor = null;
 		if (playerTurn == 0) {
@@ -177,6 +179,10 @@ public class GammaStrategyGameController implements StrategyGameController {
 		//check location for valid location
 		currentPieceDescriptor = new PieceLocationDescriptor(new Piece(piece, playerColor), from);
 		checkLocationCoordinates(to);
+
+		//check for repetition rule
+		RepetitionRule.checkRepRule(currentPieceDescriptor, to);
+		RepetitionRule.addToQueue(currentPieceDescriptor, to);
 
 		//check if occupied
 		final Piece tempPieceAtTo = getPieceAt(to);
