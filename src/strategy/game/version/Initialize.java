@@ -10,6 +10,10 @@
 
 package strategy.game.version;
 
+import java.util.Map;
+
+import strategy.game.common.PieceType;
+
 /**
  * The Initialize interface must be implemented by the 
  * version controller in any Strategy variant.
@@ -28,4 +32,10 @@ public interface Initialize {
 	 * Initialize the pieces required for the game
 	 */
 	void fillInitialPieces();
+	
+	/**
+	 * get the starting pieces of the initial configuration
+	 * @return startingPieces a map of the starting pieces
+	 */
+	Map<PieceType, Integer> getStartingPieces();
 }

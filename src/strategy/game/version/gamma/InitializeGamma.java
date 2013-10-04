@@ -55,6 +55,7 @@ public class InitializeGamma implements Initialize{
 		
 	}
 	
+	@Override
 	public Map<PieceType, Integer> getStartingPieces(){
 		return startingPieces;
 	}

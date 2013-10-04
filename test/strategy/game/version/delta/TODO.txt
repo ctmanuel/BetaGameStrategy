@@ -1,0 +1,26 @@
+	-Incorporate generals, majors, 
+	 miners, scouts, spies, and bombs
+/	-Change number of each piece
+	  Marshal:1
+	  General:1
+	  Colonel:2
+	  Major:3
+	  Captain:4
+	  Lieutenant:4
+	  Sergeant:4
+	  Miner:5
+	  Scout:8
+	  Spy:1
+	  Bomb:6
+	-Change battle ranks
+	-Change Piece arrangement to 10x4
+	-Change Board size to 10x10
+	-Make sure bomb can't be moved
+	-Make scout movement to be x number of squares
+	-Make sure scout cannot move and strike in same turn
+	-Make sure spy wins against marshal if striking first
+		-if marshal strikes first, spy loses
+	-Make sure that pieces striking bomb, except miner, are removed
+		-bomb is not removed but does not move
+		-bomb cannot strike
+		-miner beats bomb, and miner takes place

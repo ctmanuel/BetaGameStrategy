@@ -37,8 +37,8 @@ public class ValidateGamma implements Validate{
 
 	@Override
 	public void validateConfiguration(
-			Collection<PieceLocationDescriptor> configuration, int bottomrow,
-			int toprow) throws StrategyException {
+			Collection<PieceLocationDescriptor> configuration, int bottomRow,
+			int topRow) throws StrategyException {
 		//check for null configurations
 		if (configuration == null) {
 			throw new StrategyException("Null configuration");
@@ -59,7 +59,7 @@ public class ValidateGamma implements Validate{
 
 			currentY = currentConfigIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
 
-			if(currentY > toprow || currentY < bottomrow) {
+			if(currentY > topRow || currentY < bottomRow) {
 				throw new StrategyException("Piece out of starting configuration bounds");
 			}
 
@@ -69,7 +69,7 @@ public class ValidateGamma implements Validate{
 
 		//check piece distribution
 		final Map<PieceType, Integer> initialPieces = 
-				validatePieces(configuration, bottomrow, toprow);
+				validatePieces(configuration, bottomRow, topRow);
 
 		checkPiecesDistributed(initialPieces);
 
