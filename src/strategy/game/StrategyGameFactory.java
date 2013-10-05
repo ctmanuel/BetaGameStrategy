@@ -19,6 +19,7 @@ import strategy.game.common.Coordinate;
 import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.version.alpha.AlphaStrategyGameController;
 import strategy.game.version.beta.BetaStrategyGameController;
+import strategy.game.version.delta.DeltaStrategyGameController;
 import strategy.game.version.gamma.GammaStrategyGameController;
 
 /**
@@ -156,6 +157,27 @@ public class StrategyGameFactory
 		}
 		
 		return GammaGame;
+	}
+	
+	/**
+	 * Create a new Delta Strategy game given the 
+	 * @param redConfiguration the initial starting configuration for the RED pieces
+	 * @param blueConfiguration the initial starting configuration for the BLUE pieces
+	 * @return the Delta Strategy game instance with the initial configuration of pieces
+	 * @throws StrategyException if either configuration is correct
+	 */
+	public StrategyGameController makeDeltaStrategyGame(
+			Collection<PieceLocationDescriptor> redConfiguration,
+			Collection<PieceLocationDescriptor> blueConfiguration)
+					throws StrategyException
+	{
+		final StrategyGameController DeltaGame = new DeltaStrategyGameController(redConfiguration, blueConfiguration);
+
+		if(DeltaGame.getClass() != DeltaStrategyGameController.class) {
+			throw new StrategyRuntimeException("Change this implementation");
+		}
+		
+		return DeltaGame;
 	}
 	
 }

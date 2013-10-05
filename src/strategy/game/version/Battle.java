@@ -10,9 +10,9 @@
 
 package strategy.game.version;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import strategy.common.PlayerColor;
 import strategy.game.common.MoveResult;
@@ -30,12 +30,8 @@ import strategy.game.common.PieceType;
 public class Battle {
 	private static Collection<PieceLocationDescriptor> redConfiguration = null;
 	private static Collection<PieceLocationDescriptor> blueConfiguration = null;
-	
-	private static final List<PieceType> MarshalBeatsThese = new ArrayList<PieceType>();
-	private static final List<PieceType> ColonelBeatsThese = new ArrayList<PieceType>();
-	private static final List<PieceType> CaptainBeatsThese = new ArrayList<PieceType>();
-	private static final List<PieceType> LieutenantBeatsThese = new ArrayList<PieceType>();
-	
+	private static final Map<PieceType, Integer> pieceRanks = new HashMap<PieceType, Integer>();
+
 	/**
 	 * The constructor for the battle initialization
 	 * @param redConfiguration
@@ -45,8 +41,9 @@ public class Battle {
 			Collection<PieceLocationDescriptor> blueConfiguration){
 		Battle.redConfiguration = redConfiguration;
 		Battle.blueConfiguration = blueConfiguration;
-		fillBattleLists();
+		initializePieceRanks();
 	}
+	
 	/**
 	 * EPIC BATTLE FIGHT TO THE DEATH
 	 * @param playerPiece current player's piece
@@ -60,7 +57,7 @@ public class Battle {
 				new PieceLocationDescriptor(opponentPiece.getPiece(), playerPiece.getLocation());
 		final PieceType opponentPieceType = opponentPiece.getPiece().getType();
 		final PlayerColor playerPieceOwner = playerPiece.getPiece().getOwner();
-
+		
 		//if the pieces are the same type, remove both
 		if (playerPiece.getPiece().getType().equals(opponentPieceType)){
 			if (playerPieceOwner == PlayerColor.RED){
@@ -74,9 +71,9 @@ public class Battle {
 				return new MoveResult(MoveResultStatus.OK, null);
 			}
 		}
-		//battle
-		switch (playerPiece.getPiece().getType()) {
-		case MARSHAL: if (MarshalBeatsThese.contains(opponentPieceType)) {
+		
+		//check piece ranks
+		if(pieceRanks.get(playerPiece.getPiece().getType()) > pieceRanks.get(opponentPiece.getPiece().getType())) {
 			//if opponent piece is flag, set game over to true, remove flag from configuration, return battle winner
 			if (opponentPieceType.equals(PieceType.FLAG)) {
 				return flagBattle(playerPiece, opponentPiece);
@@ -91,53 +88,8 @@ public class Battle {
 				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
 			}
 		}
-		case COLONEL: if (ColonelBeatsThese.contains(opponentPieceType)) {
-			if (opponentPieceType.equals(PieceType.FLAG)) {
-				return flagBattle(playerPiece, opponentPiece);
-			}
-			else if (playerPieceOwner == PlayerColor.RED) {
-				blueConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
-			}
-			else {
-				redConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
-			}
-		}
-		case CAPTAIN: if (CaptainBeatsThese.contains(opponentPieceType)) {
-			if (opponentPieceType.equals(PieceType.FLAG)) {
-				return flagBattle(playerPiece, opponentPiece);
-			}
-			else if (playerPieceOwner == PlayerColor.RED) {
-				blueConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
-			}
-			else {
-				redConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
-			}
-		}
-		case LIEUTENANT: if (LieutenantBeatsThese.contains(opponentPieceType)) {
-			if (opponentPieceType.equals(PieceType.FLAG)) {
-				return flagBattle(playerPiece, opponentPiece);
-			}
-			else if (playerPieceOwner == PlayerColor.RED) {
-				blueConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
-			}
-			else {
-				redConfiguration.remove(opponentPiece);
-				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
-			}
-		}
-		case SERGEANT: if (opponentPieceType.equals(PieceType.FLAG)) {
-			return flagBattle(playerPiece, opponentPiece);
-		}
-		default:
-			break;
-		}
-		//if moving piece loses, remove moving piece and return opponent
 		
+		//if moving piece loses, remove moving piece and return opponent
 		if(opponentPiece.getPiece().getOwner() == PlayerColor.RED) {
 			blueConfiguration.remove(playerPiece);
 			redConfiguration.remove(opponentPiece);
@@ -167,25 +119,22 @@ public class Battle {
 			return new MoveResult(MoveResultStatus.BLUE_WINS, battleWinner);
 		}
 	}
-	
+
 	/**
 	 * Fills the piece battle lists
 	 */
-	public void fillBattleLists() {
-		MarshalBeatsThese.add(PieceType.SERGEANT);
-		MarshalBeatsThese.add(PieceType.LIEUTENANT);
-		MarshalBeatsThese.add(PieceType.CAPTAIN);
-		MarshalBeatsThese.add(PieceType.COLONEL);
-		MarshalBeatsThese.add(PieceType.FLAG);
-		ColonelBeatsThese.add(PieceType.LIEUTENANT);
-		ColonelBeatsThese.add(PieceType.CAPTAIN);
-		ColonelBeatsThese.add(PieceType.SERGEANT);
-		ColonelBeatsThese.add(PieceType.FLAG);
-		CaptainBeatsThese.add(PieceType.LIEUTENANT);
-		CaptainBeatsThese.add(PieceType.SERGEANT);
-		CaptainBeatsThese.add(PieceType.FLAG);
-		LieutenantBeatsThese.add(PieceType.SERGEANT);
-		LieutenantBeatsThese.add(PieceType.FLAG);
+	public static void initializePieceRanks() {
+		pieceRanks.put(PieceType.MARSHAL, 12);
+		pieceRanks.put(PieceType.GENERAL, 11);
+		pieceRanks.put(PieceType.COLONEL, 10);
+		pieceRanks.put(PieceType.MAJOR, 9);
+		pieceRanks.put(PieceType.CAPTAIN, 8);
+		pieceRanks.put(PieceType.LIEUTENANT, 7);
+		pieceRanks.put(PieceType.SERGEANT, 6);
+		pieceRanks.put(PieceType.MINER, 5);
+		pieceRanks.put(PieceType.SCOUT, 4);
+		pieceRanks.put(PieceType.SPY, 3);
+		pieceRanks.put(PieceType.BOMB, 2);
+		pieceRanks.put(PieceType.FLAG, 1);
 	}
-
 }

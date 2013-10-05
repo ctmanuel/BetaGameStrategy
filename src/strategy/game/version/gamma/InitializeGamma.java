@@ -37,12 +37,6 @@ public class InitializeGamma implements Initialize{
 		startingPieces = new HashMap<PieceType, Integer>();
 		fillInitialPieces();
 	}
-	
-	@Override
-	public void initializePieceRanks() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void fillInitialPieces() {
@@ -59,5 +53,4 @@ public class InitializeGamma implements Initialize{
 	public Map<PieceType, Integer> getStartingPieces(){
 		return startingPieces;
 	}
-
 }

@@ -24,11 +24,6 @@ import strategy.game.common.PieceType;
 public interface Initialize {
 	
 	/**
-	 * Initialize the each piece's rank
-	 */
-	void initializePieceRanks();
-	
-	/**
 	 * Initialize the pieces required for the game
 	 */
 	void fillInitialPieces();

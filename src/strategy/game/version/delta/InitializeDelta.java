@@ -44,12 +44,6 @@ public class InitializeDelta implements Initialize {
 		startingPieces = new HashMap<PieceType, Integer>();
 		fillInitialPieces();
 	}
-	
-	@Override
-	public void initializePieceRanks() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void fillInitialPieces() {
@@ -71,6 +65,4 @@ public class InitializeDelta implements Initialize {
 	public Map<PieceType, Integer> getStartingPieces(){
 		return startingPieces;
 	}
-
-
 }

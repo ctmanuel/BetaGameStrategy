@@ -64,7 +64,6 @@ public class DeltaStrategyGameController implements StrategyGameController {
 			Collection<PieceLocationDescriptor> blueConfiguration) throws StrategyException
 			{
 		new RepetitionRule();
-		new InitializeDelta();
 		validateDelta.validateConfiguration(redConfiguration, 0, 3);
 		validateDelta.validateConfiguration(blueConfiguration, 6, 9);
 

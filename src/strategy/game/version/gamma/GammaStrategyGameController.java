@@ -162,30 +162,10 @@ public class GammaStrategyGameController implements StrategyGameController {
 			throw new StrategyException("Cannot move the " + piece);
 		}
 
-		//check which color turn it is
-		playerColor = null;
-		if (playerTurn == 0) {
-			playerColor = PlayerColor.RED;
-			playerTurn = 1;
-
-			//check if flag is the only piece left
-			flagResult = checkFlagOnly(PlayerColor.BLUE);
-			if(flagResult != null){
-				return flagResult;
-			}
-
-		}
-		else {
-			playerColor = PlayerColor.BLUE;
-			playerTurn = 0;
-
-			//check if flag is the only piece left
-			flagResult = checkFlagOnly(PlayerColor.RED);
-			if(flagResult != null){
-				return flagResult;
-			}
-		}
-
+		MoveResult flagOnly = checkPlayerTurnAndFlag();
+		if(flagOnly!=null)
+			return flagOnly;
+		
 		//check location for valid location
 		currentPieceDescriptor = new PieceLocationDescriptor(new Piece(piece, playerColor), from);
 		checkLocationCoordinates(to);
@@ -250,6 +230,38 @@ public class GammaStrategyGameController implements StrategyGameController {
 		}
 
 		return new MoveResult(MoveResultStatus.OK, newPiece);
+	}
+
+	/**
+	 * get the current player's turn
+	 *  and if there are only flags left on the board
+	 * @return moveResult if there are only flags left on the board,
+	 *    null otherwise
+	 */
+	private MoveResult checkPlayerTurnAndFlag() {
+		//check which color turn it is
+		playerColor = null;
+		if (playerTurn == 0) {
+			playerColor = PlayerColor.RED;
+			playerTurn = 1;
+
+			//check if flag is the only piece left
+			flagResult = checkFlagOnly(PlayerColor.BLUE);
+			if(flagResult != null){
+				return flagResult;
+			}
+		}
+		else {
+			playerColor = PlayerColor.BLUE;
+			playerTurn = 0;
+
+			//check if flag is the only piece left
+			flagResult = checkFlagOnly(PlayerColor.RED);
+			if(flagResult != null){
+				return flagResult;
+			}
+		}
+		return null;
 	}
 
 	/**
