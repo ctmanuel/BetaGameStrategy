@@ -163,7 +163,6 @@ public class DeltaStrategyBattleTest {
 		}
 	}
 	
-	//TODO: not implemented
 	@Test
 	public void makeRedWinningBattleMove() throws StrategyException
 	{
@@ -177,7 +176,6 @@ public class DeltaStrategyBattleTest {
 				result.getBattleWinner());
 	}
 	
-	//TODO: not implemented
 	@Test
 	public void makeBlueWinningBattleMove() throws StrategyException
 	{
@@ -193,7 +191,6 @@ public class DeltaStrategyBattleTest {
 
 	}
 	
-	//TODO: not implemented
 	@Test
 	public void makeRedWinsGame() throws StrategyException
 	{
@@ -213,7 +210,6 @@ public class DeltaStrategyBattleTest {
 				result.getBattleWinner());
 	}
 	
-	//TODO: not implemented
 	@Test
 	public void makeBlueWinsGame() throws StrategyException
 	{

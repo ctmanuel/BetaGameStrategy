@@ -163,8 +163,9 @@ public class GammaStrategyGameController implements StrategyGameController {
 		}
 
 		MoveResult flagOnly = checkPlayerTurnAndFlag();
-		if(flagOnly!=null)
+		if(flagOnly!=null) {
 			return flagOnly;
+		}
 		
 		//check location for valid location
 		currentPieceDescriptor = new PieceLocationDescriptor(new Piece(piece, playerColor), from);

@@ -12,9 +12,9 @@
 	  Scout:8
 	  Spy:1
 	  Bomb:6
-	-Change battle ranks
-	-Change Piece arrangement to 10x4
-	-Change Board size to 10x10
+X	-Change battle ranks
+X	-Change Piece arrangement to 10x4
+X	-Change Board size to 10x10
 	-Make sure bomb can't be moved
 	-Make scout movement to be x number of squares
 	-Make sure scout cannot move and strike in same turn

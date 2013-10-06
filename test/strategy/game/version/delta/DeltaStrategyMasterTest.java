@@ -236,20 +236,18 @@ public class DeltaStrategyMasterTest {
 		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
 	}
 	
-	//TODO: not implemented
 	@Test(expected=StrategyException.class)
 	public void makeMoveBeforeInitalization() throws StrategyException {
 		game.move(PieceType.SPY, new Location2D(0,3), new Location2D(0,4));
 	}
 	
-	//TODO: not implemented
 	@Test
 	public void makeValidMove() throws StrategyException
 	{
 		game.startGame();
 		final MoveResult result= 
 				game.move(PieceType.SPY, new Location2D(0,3), new Location2D(0,4));
-		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.MARSHAL, PlayerColor.RED), new Location2D(0,2)), 
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SPY, PlayerColor.RED), new Location2D(0,4)), 
 				result.getBattleWinner());
 		assertEquals(MoveResultStatus.OK, result.getStatus());
 	}	
