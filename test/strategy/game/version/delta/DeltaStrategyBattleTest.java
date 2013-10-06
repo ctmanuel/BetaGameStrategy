@@ -10,8 +10,7 @@
 
 package strategy.game.version.delta;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
@@ -28,10 +27,10 @@ import strategy.game.common.MoveResultStatus;
 import strategy.game.common.Piece;
 import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.common.PieceType;
+import strategy.game.version.Battle;
 
-
-public class DeltaStrategyMasterTest {
-
+public class DeltaStrategyBattleTest {
+	
 	private StrategyGameController game;
 	private ArrayList<PieceLocationDescriptor> redConfiguration = new ArrayList<PieceLocationDescriptor>();
 	private ArrayList<PieceLocationDescriptor> blueConfiguration = new ArrayList<PieceLocationDescriptor>();
@@ -74,8 +73,8 @@ public class DeltaStrategyMasterTest {
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(1,3)),
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.RED)), new Location2D(2,3)),
 				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.RED)), new Location2D(3,3)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(4,3)),
-				new PieceLocationDescriptor((new Piece(PieceType.MARSHAL, PlayerColor.RED)), new Location2D(5,3)),
+				new PieceLocationDescriptor((new Piece(PieceType.MARSHAL, PlayerColor.RED)), new Location2D(4,3)),
+				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(5,3)),
 				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.RED)), new Location2D(6,3)),
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.RED)), new Location2D(7,3)),
 				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.RED)), new Location2D(8,3)),
@@ -83,7 +82,7 @@ public class DeltaStrategyMasterTest {
 
 		final PieceLocationDescriptor[] bluePieces = {
 				new PieceLocationDescriptor((new Piece(PieceType.MARSHAL, PlayerColor.BLUE)), new Location2D(0,6)),
-				new PieceLocationDescriptor((new Piece(PieceType.FLAG, PlayerColor.BLUE)), new Location2D(1,6)),
+				new PieceLocationDescriptor((new Piece(PieceType.GENERAL, PlayerColor.BLUE)), new Location2D(1,6)),
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(2,6)),
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(3,6)),
 				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.BLUE)), new Location2D(4,6)),
@@ -92,7 +91,7 @@ public class DeltaStrategyMasterTest {
 				new PieceLocationDescriptor((new Piece(PieceType.SPY, PlayerColor.BLUE)), new Location2D(7,6)),
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(8,6)),
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(9,6)),
-				new PieceLocationDescriptor((new Piece(PieceType.GENERAL, PlayerColor.BLUE)), new Location2D(0,7)),
+				new PieceLocationDescriptor((new Piece(PieceType.FLAG, PlayerColor.BLUE)), new Location2D(0,7)),
 				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.BLUE)), new Location2D(1,7)),
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(2,7)),
 				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.BLUE)), new Location2D(3,7)),
@@ -131,15 +130,15 @@ public class DeltaStrategyMasterTest {
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 8 | LT  | LT  | LT  | LT  |  B  |  B  | SGT | SGT | SGT | SGT |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 7 | GEN | MIN | SCT | MIN | SCT | MIN | MIN | SCT | SCT | SCT |
+		 * 7 |  F  | MIN | SCT | MIN | SCT | MIN | MIN | SCT | SCT | SCT |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 6 | MAR |  F  | SCT |  B  | MIN |  B  | SCT | SPY |  B  | SCT |
+		 * 6 | MAR | GEN | SCT |  B  | MIN |  B  | SCT | SPY |  B  | SCT |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 5 |     |     | CP  | CP  |     |     | CP  | CP  |     |     |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 4 |     |     | CP  | CP  |     |     | CP  | CP  |     |     |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 3 | SPY | SCT |  B  | MIN | SCT | MAR | MIN |  B  | MIN |  F  |
+		 * 3 | SPY | SCT |  B  | MIN | MAR | SCT | MIN |  B  | MIN |  F  |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 2 | SCT | SCT |  B  | SCT | SCT | SCT | MIN |  B  | SCT | GEN |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
@@ -163,113 +162,97 @@ public class DeltaStrategyMasterTest {
 			e.printStackTrace();
 		}
 	}
-
-	@Test(expected=StrategyException.class)
-	public void cannotCreateGammaStrategyWithNullConfigurations() throws StrategyException
-	{
-		game = DeltaStrategy.makeDeltaStrategyGame(null, null);
-	}
-
-	@Test
-	public void createGammaStrategyController() throws StrategyException
-	{
-		assertNotNull(DeltaStrategy.makeDeltaStrategyGame(redConfiguration, blueConfiguration));
-	}
-	
-	@Test(expected=StrategyException.class)
-	public void redConfigurationHasTooFewItem() throws StrategyException
-	{
-		redConfiguration.remove(0);
-		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
-	}
-
-	@Test(expected=StrategyException.class)
-	public void blueConfigurationHasTooManyItems() throws StrategyException
-	{
-		blueConfiguration.add(new PieceLocationDescriptor(
-				new Piece(PieceType.SERGEANT, PlayerColor.BLUE), new Location2D(0,4)));
-		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
-	}
-
-	@Test(expected=StrategyException.class)
-	public void placeRedPieceOnInvalidRow() throws StrategyException
-	{
-		redConfiguration.remove(0);	// Bomb @ (0, 0)
-		redConfiguration.add(new PieceLocationDescriptor(
-				new Piece(PieceType.BOMB, PlayerColor.RED), new Location2D(0,4)));
-		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
-	}
-
-	@Test(expected=StrategyException.class)
-	public void placeRedPieceOnInvalidColumn() throws StrategyException
-	{
-		redConfiguration.remove(0);	// Bomb @ (0, 0)
-		redConfiguration.add(new PieceLocationDescriptor(
-				new Piece(PieceType.BOMB, PlayerColor.RED), new Location2D(-1,1)));
-		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
-	}
-
-	@Test(expected=StrategyException.class)
-	public void placeBluePieceOnInvalidRow() throws StrategyException
-	{
-		blueConfiguration.remove(0);	// Marshal @ (0, 6)
-		blueConfiguration.add(new PieceLocationDescriptor(
-				new Piece(PieceType.MARSHAL, PlayerColor.BLUE), new Location2D(5,4)));
-		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
-	}
-	
-	@Test(expected=StrategyException.class)
-	public void placeBluePieceOnInvalidColumn() throws StrategyException
-	{
-		blueConfiguration.remove(0);	// Marshal @ (0, 6)
-		blueConfiguration.add(new PieceLocationDescriptor(
-				new Piece(PieceType.MARSHAL, PlayerColor.BLUE), new Location2D(10,6)));
-		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
-	}
-	
-	@Test(expected=StrategyException.class)
-	public void placePieceOnChokePoint() throws StrategyException
-	{
-		blueConfiguration.remove(0);	// Marshal @ (0, 6)
-		blueConfiguration.add(new PieceLocationDescriptor(
-				new Piece(PieceType.MARSHAL, PlayerColor.BLUE), new Location2D(3,5)));
-		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
-	}
-	
-	//TODO: not implemented
-	@Test(expected=StrategyException.class)
-	public void makeMoveBeforeInitalization() throws StrategyException {
-		game.move(PieceType.SPY, new Location2D(0,3), new Location2D(0,4));
-	}
 	
 	//TODO: not implemented
 	@Test
-	public void makeValidMove() throws StrategyException
+	public void makeRedWinningBattleMove() throws StrategyException
 	{
 		game.startGame();
-		final MoveResult result= 
-				game.move(PieceType.SPY, new Location2D(0,3), new Location2D(0,4));
-		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.MARSHAL, PlayerColor.RED), new Location2D(0,2)), 
-				result.getBattleWinner());
+		game.move(PieceType.MARSHAL, new Location2D(4,3), new Location2D(4,4));
+		game.move(PieceType.MINER, new Location2D(4,6), new Location2D(4,5));
+		final MoveResult result = 
+				game.move(PieceType.MARSHAL, new Location2D(4,4), new Location2D(4,5));
 		assertEquals(MoveResultStatus.OK, result.getStatus());
-	}	
-
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.MARSHAL, PlayerColor.RED), new Location2D(4,5)), 
+				result.getBattleWinner());
+	}
+	
+	//TODO: not implemented
 	@Test
-	public void getBluePieceAtLocation() throws StrategyException {
+	public void makeBlueWinningBattleMove() throws StrategyException
+	{
 		game.startGame();
-		assertEquals(new Piece(PieceType.MARSHAL, PlayerColor.BLUE), game.getPieceAt(new Location2D(0,6)));
+		game.move(PieceType.MARSHAL, new Location2D(4,3), new Location2D(4,4));
+		game.move(PieceType.GENERAL, new Location2D(1,6), new Location2D(1,5));
+		game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,4));
+		final MoveResult result = 
+				game.move(PieceType.GENERAL, new Location2D(1,5), new Location2D(1,4));
+		assertEquals(MoveResultStatus.OK, result.getStatus());
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.GENERAL, PlayerColor.BLUE), new Location2D(1,4)), 
+				result.getBattleWinner());
+
+	}
+	
+	//TODO: not implemented
+	@Test
+	public void makeRedWinsGame() throws StrategyException
+	{
+		game.startGame();
+		game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,4));
+		game.move(PieceType.MARSHAL, new Location2D(0,6), new Location2D(0,5));
+		game.move(PieceType.SCOUT, new Location2D(1,4), new Location2D(0,4));
+		game.move(PieceType.MARSHAL, new Location2D(0,5), new Location2D(1,5));
+		game.move(PieceType.SCOUT, new Location2D(0,4), new Location2D(0,5));
+		game.move(PieceType.MARSHAL, new Location2D(1,5), new Location2D(1,4));
+		game.move(PieceType.SCOUT, new Location2D(0,5), new Location2D(0,6));
+		game.move(PieceType.MARSHAL, new Location2D(1,4), new Location2D(0,4));
+		final MoveResult result = 
+				game.move(PieceType.SCOUT, new Location2D(0,6), new Location2D(0,7));
+		assertEquals(MoveResultStatus.RED_WINS, result.getStatus());
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SCOUT, PlayerColor.RED), new Location2D(0,7)), 
+				result.getBattleWinner());
+	}
+	
+	//TODO: not implemented
+	@Test
+	public void makeBlueWinsGame() throws StrategyException
+	{
+		game.startGame();
+		game.move(PieceType.MINER, new Location2D(8,3), new Location2D(8,4));
+		game.move(PieceType.SCOUT, new Location2D(9,6), new Location2D(9,5));
+		game.move(PieceType.MINER, new Location2D(8,4), new Location2D(8,5));
+		game.move(PieceType.SCOUT, new Location2D(9,5), new Location2D(9,4));
+		game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,4));
+		final MoveResult result = 
+				game.move(PieceType.SCOUT, new Location2D(9,4), new Location2D(9,3));
+		assertEquals(MoveResultStatus.BLUE_WINS, result.getStatus());
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SCOUT, PlayerColor.BLUE), new Location2D(9,3)), 
+				result.getBattleWinner());
 	}
 	
 	@Test
-	public void getRedPieceAtLocation() throws StrategyException {
+	public void battleSameTypePiece() throws StrategyException {
 		game.startGame();
-		assertEquals(new Piece(PieceType.MARSHAL, PlayerColor.RED), game.getPieceAt(new Location2D(5,3)));
-	}
-
-	@Test
-	public void getEmptyAtLocation() throws StrategyException {
-		game.startGame();
-		assertEquals(null, game.getPieceAt(new Location2D(1,4)));
+		final MoveResult result = Battle.battle(redConfiguration.get(1), blueConfiguration.get(35));
+		assertEquals(MoveResultStatus.OK, result.getStatus());
+		assertEquals(null, result.getBattleWinner());
 	}
 	
+	@Test
+	public void makeMovingRedPieceLose() throws StrategyException
+	{
+		game.startGame();
+		final MoveResult result = Battle.battle(redConfiguration.get(8), blueConfiguration.get(1));
+		assertEquals(MoveResultStatus.OK, result.getStatus());
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.GENERAL, PlayerColor.BLUE), new Location2D(8,0)), result.getBattleWinner());
+	}
+	
+	@Test
+	public void makeMovingBluePieceLose() throws StrategyException
+	{
+		game.startGame();
+		final MoveResult result = Battle.battle(blueConfiguration.get(35), redConfiguration.get(5));
+		assertEquals(MoveResultStatus.OK, result.getStatus());
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.MAJOR, PlayerColor.RED), new Location2D(5,9)), result.getBattleWinner());
+	}
 }

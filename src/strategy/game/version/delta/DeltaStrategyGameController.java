@@ -60,10 +60,17 @@ public class DeltaStrategyGameController implements StrategyGameController {
 	private final Map<Location, Piece> boardMap;
 	private final Collection<PieceLocationDescriptor> chokePointList = new ArrayList<PieceLocationDescriptor>();
 
+	/**
+	 * Constructor for the Delta Game Strategy
+	 * @param redConfiguration the list of red pieces
+	 * @param blueConfiguration the list of blue pieces
+	 * @throws StrategyException 
+	 */	
 	public DeltaStrategyGameController(Collection<PieceLocationDescriptor> redConfiguration,
 			Collection<PieceLocationDescriptor> blueConfiguration) throws StrategyException
 			{
 		new RepetitionRule();
+		new InitializeDelta();
 		validateDelta.validateConfiguration(redConfiguration, 0, 3);
 		validateDelta.validateConfiguration(blueConfiguration, 6, 9);
 

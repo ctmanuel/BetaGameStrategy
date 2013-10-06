@@ -59,7 +59,7 @@ public class GammaStrategyGameController implements StrategyGameController {
 	private final Collection<PieceLocationDescriptor> chokePointList = new ArrayList<PieceLocationDescriptor>();
 
 	/**
-	 * Constructor for the Beta Game Strategy
+	 * Constructor for the Gamma Game Strategy
 	 * @param redConfiguration the list of red pieces
 	 * @param blueConfiguration the list of blue pieces
 	 * @throws StrategyException 
