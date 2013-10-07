@@ -39,123 +39,9 @@ public class DeltaStrategyMasterTest {
 
 	@Before
 	public void setup() {
-		final PieceLocationDescriptor[] redPieces = {
-				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.RED)), new Location2D(0,0)),
-				new PieceLocationDescriptor((new Piece(PieceType.CAPTAIN, PlayerColor.RED)), new Location2D(1,0)),
-				new PieceLocationDescriptor((new Piece(PieceType.CAPTAIN, PlayerColor.RED)), new Location2D(2,0)),
-				new PieceLocationDescriptor((new Piece(PieceType.CAPTAIN, PlayerColor.RED)), new Location2D(3,0)),
-				new PieceLocationDescriptor((new Piece(PieceType.CAPTAIN, PlayerColor.RED)), new Location2D(4,0)),
-				new PieceLocationDescriptor((new Piece(PieceType.MAJOR, PlayerColor.RED)), new Location2D(5,0)),
-				new PieceLocationDescriptor((new Piece(PieceType.MAJOR, PlayerColor.RED)), new Location2D(6,0)),
-				new PieceLocationDescriptor((new Piece(PieceType.MAJOR, PlayerColor.RED)), new Location2D(7,0)),
-				new PieceLocationDescriptor((new Piece(PieceType.COLONEL, PlayerColor.RED)), new Location2D(8,0)),
-				new PieceLocationDescriptor((new Piece(PieceType.COLONEL, PlayerColor.RED)), new Location2D(9,0)),
-				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.RED)), new Location2D(0,1)),
-				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.RED)), new Location2D(1,1)),
-				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.RED)), new Location2D(2,1)),
-				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.RED)), new Location2D(3,1)),
-				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.RED)), new Location2D(4,1)),
-				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.RED)), new Location2D(5,1)),
-				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.RED)), new Location2D(6,1)),
-				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.RED)), new Location2D(7,1)),
-				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.RED)), new Location2D(8,1)),
-				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.RED)), new Location2D(9,1)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(0,2)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(1,2)),
-				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.RED)), new Location2D(2,2)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(3,2)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(4,2)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(5,2)),
-				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.RED)), new Location2D(6,2)),
-				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.RED)), new Location2D(7,2)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(8,2)),
-				new PieceLocationDescriptor((new Piece(PieceType.GENERAL, PlayerColor.RED)), new Location2D(9,2)),
-				new PieceLocationDescriptor((new Piece(PieceType.SPY, PlayerColor.RED)), new Location2D(0,3)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(1,3)),
-				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.RED)), new Location2D(2,3)),
-				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.RED)), new Location2D(3,3)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(4,3)),
-				new PieceLocationDescriptor((new Piece(PieceType.MARSHAL, PlayerColor.RED)), new Location2D(5,3)),
-				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.RED)), new Location2D(6,3)),
-				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.RED)), new Location2D(7,3)),
-				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.RED)), new Location2D(8,3)),
-				new PieceLocationDescriptor((new Piece(PieceType.FLAG, PlayerColor.RED)), new Location2D(9,3))};
-
-		final PieceLocationDescriptor[] bluePieces = {
-				new PieceLocationDescriptor((new Piece(PieceType.MARSHAL, PlayerColor.BLUE)), new Location2D(0,6)),
-				new PieceLocationDescriptor((new Piece(PieceType.FLAG, PlayerColor.BLUE)), new Location2D(1,6)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(2,6)),
-				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(3,6)),
-				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.BLUE)), new Location2D(4,6)),
-				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(5,6)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(6,6)),
-				new PieceLocationDescriptor((new Piece(PieceType.SPY, PlayerColor.BLUE)), new Location2D(7,6)),
-				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(8,6)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(9,6)),
-				new PieceLocationDescriptor((new Piece(PieceType.GENERAL, PlayerColor.BLUE)), new Location2D(0,7)),
-				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.BLUE)), new Location2D(1,7)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(2,7)),
-				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.BLUE)), new Location2D(3,7)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(4,7)),
-				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.BLUE)), new Location2D(5,7)),
-				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.BLUE)), new Location2D(6,7)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(7,7)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(8,7)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(9,7)),
-				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE)), new Location2D(0,8)),
-				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE)), new Location2D(1,8)),
-				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE)), new Location2D(2,8)),
-				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE)), new Location2D(3,8)),
-				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(4,8)),
-				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(5,8)),
-				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(6,8)),
-				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(7,8)),
-				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(8,8)),
-				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(9,8)),
-				new PieceLocationDescriptor((new Piece(PieceType.COLONEL, PlayerColor.BLUE)), new Location2D(0,9)),
-				new PieceLocationDescriptor((new Piece(PieceType.COLONEL, PlayerColor.BLUE)), new Location2D(1,9)),
-				new PieceLocationDescriptor((new Piece(PieceType.CAPTAIN, PlayerColor.BLUE)), new Location2D(2,9)),
-				new PieceLocationDescriptor((new Piece(PieceType.CAPTAIN, PlayerColor.BLUE)), new Location2D(3,9)),
-				new PieceLocationDescriptor((new Piece(PieceType.CAPTAIN, PlayerColor.BLUE)), new Location2D(4,9)),
-				new PieceLocationDescriptor((new Piece(PieceType.CAPTAIN, PlayerColor.BLUE)), new Location2D(5,9)),
-				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(6,9)),
-				new PieceLocationDescriptor((new Piece(PieceType.MAJOR, PlayerColor.BLUE)), new Location2D(7,9)),
-				new PieceLocationDescriptor((new Piece(PieceType.MAJOR, PlayerColor.BLUE)), new Location2D(8,9)),
-				new PieceLocationDescriptor((new Piece(PieceType.MAJOR, PlayerColor.BLUE)), new Location2D(9,9))};
-		
-		/*
-		 * The board with the initial configuration looks like this:
-		 *   |  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |
-		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 9 | COL | COL | CPT | CPT | CPT | CPT |  B  | MAJ | MAJ |MAJ  |
-		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 8 | LT  | LT  | LT  | LT  |  B  |  B  | SGT | SGT | SGT | SGT |
-		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 7 | GEN | MIN | SCT | MIN | SCT | MIN | MIN | SCT | SCT | SCT |
-		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 6 | MAR |  F  | SCT |  B  | MIN |  B  | SCT | SPY |  B  | SCT |
-		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 5 |     |     | CP  | CP  |     |     | CP  | CP  |     |     |
-		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 4 |     |     | CP  | CP  |     |     | CP  | CP  |     |     |
-		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 3 | SPY | SCT |  B  | MIN | SCT | MAR | MIN |  B  | MIN |  F  |
-		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 2 | SCT | SCT |  B  | SCT | SCT | SCT | MIN |  B  | SCT | GEN |
-		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 1 | MIN | SGT |  B  | SGT | SGT | SGT | LT  | LT  | LT  | LT  |
-		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 0 |  B  | CPT | CPT | CPT | CPT | MAJ | MAJ | MAJ | COL | COL |
-		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 *   |  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |
-		 */
-
-		for (PieceLocationDescriptor piece : redPieces) {
-			redConfiguration.add(piece);
-		}
-		for (PieceLocationDescriptor piece : bluePieces) {
-			blueConfiguration.add(piece);		
-		}
+		BoardConfiguration.setup();
+		redConfiguration = BoardConfiguration.getRedConfiguration();
+		blueConfiguration = BoardConfiguration.getBlueConfiguration();
 
 		try {
 			game = DeltaStrategy.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
@@ -175,7 +61,7 @@ public class DeltaStrategyMasterTest {
 	{
 		assertNotNull(DeltaStrategy.makeDeltaStrategyGame(redConfiguration, blueConfiguration));
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void redConfigurationHasTooFewItem() throws StrategyException
 	{
@@ -217,7 +103,7 @@ public class DeltaStrategyMasterTest {
 				new Piece(PieceType.MARSHAL, PlayerColor.BLUE), new Location2D(5,4)));
 		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void placeBluePieceOnInvalidColumn() throws StrategyException
 	{
@@ -226,7 +112,7 @@ public class DeltaStrategyMasterTest {
 				new Piece(PieceType.MARSHAL, PlayerColor.BLUE), new Location2D(10,6)));
 		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void placePieceOnChokePoint() throws StrategyException
 	{
@@ -235,12 +121,12 @@ public class DeltaStrategyMasterTest {
 				new Piece(PieceType.MARSHAL, PlayerColor.BLUE), new Location2D(3,5)));
 		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void makeMoveBeforeInitalization() throws StrategyException {
 		game.move(PieceType.SPY, new Location2D(0,3), new Location2D(0,4));
 	}
-	
+
 	@Test
 	public void makeValidMove() throws StrategyException
 	{
@@ -257,11 +143,11 @@ public class DeltaStrategyMasterTest {
 		game.startGame();
 		assertEquals(new Piece(PieceType.MARSHAL, PlayerColor.BLUE), game.getPieceAt(new Location2D(0,6)));
 	}
-	
+
 	@Test
 	public void getRedPieceAtLocation() throws StrategyException {
 		game.startGame();
-		assertEquals(new Piece(PieceType.MARSHAL, PlayerColor.RED), game.getPieceAt(new Location2D(5,3)));
+		assertEquals(new Piece(PieceType.SCOUT, PlayerColor.RED), game.getPieceAt(new Location2D(5,3)));
 	}
 
 	@Test
@@ -269,5 +155,13 @@ public class DeltaStrategyMasterTest {
 		game.startGame();
 		assertEquals(null, game.getPieceAt(new Location2D(1,4)));
 	}
-	
+
+	@Test
+	public void ScoutMove() throws StrategyException {
+		game.startGame();
+		final MoveResult result= 
+				game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,5));
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SCOUT, PlayerColor.RED), new Location2D(1,5)), 
+				result.getBattleWinner());
+	}
 }
