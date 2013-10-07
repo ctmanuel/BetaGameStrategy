@@ -12,6 +12,7 @@ package strategy.game.version.delta;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 
@@ -159,6 +160,8 @@ public class DeltaStrategyMasterTest {
 	@Test
 	public void ScoutMove() throws StrategyException {
 		game.startGame();
+		assertNull(game.getPieceAt(new Location2D(1,4)));
+		assertNull(game.getPieceAt(new Location2D(1,5)));
 		final MoveResult result= 
 				game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,5));
 		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SCOUT, PlayerColor.RED), new Location2D(1,5)), 

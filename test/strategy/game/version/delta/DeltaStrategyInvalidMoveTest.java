@@ -9,15 +9,20 @@
  *******************************************************************************/
 package strategy.game.version.delta;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import strategy.common.PlayerColor;
 import strategy.common.StrategyException;
 import strategy.game.StrategyGameController;
 import strategy.game.StrategyGameFactory;
 import strategy.game.common.Location2D;
+import strategy.game.common.MoveResult;
+import strategy.game.common.Piece;
 import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.common.PieceType;
 
@@ -33,14 +38,14 @@ public class DeltaStrategyInvalidMoveTest {
 		BoardConfiguration.setup();
 		redConfiguration = BoardConfiguration.getRedConfiguration();
 		blueConfiguration = BoardConfiguration.getBlueConfiguration();
-		
+
 		try {
 			game = DeltaStrategy.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 		} catch (StrategyException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void makeInvalidMoveWrongPiece() throws StrategyException{
 		game.startGame();
@@ -124,21 +129,21 @@ public class DeltaStrategyInvalidMoveTest {
 		game.move(PieceType.MARSHAL, new Location2D(0,4), new Location2D(0,5));
 		game.move(PieceType.SERGEANT, new Location2D(3,4), new Location2D(3,3));
 	}
-	
+
 	@Test(expected = StrategyException.class)
 	public void makeInvalidFlagMove() throws StrategyException 
 	{
 		game.startGame();
 		game.move(PieceType.FLAG, new Location2D(1,0), new Location2D(1,1));
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void invalidMoveToChokePoint22() throws StrategyException
 	{
 		game.startGame();
 		game.move(PieceType.LIEUTENANT, new Location2D(2,1), new Location2D(2,2));
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void invalidMoveToChokePoint23() throws StrategyException
 	{
@@ -146,14 +151,14 @@ public class DeltaStrategyInvalidMoveTest {
 		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
 		game.move(PieceType.SERGEANT, new Location2D(2,4), new Location2D(2,3));
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void invalidMoveToChokePoint32() throws StrategyException
 	{
 		game.startGame();
 		game.move(PieceType.LIEUTENANT, new Location2D(3,1), new Location2D(3,2));
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void invalidMoveToChokePoint33() throws StrategyException
 	{
@@ -161,7 +166,7 @@ public class DeltaStrategyInvalidMoveTest {
 		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
 		game.move(PieceType.SERGEANT, new Location2D(3,4), new Location2D(3,3));
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void makeRedRepitionRulePlay() throws StrategyException {
 		game.startGame();
@@ -171,7 +176,7 @@ public class DeltaStrategyInvalidMoveTest {
 		game.move(PieceType.MARSHAL, new Location2D(5,4), new Location2D(5,3));
 		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void makeBlueRepitionRulePlay() throws StrategyException {
 		game.startGame();
@@ -182,7 +187,7 @@ public class DeltaStrategyInvalidMoveTest {
 		game.move(PieceType.SERGEANT, new Location2D(5,1), new Location2D(5,2));
 		game.move(PieceType.SERGEANT, new Location2D(4,4), new Location2D(4,3));
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void makeRedSecondPieceRepitionRulePlay() throws StrategyException {
 		game.startGame();
@@ -194,7 +199,7 @@ public class DeltaStrategyInvalidMoveTest {
 		game.move(PieceType.MARSHAL, new Location2D(5,4), new Location2D(5,3));
 		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void makeRedPieceRepitionRulePlay() throws StrategyException {
 		game.startGame();
@@ -208,5 +213,29 @@ public class DeltaStrategyInvalidMoveTest {
 		game.move(PieceType.MARSHAL, new Location2D(5,4), new Location2D(5,3));
 		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
 	}
-	
+
+	@Test(expected=StrategyException.class)
+	public void ScoutMoveAndAttack() throws StrategyException {
+		game.startGame();
+		game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,6));
+	}
+
+	@Test(expected=StrategyException.class)
+	public void BombMove() throws StrategyException {
+		game.startGame();
+		game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,4));
+		game.move(PieceType.BOMB, new Location2D(5,6), new Location2D(5,5));
+	}
+
+	@Test(expected=StrategyException.class)
+	public void ScoutMoveOverPiece() throws StrategyException {
+		game.startGame();
+		game.move(PieceType.MARSHAL, new Location2D(4,3), new Location2D(4,4));
+		game.move(PieceType.MINER, new Location2D(4,6), new Location2D(4,5));
+		game.move(PieceType.MARSHAL, new Location2D(4,4), new Location2D(5,4));
+		game.move(PieceType.MINER, new Location2D(4,5), new Location2D(4,4));
+		assertNull(game.getPieceAt(new Location2D(4,5)));
+		assertNotNull(game.getPieceAt(new Location2D(4,4)));
+		game.move(PieceType.SCOUT, new Location2D(4,2), new Location2D(4,6));
+	}
 }

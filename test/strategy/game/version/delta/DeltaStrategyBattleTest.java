@@ -145,6 +145,8 @@ public class DeltaStrategyBattleTest {
 		game.startGame();
 		final MoveResult result = Battle.battle(redConfiguration.get(30), blueConfiguration.get(0));
 		assertEquals(MoveResultStatus.OK, result.getStatus());
+		assertEquals(PieceType.SPY, result.getBattleWinner().getPiece().getType());
+		assertEquals(new Location2D(0,6), result.getBattleWinner().getLocation());
 		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SPY, PlayerColor.RED), new Location2D(0,6)), result.getBattleWinner());
 	}
 	@Test

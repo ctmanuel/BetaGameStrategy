@@ -71,7 +71,7 @@ public class DeltaStrategyGameController implements StrategyGameController {
 	public DeltaStrategyGameController(Collection<PieceLocationDescriptor> redConfiguration,
 			Collection<PieceLocationDescriptor> blueConfiguration)
 					throws StrategyException {
-		
+
 		new RepetitionRule();
 		new InitializeDelta();
 		validateDelta.validateConfiguration(redConfiguration, 0, 3);
@@ -125,7 +125,7 @@ public class DeltaStrategyGameController implements StrategyGameController {
 	 */
 	private void mapConfigurationBoard(Collection<PieceLocationDescriptor> config) 
 			throws StrategyException {
-		
+
 		for(PieceLocationDescriptor pieceLD : config) {
 			Piece newPiece = pieceLD.getPiece();
 			//check if pieces are trying to be put on the same space  
@@ -139,7 +139,7 @@ public class DeltaStrategyGameController implements StrategyGameController {
 	 */
 	@Override
 	public void startGame() throws StrategyException {
-		
+
 		if(gameStarted){
 			throw new StrategyException("Game already in progress");
 		}
@@ -176,34 +176,78 @@ public class DeltaStrategyGameController implements StrategyGameController {
 				|| piece == PieceType.BOMB
 				|| piece == PieceType.FLAG
 				|| piece == PieceType.CHOKE_POINT)) {
-			
+
 			throw new StrategyException(piece + " is not a valid piece for the Delta Strategy.");
 		}
 
 		if(piece == PieceType.FLAG
 				|| piece == PieceType.BOMB
 				|| piece == PieceType.CHOKE_POINT) {
-			
+
 			throw new StrategyException("Cannot move the " + piece);
 		}
 
 		MoveResult flagOnly = checkPlayerTurnAndFlag();
-		if(flagOnly!=null) {
+		if(flagOnly != null) {
 			return flagOnly;
 		}
 
-		//check location for valid location
 		currentPieceDescriptor = new PieceLocationDescriptor(new Piece(piece, playerColor), from);
+
+		//if scout 
+		if(piece == PieceType.SCOUT && currentPieceDescriptor.getLocation().distanceTo(to) > 1){
+			Piece tempPieceAtTo;
+			//check for pieces in scouts path
+			for (int i = 1;  i <= currentPieceDescriptor.getLocation().distanceTo(to); i++){
+				//if moving on the y axis
+				if(from.getCoordinate(Coordinate.Y_COORDINATE) != to.getCoordinate(Coordinate.Y_COORDINATE)){
+					tempPieceAtTo = getPieceAt(new Location2D(to.getCoordinate(Coordinate.X_COORDINATE),
+							from.getCoordinate(Coordinate.Y_COORDINATE)+i));
+					if(tempPieceAtTo != null){
+						throw new StrategyException("Piece in Scout path");
+					}
+				}
+				//if moving on the x axis
+				else{
+					tempPieceAtTo = getPieceAt(new Location2D(from.getCoordinate(Coordinate.X_COORDINATE)+i,
+							to.getCoordinate(Coordinate.Y_COORDINATE)));
+					if(tempPieceAtTo != null){
+						throw new StrategyException("Piece in Scout path");
+					}
+				}
+			}
+			final PieceLocationDescriptor newPiece =
+					new PieceLocationDescriptor(new Piece(piece, playerColor), to);
+
+			if (playerColor == PlayerColor.RED) {
+				redConfiguration.remove(currentPieceDescriptor);
+				redConfiguration.add(newPiece);
+				boardMap.remove(currentPieceDescriptor.getLocation());
+				boardMap.put(to, newPiece.getPiece());
+			}
+			else {
+				blueConfiguration.remove(currentPieceDescriptor);
+				blueConfiguration.add(newPiece);
+				boardMap.remove(currentPieceDescriptor.getLocation());
+				boardMap.put(to, newPiece.getPiece());
+			}
+
+			return new MoveResult(MoveResultStatus.OK, newPiece);
+
+		}
+
+		//check location for valid location
 		checkLocationCoordinates(to);
 
 		//check for repetition rule
 		RepetitionRule.checkRepRule(currentPieceDescriptor, to);
 		RepetitionRule.addToQueue(currentPieceDescriptor, to);
 
-		//check if occupied
 		final Piece tempPieceAtTo = getPieceAt(to);
+
+		//check if occupied
 		if (tempPieceAtTo != null) {
-			
+
 			//check if the pieces are the same color
 			if (currentPieceDescriptor.getPiece().getOwner() == tempPieceAtTo.getOwner()) {
 				throw new StrategyException("Space is occupied by same color piece");
@@ -211,7 +255,7 @@ public class DeltaStrategyGameController implements StrategyGameController {
 
 			//go to battle method
 			battleResult = Battle.battle(currentPieceDescriptor, new PieceLocationDescriptor(tempPieceAtTo, to));
-			
+
 			//if both pieces lose
 			if(battleResult.getBattleWinner() == null) { 
 				boardMap.remove(currentPieceDescriptor.getLocation());
@@ -223,7 +267,7 @@ public class DeltaStrategyGameController implements StrategyGameController {
 				}
 				return battleResult;
 			}
-			
+
 			if(battleResult.getBattleWinner().getPiece().getOwner() == PlayerColor.RED) {
 				redConfiguration.add(battleResult.getBattleWinner());
 			}
@@ -268,7 +312,7 @@ public class DeltaStrategyGameController implements StrategyGameController {
 	 *    null otherwise
 	 */
 	private MoveResult checkPlayerTurnAndFlag() {
-		
+
 		//check which color turn it is
 		playerColor = null;
 		if (playerTurn == 0) {
@@ -304,7 +348,7 @@ public class DeltaStrategyGameController implements StrategyGameController {
 		PieceType shouldBeRedFlag = null;
 		int blueCount = 0;
 		int redCount = 0;
-		
+
 		for (Location location : boardMap.keySet()) {
 			if(location != null) {
 				temp = boardMap.get(location);
@@ -348,7 +392,7 @@ public class DeltaStrategyGameController implements StrategyGameController {
 	 * 		the expected values.
 	 */
 	private void checkLocationCoordinates(Location to) throws StrategyException {
-		
+
 		//local variables
 		final int currentXcoordinate = currentPieceDescriptor.getLocation().getCoordinate(Coordinate.X_COORDINATE);
 		final int currentYcoordinate = currentPieceDescriptor.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
@@ -381,13 +425,18 @@ public class DeltaStrategyGameController implements StrategyGameController {
 				toXcoordinate, toYcoordinate);
 
 		//check for valid X,Y coordinates
-		  // TODO: add scout checking
+		// TODO: add scout checking
 		validateDelta.validateCrossMove(currentPieceDescriptor.getLocation(),to);
 
 	}
 
 	@Override
 	public Piece getPieceAt(Location location) {
+		//			if(boardMap.get(location) == null){
+		//				System.out.println("Piece at Location is null" + location.toString());
+		//				return null;
+		//			}
+		//			else
 		return boardMap.get(location);
 	}
 

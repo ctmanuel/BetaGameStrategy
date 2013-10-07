@@ -72,6 +72,34 @@ public class Battle {
 			}
 		}
 		
+		//if opponent is a bomb
+		if(opponentPiece.getPiece().getType() == PieceType.BOMB 
+				&& playerPiece.getPiece().getType() != PieceType.MINER){
+			if (playerPieceOwner == PlayerColor.RED){
+				redConfiguration.remove(playerPiece);
+				return new MoveResult(MoveResultStatus.OK, opponentPiece);
+			}
+			else{
+				blueConfiguration.remove(playerPiece);
+				return new MoveResult(MoveResultStatus.OK, opponentPiece);
+			}
+		}
+		
+		//if player is spy vs marshal
+		if(playerPiece.getPiece().getType() == PieceType.SPY 
+				&& opponentPiece.getPiece().getType() == PieceType.MARSHAL){
+			if (playerPieceOwner == PlayerColor.RED){
+				redConfiguration.remove(playerPiece);
+				blueConfiguration.remove(opponentPiece);
+				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
+			}
+			else{
+				blueConfiguration.remove(playerPiece);
+				redConfiguration.remove(opponentPiece);
+				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
+			}
+		}
+		
 		//check piece ranks
 		if(pieceRanks.get(playerPiece.getPiece().getType()) > pieceRanks.get(opponentPiece.getPiece().getType())) {
 			//if opponent piece is flag, set game over to true, remove flag from configuration, return battle winner
