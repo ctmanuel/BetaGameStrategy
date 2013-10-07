@@ -172,10 +172,7 @@ public class DeltaStrategyGameController implements StrategyGameController {
 				|| piece == PieceType.SERGEANT
 				|| piece == PieceType.MINER
 				|| piece == PieceType.SCOUT
-				|| piece == PieceType.SPY
-				|| piece == PieceType.BOMB
-				|| piece == PieceType.FLAG
-				|| piece == PieceType.CHOKE_POINT)) {
+				|| piece == PieceType.SPY)) {
 
 			throw new StrategyException(piece + " is not a valid piece for the Delta Strategy.");
 		}
@@ -432,11 +429,6 @@ public class DeltaStrategyGameController implements StrategyGameController {
 
 	@Override
 	public Piece getPieceAt(Location location) {
-		//			if(boardMap.get(location) == null){
-		//				System.out.println("Piece at Location is null" + location.toString());
-		//				return null;
-		//			}
-		//			else
 		return boardMap.get(location);
 	}
 

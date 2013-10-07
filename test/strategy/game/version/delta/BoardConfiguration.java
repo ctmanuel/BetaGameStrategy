@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * This files was developed for CS4233: Object-Oriented Analysis & Design.
+ * The course was taken at Worcester Polytechnic Institute.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package strategy.game.version.delta;
 
 import java.util.ArrayList;
@@ -12,6 +21,9 @@ public class BoardConfiguration {
 	private static ArrayList<PieceLocationDescriptor> redConfiguration = new ArrayList<PieceLocationDescriptor>();
 	private static ArrayList<PieceLocationDescriptor> blueConfiguration = new ArrayList<PieceLocationDescriptor>();
 
+	/**
+	 * fill configurations for delta
+	 */
 	public static void setup(){
 		redConfiguration.clear();
 		blueConfiguration.clear();
@@ -135,12 +147,19 @@ public class BoardConfiguration {
 		}
 	}
 	
-	public static  ArrayList<PieceLocationDescriptor> getRedConfiguration(){
+	/**
+	 * get red configuration
+	 * @return redConfiguration
+	 */
+	public static ArrayList<PieceLocationDescriptor> getRedConfiguration(){
 		return redConfiguration;
 	}
 	
-	
-	public static  ArrayList<PieceLocationDescriptor> getBlueConfiguration(){
+	/**
+	 * get blue configuration
+	 * @return blueConfiguration
+	 */
+	public static ArrayList<PieceLocationDescriptor> getBlueConfiguration(){
 		return blueConfiguration;
 	}
 }

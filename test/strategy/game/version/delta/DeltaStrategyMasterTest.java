@@ -29,6 +29,7 @@ import strategy.game.common.MoveResultStatus;
 import strategy.game.common.Piece;
 import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.common.PieceType;
+import strategy.game.version.Battle;
 
 
 public class DeltaStrategyMasterTest {
@@ -55,6 +56,24 @@ public class DeltaStrategyMasterTest {
 	public void cannotCreateGammaStrategyWithNullConfigurations() throws StrategyException
 	{
 		game = DeltaStrategy.makeDeltaStrategyGame(null, null);
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void cannotStartGameAlreadyInProgress() throws StrategyException{
+		game.startGame();
+		game.move(PieceType.SPY, new Location2D(0,3), new Location2D(0,4));
+		game.startGame();
+		
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void cannotStartGameOver() throws StrategyException{
+		game.startGame();
+		PieceLocationDescriptor playerPiece = new PieceLocationDescriptor(new Piece(PieceType.SPY, PlayerColor.RED), new Location2D(0,3));
+		PieceLocationDescriptor opponentPiece = new PieceLocationDescriptor(new Piece(PieceType.FLAG, PlayerColor.BLUE), new Location2D(0,7));
+		final MoveResult result = Battle.battle(playerPiece, opponentPiece);
+		assertEquals(MoveResultStatus.RED_WINS, result.getStatus());
+		game.startGame();
 	}
 
 	@Test

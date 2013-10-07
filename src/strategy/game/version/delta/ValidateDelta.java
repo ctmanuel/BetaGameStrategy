@@ -64,7 +64,12 @@ public class ValidateDelta implements Validate {
 
 			//check out of bounds
 			validateOutOfBounds(currentConfigIterPiece.getLocation());
+			
+			//check piece distribution
 		}
+		final Map<PieceType, Integer> initialPieces = 
+				validatePieces(configuration, bottomRow, topRow);
+		checkPiecesDistributed(initialPieces);
 	}
 
 	@Override

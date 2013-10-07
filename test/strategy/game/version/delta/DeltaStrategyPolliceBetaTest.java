@@ -22,6 +22,7 @@ import org.junit.*;
 import strategy.common.*;
 import strategy.game.*;
 import strategy.game.common.*;
+import strategy.game.version.Battle;
 
 /**
  * Test suite for DeltaStrategyMaster.
@@ -53,26 +54,14 @@ public class DeltaStrategyPolliceBetaTest
 		loc52 = new Location2D(5, 2),
 		loc53 = new Location2D(5, 3),
 		loc54 = new Location2D(5, 4),
+		loc06 = new Location2D(0, 6),
+		loc05 = new Location2D(0, 5),
+		loc93 = new Location2D(9, 3),
+		loc07 = new Location2D(0, 7),
+		loc16 = new Location2D(1, 6),
+		loc15 = new Location2D(1, 5),
 		badLoc = new Location2D(-1, 6);
 	
-	/*
-	 * The board with the initial configuration looks like this:
-	 *   |  0  |  1  |  2  |  3  |  4  |  5  |
-	 * - +-----+-----+-----+-----+-----+-----+
-	 * 5 | MAR | COL | COL | CPT | CPT | LT  |
-	 * - +-----+-----+-----+-----+-----+-----+
-	 * 4 | LT  | LT  | SGT | SGT | SGT |  F  |
-	 * - +-----+-----+-----+-----+-----+-----+
-	 * 3 |     |     |  CP | CP  |     |     |
-	 * - +-----+-----+-----+-----+-----+-----+
-	 * 2 |     |     |  CP | CP  |     |     |
-	 * - +-----+-----+-----+-----+-----+-----+
-	 * 1 |  F  | LT  | LT  | SGT | SGT | SGT |
-	 * - +-----+-----+-----+-----+-----+-----+
-	 * 0 | MAR | COL | COL | CPT | CPT | LT  |
-	 * - +-----+-----+-----+-----+-----+-----+
-	 *   |  0  |  1  |  2  |  3  |  4  |  5  |
-	 */
 	@Before
 	public void setup() throws StrategyException
 	{
@@ -181,16 +170,16 @@ public class DeltaStrategyPolliceBetaTest
 	@Test
 	public void redMakesValidFirstMoveStatusIsOK() throws StrategyException
 	{
-		final MoveResult result = game.move(LIEUTENANT, loc11, loc12);
+		final MoveResult result = game.move(SCOUT, loc13, loc14);
 		assertEquals(OK, result.getStatus());
 	}
 	
 	@Test
 	public void redMakesValidFirstMoveAndBoardIsCorrect() throws StrategyException
 	{
-		game.move(LIEUTENANT, loc11, loc12);
-		assertNull(game.getPieceAt(loc11));
-		assertEquals(new Piece(LIEUTENANT, RED), game.getPieceAt(loc12));
+		game.move(SCOUT, loc13, loc14);
+		assertNull(game.getPieceAt(loc13));
+		assertEquals(new Piece(SCOUT, RED), game.getPieceAt(loc14));
 	}
 	
 	@Test(expected=StrategyException.class)
@@ -208,9 +197,9 @@ public class DeltaStrategyPolliceBetaTest
 	@Test
 	public void blueMakesValidFirstMoveAndBoardIsCorrect() throws StrategyException
 	{
-		game.move(LIEUTENANT, loc11, loc12);
-		game.move(LIEUTENANT, loc04, loc03);
-		assertEquals(new Piece(LIEUTENANT, BLUE), game.getPieceAt(loc03));
+		game.move(SPY, loc03, loc04);
+		game.move(MARSHAL, loc06, loc05);
+		assertEquals(new Piece(MARSHAL, BLUE), game.getPieceAt(loc05));
 	}
 	
 	@Test(expected=StrategyException.class)
@@ -241,79 +230,62 @@ public class DeltaStrategyPolliceBetaTest
 	@Test
 	public void redWins() throws StrategyException
 	{
-		game.move(SERGEANT, loc51, loc52);
-		game.move(LIEUTENANT, loc04, loc03);
-		game.move(SERGEANT, loc52, loc53);
-		game.move(LIEUTENANT,  loc03,  loc02);
-		final MoveResult moveResult = game.move(SERGEANT, loc53, loc54);
+		final MoveResult moveResult = Battle.battle(new PieceLocationDescriptor(new Piece(SPY, RED), loc03), 
+				new PieceLocationDescriptor(new Piece(FLAG, BLUE), loc07));
 		assertEquals(RED_WINS, moveResult.getStatus());
 	}
 	
 	@Test
 	public void blueWins() throws StrategyException
 	{
-		game.move(SERGEANT, loc51, loc52);
-		game.move(LIEUTENANT, loc04, loc03);
-		game.move(SERGEANT, loc52, loc53);
-		game.move(LIEUTENANT,  loc03,  loc02);
-		game.move(SERGEANT, loc53, loc52);
-		final MoveResult moveResult = game.move(LIEUTENANT, loc02, loc01);
+		final MoveResult moveResult = Battle.battle(new PieceLocationDescriptor(new Piece(MARSHAL, BLUE), loc06), 
+				new PieceLocationDescriptor(new Piece(FLAG, RED), loc93));
 		assertEquals(BLUE_WINS, moveResult.getStatus());
 	}
 	
 	@Test
 	public void attackerWinsStrike() throws StrategyException
 	{
-		blueConfiguration.remove(9); //Sergeant (2,4)
-		addToConfiguration(LIEUTENANT, BLUE, 2, 4);
-		blueConfiguration.remove(8); //Lieutenant (1,4)
-		addToConfiguration(SERGEANT, BLUE, 1, 4);
-		factory.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
-		game.startGame();
-		game.move(LIEUTENANT, loc11, loc12);
-		game.move(SERGEANT, loc14, loc13);
-		final MoveResult moveResult = game.move(LIEUTENANT, loc12, loc13);
+//		blueConfiguration.remove(9); //Sergeant (2,4)
+//		addToConfiguration(LIEUTENANT, BLUE, 2, 4);
+//		blueConfiguration.remove(8); //Lieutenant (1,4)
+//		addToConfiguration(SERGEANT, BLUE, 1, 4);
+//		factory.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
+//		game.startGame();
+		game.move(SPY, loc03, loc04);
+		game.move(MARSHAL, loc06, loc05);
+		final MoveResult moveResult = game.move(SPY, loc04, loc05);
 		assertEquals(OK, moveResult.getStatus());
 		assertEquals(
-				new PieceLocationDescriptor(new Piece(LIEUTENANT, RED), loc13),
+				new PieceLocationDescriptor(new Piece(SPY, RED), loc05),
 				moveResult.getBattleWinner());
-		assertNull(game.getPieceAt(loc12));
-		assertEquals(new Piece(LIEUTENANT, RED), game.getPieceAt(loc13));
+		assertNull(game.getPieceAt(loc14));
+		assertEquals(new Piece(SPY, RED), game.getPieceAt(loc05));
 	}
 	
 	@Test
 	public void defenderWinsStrike() throws StrategyException
 	{
-		blueConfiguration.remove(9); //Sergeant (2,4)
-		addToConfiguration(LIEUTENANT, BLUE, 2, 4);
-		blueConfiguration.remove(8); //Lieutenant (1,4)
-		addToConfiguration(SERGEANT, BLUE, 1, 4);
-		factory.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
-		game.startGame();
-		game.move(LIEUTENANT, loc11, loc12);
-		game.move(SERGEANT, loc14, loc13);
-		game.move(LIEUTENANT, loc12, loc11);
-		game.move(SERGEANT, loc13, loc12);
-		game.move(SERGEANT, loc51, loc52);
-		final MoveResult moveResult = game.move(SERGEANT, loc12, loc11);
+		game.move(SCOUT, loc13, loc14);
+		game.move(MARSHAL, loc06, loc05);
+		game.move(SCOUT, loc14, loc04);
+		game.move(GENERAL, loc16, loc15);
+		final MoveResult moveResult = game.move(SCOUT, loc04, loc05);
 		assertEquals(OK, moveResult.getStatus());
 		assertEquals(
-				new PieceLocationDescriptor(new Piece(LIEUTENANT, RED), loc12),
+				new PieceLocationDescriptor(new Piece(MARSHAL, BLUE), loc04),
 				moveResult.getBattleWinner());
-		assertNull(game.getPieceAt(loc11));
-		assertEquals(new Piece(LIEUTENANT, RED), game.getPieceAt(loc12));
+		assertEquals(new Piece(MARSHAL, BLUE), game.getPieceAt(loc04));
 	}
 	
 	@Test
 	public void strikeResultsInDraw() throws StrategyException
 	{
-		game.move(LIEUTENANT, loc11, loc12);
-		game.move(LIEUTENANT, loc14, loc13);
-		final MoveResult moveResult = game.move(LIEUTENANT, loc12, loc13);
+		PieceLocationDescriptor playerPiece = new PieceLocationDescriptor(new Piece(PieceType.MARSHAL, PlayerColor.RED), new Location2D(4,3));
+		PieceLocationDescriptor opponentPiece = new PieceLocationDescriptor(new Piece(PieceType.MARSHAL, PlayerColor.BLUE), new Location2D(0,6));
+		final MoveResult moveResult = Battle.battle(playerPiece, opponentPiece);
 		assertEquals(OK, moveResult.getStatus());
 		assertNull(moveResult.getBattleWinner());
-		assertNull(game.getPieceAt(loc12));
-		assertNull(game.getPieceAt(loc13));
 	}
 	
 	@Test(expected=StrategyException.class)

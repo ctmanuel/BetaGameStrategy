@@ -16,11 +16,14 @@ X	-Change battle ranks
 X	-Change Piece arrangement to 10x4
 X	-Change Board size to 10x10
 X	-Make sure bomb can't be moved
-	-Make scout movement to be x number of squares
-	-Make sure scout cannot move and strike in same turn
+X	-Make scout movement to be x number of squares
+X	-Make sure scout cannot move and strike in same turn
 X	-Make sure spy wins against marshal if striking first
 X		-if marshal strikes first, spy loses
 X	-Make sure that pieces striking bomb, except miner, are removed
 X		-bomb is not removed but does not move
 X		-bomb cannot strike
 X		-miner beats bomb, and miner takes place
+
+	-Test configurations
+	-test for incorrect number of pieces in configuration
