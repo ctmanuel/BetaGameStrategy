@@ -20,6 +20,7 @@ import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.version.alpha.AlphaStrategyGameController;
 import strategy.game.version.beta.BetaStrategyGameController;
 import strategy.game.version.delta.DeltaStrategyGameController;
+import strategy.game.version.epsilon.EpsilonStrategyGameController;
 import strategy.game.version.gamma.GammaStrategyGameController;
 
 /**
@@ -178,6 +179,27 @@ public class StrategyGameFactory
 		}
 		
 		return DeltaGame;
+	}
+	
+	/**
+	 * Create a new Epsilon Strategy game given the 
+	 * @param redConfiguration the initial starting configuration for the RED pieces
+	 * @param blueConfiguration the initial starting configuration for the BLUE pieces
+	 * @return the Epsilon Strategy game instance with the initial configuration of pieces
+	 * @throws StrategyException if either configuration is correct
+	 */
+	public StrategyGameController makeEpsilonStrategyGame(
+			Collection<PieceLocationDescriptor> redConfiguration,
+			Collection<PieceLocationDescriptor> blueConfiguration)
+					throws StrategyException
+	{
+		final StrategyGameController EpsilonGame = new EpsilonStrategyGameController(redConfiguration, blueConfiguration);
+
+		if(EpsilonGame.getClass() != EpsilonStrategyGameController.class) {
+			throw new StrategyRuntimeException("Change this implementation");
+		}
+		
+		return EpsilonGame;
 	}
 	
 }
