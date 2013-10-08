@@ -31,8 +31,8 @@ public interface Validate {
 	/**
 	 * Validate the starting configuration
 	 * @param configuration the configuration to validate
-	 * @param lowRow the lowest row of the player's starting area
-	 * @param highRow the highest row of the player's starting area
+	 * @param bottomRow the lowest row of the player's starting area
+	 * @param topRow the highest row of the player's starting area
 	 * @throws StrategyException if the configuration is invalid
 	 */
 	void validateConfiguration(Collection<PieceLocationDescriptor> configuration, int bottomRow, int topRow) throws StrategyException;

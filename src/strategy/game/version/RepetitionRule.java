@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import strategy.common.PlayerColor;
-import strategy.common.StrategyException;
 import strategy.game.common.Location;
+import strategy.game.common.MoveResultStatus;
 import strategy.game.common.Piece;
 import strategy.game.common.PieceLocationDescriptor;
 
@@ -39,20 +39,20 @@ public class RepetitionRule {
 		blueQueue.clear();
 	}
 
-	/**
-	 * check for violation of the repetition rule
-	 * @param piece the current piece
-	 * @param to the location the piece is moving to
-	 * @throws StrategyException
-	 */
-	public static void checkRepRule(PieceLocationDescriptor piece, Location to) throws StrategyException {
+	 /**
+	  * check for violation of the repetition rule
+	  * @param piece
+	  * @param to
+	  * @return game status if repetition rule is violated
+	  */
+	public static MoveResultStatus checkRepRule(PieceLocationDescriptor piece, Location to) {
 		final PieceHistory currentHistory = new PieceHistory(piece.getPiece(), piece.getLocation(), to); 
 		if(piece.getPiece().getOwner() == PlayerColor.RED) {
 			for(int i = 0; i < redQueue.size(); i++) {
 				if(redQueue.get(i).getFromLocation().equals(currentHistory.getFromLocation())
 						&& redQueue.get(i).getPiece().equals(currentHistory.getPiece())
 						&& redQueue.get(i).getToLocation().equals(currentHistory.getToLocation())) {
-					throw new StrategyException ("Illegal Repetition Move");
+					return MoveResultStatus.BLUE_WINS;
 				}
 			}
 		}
@@ -61,10 +61,11 @@ public class RepetitionRule {
 				if(blueQueue.get(i).getFromLocation().equals(currentHistory.getFromLocation())
 						&& blueQueue.get(i).getPiece().equals(currentHistory.getPiece())
 						&& blueQueue.get(i).getToLocation().equals(currentHistory.getToLocation())) {
-					throw new StrategyException ("Illegal Repetition Move");
+					return MoveResultStatus.RED_WINS;
 				}
 			}
 		}
+		return MoveResultStatus.OK;
 	}
 
 	/**

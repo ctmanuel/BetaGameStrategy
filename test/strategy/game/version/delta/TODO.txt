@@ -1,17 +1,17 @@
 X	-Incorporate generals, majors, 
 X	 miners, scouts, spies, and bombs
-/	-Change number of each piece
-/	  Marshal:1
-/	  General:1
-/	  Colonel:2
-/	  Major:3
-/	  Captain:4
-/	  Lieutenant:4
-/	  Sergeant:4
-/	  Miner:5
-/	  Scout:8
-/	  Spy:1
-/	  Bomb:6
+X	-Change number of each piece
+X	  Marshal:1
+X	  General:1
+X	  Colonel:2
+X	  Major:3
+X	  Captain:4
+X	  Lieutenant:4
+X	  Sergeant:4
+X	  Miner:5
+X	  Scout:8
+X	  Spy:1
+X	  Bomb:6
 X	-Change battle ranks
 X	-Change Piece arrangement to 10x4
 X	-Change Board size to 10x10
@@ -25,5 +25,8 @@ X		-bomb is not removed but does not move
 X		-bomb cannot strike
 X		-miner beats bomb, and miner takes place
 
-	-Test configurations
-	-test for incorrect number of pieces in configuration
+X	-Test configurations
+X	-test for incorrect number of pieces in configuration
+X	-repetition rule throws exception, other team wins
+
+X	-add bombs to draw condition

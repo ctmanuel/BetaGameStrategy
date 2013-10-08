@@ -195,7 +195,7 @@ public class GammaStrategyInvalidMoveTest {
 		game.move(PieceType.SERGEANT, new Location2D(3,4), new Location2D(3,3));
 	}
 	
-	@Test(expected=StrategyException.class)
+	@Test
 	public void makeRedRepitionRulePlay() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
@@ -205,7 +205,7 @@ public class GammaStrategyInvalidMoveTest {
 		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
 	}
 	
-	@Test(expected=StrategyException.class)
+	@Test
 	public void makeBlueRepitionRulePlay() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
@@ -216,7 +216,7 @@ public class GammaStrategyInvalidMoveTest {
 		game.move(PieceType.SERGEANT, new Location2D(4,4), new Location2D(4,3));
 	}
 	
-	@Test(expected=StrategyException.class)
+	@Test
 	public void makeRedSecondPieceRepitionRulePlay() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.SERGEANT, new Location2D(5,1), new Location2D(5,2));
@@ -228,7 +228,7 @@ public class GammaStrategyInvalidMoveTest {
 		game.move(PieceType.LIEUTENANT, new Location2D(1,1), new Location2D(1,2));
 	}
 	
-	@Test(expected=StrategyException.class)
+	@Test
 	public void makeRedPieceRepitionRulePlay() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.SERGEANT, new Location2D(5,1), new Location2D(5,2));

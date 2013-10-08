@@ -97,7 +97,7 @@ public class BoardConfiguration {
 				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE)), new Location2D(3,8)),
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(4,8)),
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(5,8)),
-				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(6,8)),
+				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(6,8)),
 				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(7,8)),
 				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(8,8)),
 				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(9,8)),
@@ -107,7 +107,7 @@ public class BoardConfiguration {
 				new PieceLocationDescriptor((new Piece(PieceType.CAPTAIN, PlayerColor.BLUE)), new Location2D(3,9)),
 				new PieceLocationDescriptor((new Piece(PieceType.CAPTAIN, PlayerColor.BLUE)), new Location2D(4,9)),
 				new PieceLocationDescriptor((new Piece(PieceType.CAPTAIN, PlayerColor.BLUE)), new Location2D(5,9)),
-				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(6,9)),
+				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(6,9)),
 				new PieceLocationDescriptor((new Piece(PieceType.MAJOR, PlayerColor.BLUE)), new Location2D(7,9)),
 				new PieceLocationDescriptor((new Piece(PieceType.MAJOR, PlayerColor.BLUE)), new Location2D(8,9)),
 				new PieceLocationDescriptor((new Piece(PieceType.MAJOR, PlayerColor.BLUE)), new Location2D(9,9))};
@@ -116,9 +116,9 @@ public class BoardConfiguration {
 		 * The board with the initial configuration looks like this:
 		 *   |  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 9 | COL | COL | CPT | CPT | CPT | CPT |  B  | MAJ | MAJ |MAJ  |
+		 * 9 | COL | COL | CPT | CPT | CPT | CPT | SGT | MAJ | MAJ |MAJ  |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 8 | LT  | LT  | LT  | LT  |  B  |  B  | SGT | SGT | SGT | SGT |
+		 * 8 | LT  | LT  | LT  | LT  |  B  |  B  |  B  | SGT | SGT | SGT |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 7 |  F  | MIN | SCT | MIN | SCT | MIN | MIN | SCT | SCT | SCT |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+

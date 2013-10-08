@@ -38,29 +38,21 @@ public class DeltaStrategyPolliceBetaTest
 	
 	// Locations used in the test
 	private Location
-		loc01 = new Location2D(0, 1),
-		loc02 = new Location2D(0, 2),
 		loc03 = new Location2D(0, 3),
 		loc04 = new Location2D(0, 4),
 		loc11 = new Location2D(1, 1),
-		loc12 = new Location2D(1, 2),
 		loc13 = new Location2D(1, 3),
 		loc14 = new Location2D(1, 4),
 		loc21 = new Location2D(2, 1),
-		loc22 = new Location2D(2, 2),
-		loc24 = new Location2D(2, 4),
-		loc31 = new Location2D(3, 1),
-		loc51 = new Location2D(5, 1),
-		loc52 = new Location2D(5, 2),
 		loc53 = new Location2D(5, 3),
 		loc54 = new Location2D(5, 4),
 		loc06 = new Location2D(0, 6),
 		loc05 = new Location2D(0, 5),
 		loc93 = new Location2D(9, 3),
+		loc94 = new Location2D(9, 4),
 		loc07 = new Location2D(0, 7),
 		loc16 = new Location2D(1, 6),
-		loc15 = new Location2D(1, 5),
-		badLoc = new Location2D(-1, 6);
+		loc15 = new Location2D(1, 5);
 	
 	@Before
 	public void setup() throws StrategyException
@@ -100,63 +92,55 @@ public class DeltaStrategyPolliceBetaTest
 	@Test(expected=StrategyException.class)
 	public void blueConfigurationHasTooManyItems() throws StrategyException
 	{
-		addToConfiguration(SERGEANT, BLUE, 0, 3);
+		addToConfiguration(SERGEANT, BLUE, 0, 4);
 		factory.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 	}
 	
 	@Test(expected=StrategyException.class)
 	public void placeRedPieceOnInvalidRow() throws StrategyException
 	{
-		redConfiguration.remove(1);	// Marshall @ (0, 0)
-		addToConfiguration(MARSHAL, RED, 0, 3);
+		redConfiguration.remove(1);	// Captain @ (1, 0)
+		addToConfiguration(CAPTAIN, RED, 0, 4);
 		factory.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 	}
 	
 	@Test(expected=StrategyException.class)
 	public void placeRedPieceOnInvalidColumn() throws StrategyException
 	{
-		redConfiguration.remove(1);	// Marshall @ (0, 0)
-		addToConfiguration(MARSHAL, RED, -1, 0);
+		redConfiguration.remove(1);	// Captain @ (1, 0)
+		addToConfiguration(CAPTAIN, RED, -1, 0);
 		factory.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 	}
 	
 	@Test(expected=StrategyException.class)
 	public void placeBluePieceOnInvalidRow() throws StrategyException
 	{
-		blueConfiguration.remove(11);	// Sergeant @ (0, 4)
-		addToConfiguration(SERGEANT, BLUE, 0, 2);
+		blueConfiguration.remove(11);	// Miner @ (1, 7)
+		addToConfiguration(MINER, BLUE, 1, 5);
 		factory.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 	}
 	
 	@Test(expected=StrategyException.class)
 	public void placeBluePieceOnInvalidColumn() throws StrategyException
 	{
-		blueConfiguration.remove(11);	// Sergeant @ (0, 4)
-		addToConfiguration(SERGEANT, BLUE, 6, 4);
+		blueConfiguration.remove(11);	// Miner @ (1, 7)
+		addToConfiguration(MINER, BLUE, 10, 6);
 		factory.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 	}
 	
 	@Test(expected=StrategyException.class)
 	public void twoPiecesOnSameLocationInStartingConfiguration() throws StrategyException
 	{
-		redConfiguration.remove(1);	// Marshall @ (0, 0)
-		addToConfiguration(MARSHAL, RED, 0, 1); // Same place as RED Flag
+		redConfiguration.remove(1);	// Captain @ (1, 0)
+		addToConfiguration(CAPTAIN, RED, 9, 3); // Same place as RED Flag
 		factory.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 	}
 	
 	@Test(expected=StrategyException.class)
-	public void usePieceNotInVersionInStartingConfiguration() throws StrategyException
+	public void redHasLessColonelAndMoreSergeants() throws StrategyException
 	{
-		redConfiguration.remove(1); // Marshall @ (0, 0)
-		addToConfiguration(BOMB, RED, 0, 0);
-		factory.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
-	}
-	
-	@Test(expected=StrategyException.class)
-	public void redHasOneColonelAndTwoSergeants() throws StrategyException
-	{
-		redConfiguration.remove(2); // Colonel @ (1, 0)
-		addToConfiguration(SERGEANT, RED, 1, 0);
+		redConfiguration.remove(9); // Colonel @ (9, 0)
+		addToConfiguration(SERGEANT, RED, 9, 0);
 		factory.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 	}
 	
@@ -164,34 +148,28 @@ public class DeltaStrategyPolliceBetaTest
 	public void makeMoveBeforeCallingStartGame() throws StrategyException
 	{
 		game = factory.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
-		game.move(LIEUTENANT, loc11, loc12);
+		game.move(SCOUT, loc53, loc54);
 	}
 	
 	@Test
 	public void redMakesValidFirstMoveStatusIsOK() throws StrategyException
 	{
-		final MoveResult result = game.move(SCOUT, loc13, loc14);
+		final MoveResult result = game.move(SCOUT, loc53, loc54);
 		assertEquals(OK, result.getStatus());
 	}
 	
 	@Test
 	public void redMakesValidFirstMoveAndBoardIsCorrect() throws StrategyException
 	{
-		game.move(SCOUT, loc13, loc14);
-		assertNull(game.getPieceAt(loc13));
-		assertEquals(new Piece(SCOUT, RED), game.getPieceAt(loc14));
+		game.move(SCOUT, loc53, loc54);
+		assertNull(game.getPieceAt(loc53));
+		assertEquals(new Piece(SCOUT, RED), game.getPieceAt(loc54));
 	}
 	
 	@Test(expected=StrategyException.class)
 	public void redAttemptsMoveFromEmptyLocation() throws StrategyException
 	{
-		game.move(LIEUTENANT, loc12, loc13);
-	}
-	
-	@Test(expected=StrategyException.class)
-	public void redMovesPieceNotOnFromLocation() throws StrategyException
-	{
-		game.move(LIEUTENANT, loc31, loc12);
+		game.move(SPY, loc04, loc05);
 	}
 	
 	@Test
@@ -200,31 +178,6 @@ public class DeltaStrategyPolliceBetaTest
 		game.move(SPY, loc03, loc04);
 		game.move(MARSHAL, loc06, loc05);
 		assertEquals(new Piece(MARSHAL, BLUE), game.getPieceAt(loc05));
-	}
-	
-	@Test(expected=StrategyException.class)
-	public void redMovesPieceNotInGame() throws StrategyException
-	{
-		game.move(SCOUT, loc11, loc12);
-	}
-	
-	@Test(expected=StrategyException.class)
-	public void redMovesFromInvalidLocation() throws StrategyException
-	{
-		game.move(LIEUTENANT, badLoc, loc12);
-	}
-	
-	@Test(expected=StrategyException.class)
-	public void blueMovesToInvalidLocation() throws StrategyException
-	{
-		game.move(LIEUTENANT, loc11, loc12);
-		game.move(SERGEANT, loc24, badLoc);
-	}
-	
-	@Test(expected=StrategyException.class)
-	public void moveWrongColorPiece() throws StrategyException
-	{
-		game.move(LIEUTENANT, loc04, loc03);
 	}
 	
 	@Test
@@ -246,12 +199,6 @@ public class DeltaStrategyPolliceBetaTest
 	@Test
 	public void attackerWinsStrike() throws StrategyException
 	{
-//		blueConfiguration.remove(9); //Sergeant (2,4)
-//		addToConfiguration(LIEUTENANT, BLUE, 2, 4);
-//		blueConfiguration.remove(8); //Lieutenant (1,4)
-//		addToConfiguration(SERGEANT, BLUE, 1, 4);
-//		factory.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
-//		game.startGame();
 		game.move(SPY, loc03, loc04);
 		game.move(MARSHAL, loc06, loc05);
 		final MoveResult moveResult = game.move(SPY, loc04, loc05);
@@ -291,42 +238,19 @@ public class DeltaStrategyPolliceBetaTest
 	@Test(expected=StrategyException.class)
 	public void attemptToStrikeYourOwnPiece() throws StrategyException
 	{
-		game.move(LIEUTENANT, loc11, loc21);
-	}
-	
-	@Test(expected=StrategyException.class)
-	public void attemptToMoveDiagonally() throws StrategyException
-	{
-		game.move(LIEUTENANT, loc11, loc22);
-	}
-	
-	@Test(expected=StrategyException.class)
-	public void attemptToMoveFurtherThanOneLocation() throws StrategyException
-	{
-		game.move(LIEUTENANT, loc11, loc13);
+		game.move(CAPTAIN, loc11, loc21);
 	}
 	
 	@Test(expected=StrategyException.class)
 	public void attemptToMoveFlag() throws StrategyException
 	{
-		game.move(FLAG, loc01, loc02);
+		game.move(FLAG, loc93, loc94);
 	}
 	
 	@Test(expected=StrategyException.class)
 	public void attemptToRestartGameInProgress() throws StrategyException
 	{
-		game.move(LIEUTENANT, loc11, loc12);
-		game.startGame();
-	}
-	
-	@Test(expected=StrategyException.class)
-	public void attemptToRestartCompletedGame() throws StrategyException
-	{
-		game.move(SERGEANT, loc51, loc52);
-		game.move(LIEUTENANT, loc04, loc03);
-		game.move(SERGEANT, loc52, loc53);
-		game.move(LIEUTENANT,  loc03,  loc02);
-		game.move(SERGEANT, loc53, loc54);
+		game.move(SCOUT, loc53, loc54);
 		game.startGame();
 	}
 	

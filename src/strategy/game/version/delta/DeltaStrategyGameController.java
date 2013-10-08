@@ -45,6 +45,7 @@ public class DeltaStrategyGameController implements StrategyGameController {
 	private PieceLocationDescriptor currentPieceDescriptor = null;
 	private PlayerColor playerColor;
 	private MoveResult battleResult;
+	private MoveResultStatus repetitionWinner;
 	private PieceLocationDescriptor CP24;
 	private PieceLocationDescriptor CP25;
 	private PieceLocationDescriptor CP34;
@@ -163,6 +164,12 @@ public class DeltaStrategyGameController implements StrategyGameController {
 		if (!gameStarted) {
 			throw new StrategyException("You must start the game");
 		}
+		if(piece == PieceType.FLAG
+				|| piece == PieceType.BOMB
+				|| piece == PieceType.CHOKE_POINT) {
+
+			throw new StrategyException("Cannot move the " + piece);
+		}
 		if (!(piece == PieceType.MARSHAL 
 				|| piece == PieceType.GENERAL
 				|| piece == PieceType.COLONEL
@@ -177,14 +184,7 @@ public class DeltaStrategyGameController implements StrategyGameController {
 			throw new StrategyException(piece + " is not a valid piece for the Delta Strategy.");
 		}
 
-		if(piece == PieceType.FLAG
-				|| piece == PieceType.BOMB
-				|| piece == PieceType.CHOKE_POINT) {
-
-			throw new StrategyException("Cannot move the " + piece);
-		}
-
-		MoveResult flagOnly = checkPlayerTurnAndFlag();
+		final MoveResult flagOnly = checkPlayerTurnAndFlag();
 		if(flagOnly != null) {
 			return flagOnly;
 		}
@@ -199,14 +199,14 @@ public class DeltaStrategyGameController implements StrategyGameController {
 				//if moving on the y axis
 				if(from.getCoordinate(Coordinate.Y_COORDINATE) != to.getCoordinate(Coordinate.Y_COORDINATE)){
 					tempPieceAtTo = getPieceAt(new Location2D(to.getCoordinate(Coordinate.X_COORDINATE),
-							from.getCoordinate(Coordinate.Y_COORDINATE)+i));
+							from.getCoordinate(Coordinate.Y_COORDINATE) + i));
 					if(tempPieceAtTo != null){
 						throw new StrategyException("Piece in Scout path");
 					}
 				}
 				//if moving on the x axis
 				else{
-					tempPieceAtTo = getPieceAt(new Location2D(from.getCoordinate(Coordinate.X_COORDINATE)+i,
+					tempPieceAtTo = getPieceAt(new Location2D(from.getCoordinate(Coordinate.X_COORDINATE) + i,
 							to.getCoordinate(Coordinate.Y_COORDINATE)));
 					if(tempPieceAtTo != null){
 						throw new StrategyException("Piece in Scout path");
@@ -237,8 +237,13 @@ public class DeltaStrategyGameController implements StrategyGameController {
 		checkLocationCoordinates(to);
 
 		//check for repetition rule
-		RepetitionRule.checkRepRule(currentPieceDescriptor, to);
+		repetitionWinner = RepetitionRule.checkRepRule(currentPieceDescriptor, to);
 		RepetitionRule.addToQueue(currentPieceDescriptor, to);
+		
+		if (repetitionWinner == MoveResultStatus.BLUE_WINS
+				|| repetitionWinner == MoveResultStatus.RED_WINS) {
+			return new MoveResult(repetitionWinner, null);
+		}
 
 		final Piece tempPieceAtTo = getPieceAt(to);
 
@@ -265,6 +270,7 @@ public class DeltaStrategyGameController implements StrategyGameController {
 				return battleResult;
 			}
 
+			//if red is the winner
 			if(battleResult.getBattleWinner().getPiece().getOwner() == PlayerColor.RED) {
 				redConfiguration.add(battleResult.getBattleWinner());
 			}
@@ -275,6 +281,12 @@ public class DeltaStrategyGameController implements StrategyGameController {
 			boardMap.remove(to);
 			boardMap.put(battleResult.getBattleWinner().getLocation(), battleResult.getBattleWinner().getPiece());
 
+			//if it was a flag battle, end game
+			if(battleResult.getStatus() == MoveResultStatus.BLUE_WINS
+					|| battleResult.getStatus() == MoveResultStatus.RED_WINS) {
+				gameOver = true;
+			}
+			
 			flagResult = checkFlagOnly(playerColor);
 			if(flagResult != null){
 				return flagResult;
@@ -343,6 +355,8 @@ public class DeltaStrategyGameController implements StrategyGameController {
 		Piece temp;
 		PieceType shouldBeBlueFlag = null;
 		PieceType shouldBeRedFlag = null;
+		int blueBombCount = 0;
+		int redBombCount = 0;
 		int blueCount = 0;
 		int redCount = 0;
 
@@ -354,23 +368,32 @@ public class DeltaStrategyGameController implements StrategyGameController {
 					if(temp.getType().equals(PieceType.FLAG)) {
 						shouldBeBlueFlag = temp.getType();
 					}
+					if(temp.getType().equals(PieceType.BOMB)) {
+						blueBombCount += 1;
+					}
 				}
 				else if(temp.getOwner() != null && temp.getOwner().equals(PlayerColor.RED)) {
 					redCount += 1;
 					if(temp.getType().equals(PieceType.FLAG)) {
 						shouldBeRedFlag = temp.getType();
 					}
+					if(temp.getType().equals(PieceType.BOMB)) {
+						redBombCount += 1;
+					}
 				}
 			}
 		}
-		if((blueCount == 1 && shouldBeBlueFlag.equals(PieceType.FLAG))
-				&& (redCount == 1 && shouldBeRedFlag.equals(PieceType.FLAG))) {
+		if((blueCount == (blueBombCount + 1) && shouldBeBlueFlag.equals(PieceType.FLAG))
+				&& (redCount == (redBombCount + 1) && shouldBeRedFlag.equals(PieceType.FLAG))) {
+			gameOver = true;
 			return new MoveResult(MoveResultStatus.DRAW, null);
 		}
-		else if (blueCount == 1 && shouldBeBlueFlag.equals(PieceType.FLAG)) {
+		else if (blueCount == (blueBombCount + 1) && shouldBeBlueFlag.equals(PieceType.FLAG)) {
+			gameOver = true;
 			return new MoveResult(MoveResultStatus.RED_WINS, null);
 		}
-		else if (redCount == 1 && shouldBeRedFlag.equals(PieceType.FLAG)) {
+		else if (redCount == (redBombCount + 1) && shouldBeRedFlag.equals(PieceType.FLAG)) {
+			gameOver = true;
 			return new MoveResult(MoveResultStatus.BLUE_WINS, null);
 		}
 		else {
@@ -422,7 +445,6 @@ public class DeltaStrategyGameController implements StrategyGameController {
 				toXcoordinate, toYcoordinate);
 
 		//check for valid X,Y coordinates
-		// TODO: add scout checking
 		validateDelta.validateCrossMove(currentPieceDescriptor.getLocation(),to);
 
 	}

@@ -151,7 +151,7 @@ public class Battle {
 	/**
 	 * Fills the piece battle lists
 	 */
-	public static void initializePieceRanks() {
+	public void initializePieceRanks() {
 		pieceRanks.put(PieceType.MARSHAL, 12);
 		pieceRanks.put(PieceType.GENERAL, 11);
 		pieceRanks.put(PieceType.COLONEL, 10);

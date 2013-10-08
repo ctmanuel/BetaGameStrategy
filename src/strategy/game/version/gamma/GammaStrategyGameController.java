@@ -162,7 +162,7 @@ public class GammaStrategyGameController implements StrategyGameController {
 			throw new StrategyException("Cannot move the " + piece);
 		}
 
-		MoveResult flagOnly = checkPlayerTurnAndFlag();
+		final MoveResult flagOnly = checkPlayerTurnAndFlag();
 		if(flagOnly!=null) {
 			return flagOnly;
 		}
