@@ -198,18 +198,32 @@ public class DeltaStrategyGameController implements StrategyGameController {
 			for (int i = 1;  i <= currentPieceDescriptor.getLocation().distanceTo(to); i++){
 				//if moving on the y axis
 				if(from.getCoordinate(Coordinate.Y_COORDINATE) != to.getCoordinate(Coordinate.Y_COORDINATE)){
-					tempPieceAtTo = getPieceAt(new Location2D(to.getCoordinate(Coordinate.X_COORDINATE),
-							from.getCoordinate(Coordinate.Y_COORDINATE) + i));
+					if (from.getCoordinate(Coordinate.Y_COORDINATE) > to.getCoordinate(Coordinate.Y_COORDINATE)) {
+						tempPieceAtTo = getPieceAt(new Location2D(to.getCoordinate(Coordinate.X_COORDINATE),
+								from.getCoordinate(Coordinate.Y_COORDINATE) - i));
+					}
+					else {
+						tempPieceAtTo = getPieceAt(new Location2D(to.getCoordinate(Coordinate.X_COORDINATE),
+								from.getCoordinate(Coordinate.Y_COORDINATE) + i));
+					}
+					
 					if(tempPieceAtTo != null){
-						throw new StrategyException("Piece in Scout path");
+						throw new StrategyException("Piece in Scout path " + tempPieceAtTo.getType());
 					}
 				}
 				//if moving on the x axis
-				else{
-					tempPieceAtTo = getPieceAt(new Location2D(from.getCoordinate(Coordinate.X_COORDINATE) + i,
-							to.getCoordinate(Coordinate.Y_COORDINATE)));
+				else {
+					if (from.getCoordinate(Coordinate.X_COORDINATE) > to.getCoordinate(Coordinate.X_COORDINATE)) {
+						tempPieceAtTo = getPieceAt(new Location2D(from.getCoordinate(Coordinate.X_COORDINATE) - i,
+								to.getCoordinate(Coordinate.Y_COORDINATE)));
+					}
+					else {
+						tempPieceAtTo = getPieceAt(new Location2D(from.getCoordinate(Coordinate.X_COORDINATE) + i,
+								to.getCoordinate(Coordinate.Y_COORDINATE)));
+					}
+					
 					if(tempPieceAtTo != null){
-						throw new StrategyException("Piece in Scout path");
+						throw new StrategyException("Piece in Scout path " + tempPieceAtTo.getType());
 					}
 				}
 			}
@@ -239,7 +253,7 @@ public class DeltaStrategyGameController implements StrategyGameController {
 		//check for repetition rule
 		repetitionWinner = RepetitionRule.checkRepRule(currentPieceDescriptor, to);
 		RepetitionRule.addToQueue(currentPieceDescriptor, to);
-		
+
 		if (repetitionWinner == MoveResultStatus.BLUE_WINS
 				|| repetitionWinner == MoveResultStatus.RED_WINS) {
 			return new MoveResult(repetitionWinner, null);
@@ -285,8 +299,9 @@ public class DeltaStrategyGameController implements StrategyGameController {
 			if(battleResult.getStatus() == MoveResultStatus.BLUE_WINS
 					|| battleResult.getStatus() == MoveResultStatus.RED_WINS) {
 				gameOver = true;
+				return battleResult;
 			}
-			
+
 			flagResult = checkFlagOnly(playerColor);
 			if(flagResult != null){
 				return flagResult;

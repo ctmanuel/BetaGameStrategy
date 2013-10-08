@@ -177,13 +177,58 @@ public class DeltaStrategyMasterTest {
 	}
 
 	@Test
-	public void ScoutMove() throws StrategyException {
+	public void ScoutMovePositiveY() throws StrategyException {
 		game.startGame();
 		assertNull(game.getPieceAt(new Location2D(1,4)));
 		assertNull(game.getPieceAt(new Location2D(1,5)));
-		final MoveResult result= 
+		final MoveResult result = 
 				game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,5));
 		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SCOUT, PlayerColor.RED), new Location2D(1,5)), 
+				result.getBattleWinner());
+	}
+	
+	@Test
+	public void ScoutMoveNegativeX() throws StrategyException {
+		game.startGame();
+		game.move(PieceType.SPY, new Location2D(0,3), new Location2D(0,4));
+		game.move(PieceType.MARSHAL, new Location2D(0,6), new Location2D(0,5));
+		game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,4));
+		game.move(PieceType.GENERAL, new Location2D(1,6), new Location2D(1,5));
+		game.move(PieceType.MARSHAL, new Location2D(4,3), new Location2D(4,4));
+		assertNull(game.getPieceAt(new Location2D(0,6)));
+		assertNull(game.getPieceAt(new Location2D(1,6)));
+		final MoveResult result = 
+				game.move(PieceType.SCOUT, new Location2D(2,6), new Location2D(0,6));
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SCOUT, PlayerColor.BLUE), new Location2D(0,6)), 
+				result.getBattleWinner());
+	}
+	
+	@Test
+	public void ScoutMovePositiveX() throws StrategyException {
+		game.startGame();
+		game.move(PieceType.MARSHAL, new Location2D(4,3), new Location2D(4,4));
+		game.move(PieceType.MINER, new Location2D(4,6), new Location2D(4,5));
+		game.move(PieceType.SCOUT, new Location2D(5,3), new Location2D(5,4));
+		game.move(PieceType.SCOUT, new Location2D(9,6), new Location2D(9,5));
+		game.move(PieceType.SCOUT, new Location2D(4,2), new Location2D(4,3));
+		game.move(PieceType.MARSHAL, new Location2D(0,6), new Location2D(0,5));
+		game.move(PieceType.SCOUT, new Location2D(5,2), new Location2D(5,3));
+		game.move(PieceType.MARSHAL, new Location2D(0,5), new Location2D(0,4));
+		assertNull(game.getPieceAt(new Location2D(4,2)));
+		assertNull(game.getPieceAt(new Location2D(5,2)));
+		final MoveResult result = 
+				game.move(PieceType.SCOUT, new Location2D(3,2), new Location2D(5,2));
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SCOUT, PlayerColor.RED), new Location2D(5,2)), 
+				result.getBattleWinner());
+	}
+	
+	@Test
+	public void ScoutMoveNegativeY() throws StrategyException {
+		game.startGame();
+		game.move(PieceType.MARSHAL, new Location2D(4,3), new Location2D(4,4));
+		final MoveResult result = 
+				game.move(PieceType.SCOUT, new Location2D(9,6), new Location2D(9,4));
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SCOUT, PlayerColor.BLUE), new Location2D(9,4)), 
 				result.getBattleWinner());
 	}
 }
