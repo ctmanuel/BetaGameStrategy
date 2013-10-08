@@ -1,0 +1,18 @@
+	-add observer to factory call
+	-2 Lieutenants
+	-2 first Lieutenants
+		-only move one square at a time
+		-can attack from 2 squares away
+			-cannot attack if piece in the way
+			-win: move to defending piece's spot
+			-lose: defending pieces don't move
+		-Lieutenant vs. first Lieutenant, both removed
+	-2 flags
+		-flags replace any piece of player's choosing
+	-game ends when both flags captured
+		-first flag captured, status = FLAG_CAPTURED
+		-second flag captured, status = WIN
+	-resign
+		-move with null configuration
+		-opponent wins game
+		
