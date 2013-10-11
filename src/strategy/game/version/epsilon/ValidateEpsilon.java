@@ -46,6 +46,8 @@ public class ValidateEpsilon implements Validate {
 		if (configuration.size() != 40) {
 			throw new StrategyException("Incorrect configuration size.");
 		}
+		
+		//TODO: check for 2 flags
 
 		//check if pieces are placed out of bounds
 		final Iterator<PieceLocationDescriptor> configIterator = configuration.iterator();
@@ -64,9 +66,9 @@ public class ValidateEpsilon implements Validate {
 
 			//check out of bounds
 			validateOutOfBounds(currentConfigIterPiece.getLocation());
-			
-			//check piece distribution
 		}
+		
+		//check piece distribution
 		final Map<PieceType, Integer> initialPieces = 
 				validatePieces(configuration, bottomRow, topRow);
 		checkPiecesDistributed(initialPieces);

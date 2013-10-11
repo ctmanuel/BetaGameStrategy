@@ -25,13 +25,14 @@ import strategy.game.version.Initialize;
  */
 public class InitializeEpsilon implements Initialize {
 	
-	private final int FLAG_COUNT = 1;
+	private final int FLAG_COUNT = 2;
 	private final int MARSHAL_COUNT = 1;
 	private final int GENERAL_COUNT = 1;
 	private final int COLONEL_COUNT = 2;
 	private final int MAJOR_COUNT = 3;
 	private final int CAPTAIN_COUNT = 4;
-	private final int LIEUTENANT_COUNT = 4;
+	private final int LIEUTENANT_COUNT = 2;
+	private final int FIRST_LIEUTENANT_COUNT = 2;
 	private final int SERGEANT_COUNT = 4;
 	private final int MINER_COUNT = 5;
 	private final int SCOUT_COUNT = 8;
@@ -53,6 +54,7 @@ public class InitializeEpsilon implements Initialize {
 		startingPieces.put(PieceType.MAJOR, MAJOR_COUNT);
 		startingPieces.put(PieceType.CAPTAIN, CAPTAIN_COUNT);
 		startingPieces.put(PieceType.LIEUTENANT, LIEUTENANT_COUNT);
+		startingPieces.put(PieceType.FIRST_LIEUTENANT, FIRST_LIEUTENANT_COUNT);
 		startingPieces.put(PieceType.SERGEANT, SERGEANT_COUNT);
 		startingPieces.put(PieceType.MINER, MINER_COUNT);
 		startingPieces.put(PieceType.SCOUT, SCOUT_COUNT);
