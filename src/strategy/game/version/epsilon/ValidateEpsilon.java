@@ -53,10 +53,12 @@ public class ValidateEpsilon implements Validate {
 		final Iterator<PieceLocationDescriptor> configIterator = configuration.iterator();
 
 		PieceLocationDescriptor currentConfigIterPiece = null;
+		PieceType currentConfigIterType = null;
 		int currentY;
 
 		while (configIterator.hasNext()) {
 			currentConfigIterPiece = configIterator.next();
+			currentConfigIterType = currentConfigIterPiece.getPiece().getType();
 
 			currentY = currentConfigIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
 

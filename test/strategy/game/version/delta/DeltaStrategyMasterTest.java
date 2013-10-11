@@ -53,7 +53,7 @@ public class DeltaStrategyMasterTest {
 	}
 
 	@Test(expected=StrategyException.class)
-	public void cannotCreateGammaStrategyWithNullConfigurations() throws StrategyException
+	public void cannotCreateDeltaStrategyWithNullConfigurations() throws StrategyException
 	{
 		game = DeltaStrategy.makeDeltaStrategyGame(null, null);
 	}
@@ -77,7 +77,7 @@ public class DeltaStrategyMasterTest {
 	}
 
 	@Test
-	public void createGammaStrategyController() throws StrategyException
+	public void createDeltaStrategyController() throws StrategyException
 	{
 		assertNotNull(DeltaStrategy.makeDeltaStrategyGame(redConfiguration, blueConfiguration));
 	}
@@ -86,7 +86,7 @@ public class DeltaStrategyMasterTest {
 	public void redConfigurationHasTooFewItem() throws StrategyException
 	{
 		redConfiguration.remove(0);
-		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
+		DeltaStrategy.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 	}
 
 	@Test(expected=StrategyException.class)
@@ -94,7 +94,7 @@ public class DeltaStrategyMasterTest {
 	{
 		blueConfiguration.add(new PieceLocationDescriptor(
 				new Piece(PieceType.SERGEANT, PlayerColor.BLUE), new Location2D(0,4)));
-		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
+		DeltaStrategy.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 	}
 
 	@Test(expected=StrategyException.class)
@@ -103,7 +103,7 @@ public class DeltaStrategyMasterTest {
 		redConfiguration.remove(0);	// Bomb @ (0, 0)
 		redConfiguration.add(new PieceLocationDescriptor(
 				new Piece(PieceType.BOMB, PlayerColor.RED), new Location2D(0,4)));
-		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
+		DeltaStrategy.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 	}
 
 	@Test(expected=StrategyException.class)
@@ -112,7 +112,7 @@ public class DeltaStrategyMasterTest {
 		redConfiguration.remove(0);	// Bomb @ (0, 0)
 		redConfiguration.add(new PieceLocationDescriptor(
 				new Piece(PieceType.BOMB, PlayerColor.RED), new Location2D(-1,1)));
-		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
+		DeltaStrategy.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 	}
 
 	@Test(expected=StrategyException.class)
@@ -121,7 +121,7 @@ public class DeltaStrategyMasterTest {
 		blueConfiguration.remove(0);	// Marshal @ (0, 6)
 		blueConfiguration.add(new PieceLocationDescriptor(
 				new Piece(PieceType.MARSHAL, PlayerColor.BLUE), new Location2D(5,4)));
-		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
+		DeltaStrategy.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 	}
 
 	@Test(expected=StrategyException.class)
@@ -130,7 +130,7 @@ public class DeltaStrategyMasterTest {
 		blueConfiguration.remove(0);	// Marshal @ (0, 6)
 		blueConfiguration.add(new PieceLocationDescriptor(
 				new Piece(PieceType.MARSHAL, PlayerColor.BLUE), new Location2D(10,6)));
-		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
+		DeltaStrategy.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 	}
 
 	@Test(expected=StrategyException.class)
@@ -139,7 +139,7 @@ public class DeltaStrategyMasterTest {
 		blueConfiguration.remove(0);	// Marshal @ (0, 6)
 		blueConfiguration.add(new PieceLocationDescriptor(
 				new Piece(PieceType.MARSHAL, PlayerColor.BLUE), new Location2D(3,5)));
-		DeltaStrategy.makeGammaStrategyGame(redConfiguration, blueConfiguration);
+		DeltaStrategy.makeDeltaStrategyGame(redConfiguration, blueConfiguration);
 	}
 
 	@Test(expected=StrategyException.class)

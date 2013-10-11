@@ -17,6 +17,7 @@ import strategy.common.StrategyException;
 import strategy.common.StrategyRuntimeException;
 import strategy.game.common.Coordinate;
 import strategy.game.common.PieceLocationDescriptor;
+import strategy.game.common.StrategyGameObserver;
 import strategy.game.version.alpha.AlphaStrategyGameController;
 import strategy.game.version.beta.BetaStrategyGameController;
 import strategy.game.version.delta.DeltaStrategyGameController;
@@ -190,7 +191,8 @@ public class StrategyGameFactory
 	 */
 	public StrategyGameController makeEpsilonStrategyGame(
 			Collection<PieceLocationDescriptor> redConfiguration,
-			Collection<PieceLocationDescriptor> blueConfiguration)
+			Collection<PieceLocationDescriptor> blueConfiguration,
+			Collection<StrategyGameObserver>observers)
 					throws StrategyException
 	{
 		final StrategyGameController EpsilonGame = new EpsilonStrategyGameController(redConfiguration, blueConfiguration);

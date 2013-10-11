@@ -158,6 +158,7 @@ public class Battle {
 		pieceRanks.put(PieceType.MAJOR, 9);
 		pieceRanks.put(PieceType.CAPTAIN, 8);
 		pieceRanks.put(PieceType.LIEUTENANT, 7);
+		pieceRanks.put(PieceType.FIRST_LIEUTENANT, 7);
 		pieceRanks.put(PieceType.SERGEANT, 6);
 		pieceRanks.put(PieceType.MINER, 5);
 		pieceRanks.put(PieceType.SCOUT, 4);
