@@ -87,7 +87,7 @@ public class EpsilonStrategyInvalidMoveTest {
 	@Test(expected=StrategyException.class)
 	public void makeInvalidMoveXToMoreSpace() throws StrategyException {
 		game.startGame();
-		game.move(PieceType.SCOUT, new Location2D(5,3), new Location2D(5,4));
+		game.move(PieceType.FIRST_LIEUTENANT, new Location2D(5,3), new Location2D(5,4));
 		game.move(PieceType.SCOUT, new Location2D(9,6), new Location2D(9,5));
 		game.move(PieceType.MARSHAL, new Location2D(4,3), new Location2D(4,4));
 		game.move(PieceType.SCOUT, new Location2D(9,5), new Location2D(9,6));
@@ -110,7 +110,7 @@ public class EpsilonStrategyInvalidMoveTest {
 	@Test(expected=StrategyException.class)
 	public void makeInvalidBlueMovesRed() throws StrategyException {
 		game.startGame();
-		game.move(PieceType.SCOUT, new Location2D(5,3), new Location2D(5,4));
+		game.move(PieceType.FIRST_LIEUTENANT, new Location2D(5,3), new Location2D(5,4));
 		game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,4));
 	}
 
@@ -170,9 +170,9 @@ public class EpsilonStrategyInvalidMoveTest {
 	public void makeRedRepitionRulePlay() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.MARSHAL, new Location2D(4,3), new Location2D(4,4));
-		game.move(PieceType.GENERAL, new Location2D(1,6), new Location2D(1,5));
+		game.move(PieceType.FIRST_LIEUTENANT, new Location2D(1,6), new Location2D(1,5));
 		game.move(PieceType.MARSHAL, new Location2D(4,4), new Location2D(4,3));
-		game.move(PieceType.GENERAL, new Location2D(1,5), new Location2D(1,4));
+		game.move(PieceType.FIRST_LIEUTENANT, new Location2D(1,5), new Location2D(1,4));
 		MoveResult result = game.move(PieceType.MARSHAL, new Location2D(4,3), new Location2D(4,4));
 		assertEquals(null, result.getBattleWinner());
 		assertEquals(MoveResultStatus.BLUE_WINS, result.getStatus());
@@ -182,11 +182,11 @@ public class EpsilonStrategyInvalidMoveTest {
 	public void makeBlueRepitionRulePlay() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,4));
-		game.move(PieceType.GENERAL, new Location2D(1,6), new Location2D(1,5));
+		game.move(PieceType.FIRST_LIEUTENANT, new Location2D(1,6), new Location2D(1,5));
 		game.move(PieceType.MARSHAL, new Location2D(4,3), new Location2D(4,4));
-		game.move(PieceType.GENERAL, new Location2D(1,5), new Location2D(1,6));
+		game.move(PieceType.FIRST_LIEUTENANT, new Location2D(1,5), new Location2D(1,6));
 		game.move(PieceType.MARSHAL, new Location2D(4,4), new Location2D(4,5));
-		MoveResult result = game.move(PieceType.GENERAL, new Location2D(1,6), new Location2D(1,5));
+		MoveResult result = game.move(PieceType.FIRST_LIEUTENANT, new Location2D(1,6), new Location2D(1,5));
 		assertEquals(null, result.getBattleWinner());
 		assertEquals(MoveResultStatus.RED_WINS, result.getStatus());
 	}
@@ -201,7 +201,7 @@ public class EpsilonStrategyInvalidMoveTest {
 	public void BombMove() throws StrategyException {
 		game.startGame();
 		game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,4));
-		game.move(PieceType.BOMB, new Location2D(5,6), new Location2D(5,5));
+		game.move(PieceType.BOMB, new Location2D(8,6), new Location2D(8,5));
 	}
 
 	@Test(expected=StrategyException.class)

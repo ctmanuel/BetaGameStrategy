@@ -29,6 +29,7 @@ public class BoardConfiguration {
 		redConfiguration.clear();
 		blueConfiguration.clear();
 		
+		//removed Scout
 		final PieceLocationDescriptor[] redPieces = {
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.RED)), new Location2D(0,0)),
 				new PieceLocationDescriptor((new Piece(PieceType.CAPTAIN, PlayerColor.RED)), new Location2D(1,0)),
@@ -51,7 +52,7 @@ public class BoardConfiguration {
 				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.RED)), new Location2D(8,1)),
 				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.RED)), new Location2D(9,1)),
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(0,2)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(1,2)),
+				new PieceLocationDescriptor((new Piece(PieceType.FLAG, PlayerColor.RED)), new Location2D(1,2)),
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.RED)), new Location2D(2,2)),
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(3,2)),
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(4,2)),
@@ -70,7 +71,8 @@ public class BoardConfiguration {
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.RED)), new Location2D(7,3)),
 				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.RED)), new Location2D(8,3)),
 				new PieceLocationDescriptor((new Piece(PieceType.FLAG, PlayerColor.RED)), new Location2D(9,3))};
-
+		
+		//removed Miner
 		final PieceLocationDescriptor[] bluePieces = {
 				new PieceLocationDescriptor((new Piece(PieceType.MARSHAL, PlayerColor.BLUE)), new Location2D(0,6)),
 				new PieceLocationDescriptor((new Piece(PieceType.FIRST_LIEUTENANT, PlayerColor.BLUE)), new Location2D(1,6)),
@@ -88,7 +90,7 @@ public class BoardConfiguration {
 				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.BLUE)), new Location2D(3,7)),
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(4,7)),
 				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.BLUE)), new Location2D(5,7)),
-				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.BLUE)), new Location2D(6,7)),
+				new PieceLocationDescriptor((new Piece(PieceType.FLAG, PlayerColor.BLUE)), new Location2D(6,7)),
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(7,7)),
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(8,7)),
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(9,7)),
@@ -121,7 +123,7 @@ public class BoardConfiguration {
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 8 | LT  | LT  | GEN | 1LT |  B  |  B  |  B  |  B  | SGT | SGT |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 7 |  F  | MIN | SCT | MIN | SCT | MIN | MIN | SCT | SCT | SCT |
+		 * 7 |  F  | MIN | SCT | MIN | SCT | MIN |  F  | SCT | SCT | SCT |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 6 | MAR | 1LT | SCT |  B  | MIN | SGT | SCT | SPY |  B  | SCT |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
@@ -131,7 +133,7 @@ public class BoardConfiguration {
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 3 | SPY | SCT |  B  | MIN | MAR | 1LT | MIN |  B  | MIN |  F  |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 2 | SCT | SCT |  B  | SCT | SCT | SCT | MIN |  B  | SCT | GEN |
+		 * 2 | SCT |  F  |  B  | SCT | SCT | SCT | MIN |  B  | SCT | GEN |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 1 | MIN | SGT |  B  | SGT | SGT | SGT | 1LT | SCT | LT  | LT  |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+

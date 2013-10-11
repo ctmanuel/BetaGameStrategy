@@ -46,19 +46,15 @@ public class ValidateEpsilon implements Validate {
 		if (configuration.size() != 40) {
 			throw new StrategyException("Incorrect configuration size.");
 		}
-		
-		//TODO: check for 2 flags
 
 		//check if pieces are placed out of bounds
 		final Iterator<PieceLocationDescriptor> configIterator = configuration.iterator();
 
 		PieceLocationDescriptor currentConfigIterPiece = null;
-		PieceType currentConfigIterType = null;
 		int currentY;
 
 		while (configIterator.hasNext()) {
 			currentConfigIterPiece = configIterator.next();
-			currentConfigIterType = currentConfigIterPiece.getPiece().getType();
 
 			currentY = currentConfigIterPiece.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
 
@@ -69,7 +65,7 @@ public class ValidateEpsilon implements Validate {
 			//check out of bounds
 			validateOutOfBounds(currentConfigIterPiece.getLocation());
 		}
-		
+
 		//check piece distribution
 		final Map<PieceType, Integer> initialPieces = 
 				validatePieces(configuration, bottomRow, topRow);
@@ -128,13 +124,26 @@ public class ValidateEpsilon implements Validate {
 	@Override
 	public void checkPiecesDistributed(Map<PieceType, Integer> piecesUsed)
 			throws StrategyException {
+		int temp = 0;
+		PieceType tempPiece = null;
+		
 		for (PieceType pt : initializeEpsilon.getStartingPieces().keySet()) {
 			int required = initializeEpsilon.getStartingPieces().get(pt).intValue();
 			Integer used = piecesUsed.get(pt);
 			if (used == null || used.intValue() != required) {
-				throw new StrategyException("Invalid number of " + pt);
+				if (pt == PieceType.FLAG) {
+					throw new StrategyException("Invalid number of " + pt);
+				}
+
+				else if (used.intValue() == required + 1
+						|| used.intValue() == required - 1){
+					temp += 1;
+					tempPiece = pt;
+				}
 			}
 		}
-
+		if (temp != 1) {
+			throw new StrategyException("Invalid number of " + tempPiece);
+		}
 	}
 }

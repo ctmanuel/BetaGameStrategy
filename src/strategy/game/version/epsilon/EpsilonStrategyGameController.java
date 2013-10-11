@@ -63,6 +63,7 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 	private static List<PieceLocationDescriptor> blueConfiguration = null;
 	private final Map<Location, Piece> boardMap;
 	private final Collection<PieceLocationDescriptor> chokePointList = new ArrayList<PieceLocationDescriptor>();
+	private final Map<PieceType, Integer> startingPieces;
 
 	/**
 	 * Constructor for the Epsilon Game Strategy
@@ -76,7 +77,7 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 					throws StrategyException {
 
 		new RepetitionRule();
-		new InitializeEpsilon();
+		InitializeEpsilon initialEpsilon = new InitializeEpsilon();
 		validateEpsilon.validateConfiguration(redConfiguration, 0, 3);
 		validateEpsilon.validateConfiguration(blueConfiguration, 6, 9);
 
@@ -99,6 +100,7 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 		mapConfigurationBoard(redConfiguration);
 		mapConfigurationBoard(blueConfiguration);
 		mapConfigurationBoard(chokePointList);
+		startingPieces = initialEpsilon.getStartingPieces();
 	}
 
 	private void makeChokePoints() {
@@ -172,17 +174,8 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 
 			throw new StrategyException("Cannot move the " + piece);
 		}
-		if (!(piece == PieceType.MARSHAL 
-				|| piece == PieceType.GENERAL
-				|| piece == PieceType.COLONEL
-				|| piece == PieceType.MAJOR
-				|| piece == PieceType.CAPTAIN
-				|| piece == PieceType.LIEUTENANT
-				|| piece == PieceType.SERGEANT
-				|| piece == PieceType.MINER
-				|| piece == PieceType.SCOUT
-				|| piece == PieceType.SPY)) {
-
+		
+		if (!(startingPieces.containsKey(piece))) {
 			throw new StrategyException(piece + " is not a valid piece for the Epsilon Strategy.");
 		}
 

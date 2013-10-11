@@ -148,22 +148,22 @@ public class EpsilonStrategyPolliceBetaTest
 	public void makeMoveBeforeCallingStartGame() throws StrategyException
 	{
 		game = factory.makeEpsilonStrategyGame(redConfiguration, blueConfiguration, null);
-		game.move(SCOUT, loc53, loc54);
+		game.move(FIRST_LIEUTENANT, loc53, loc54);
 	}
 	
 	@Test
 	public void redMakesValidFirstMoveStatusIsOK() throws StrategyException
 	{
-		final MoveResult result = game.move(SCOUT, loc53, loc54);
+		final MoveResult result = game.move(FIRST_LIEUTENANT, loc53, loc54);
 		assertEquals(OK, result.getStatus());
 	}
 	
 	@Test
 	public void redMakesValidFirstMoveAndBoardIsCorrect() throws StrategyException
 	{
-		game.move(SCOUT, loc53, loc54);
+		game.move(FIRST_LIEUTENANT, loc53, loc54);
 		assertNull(game.getPieceAt(loc53));
-		assertEquals(new Piece(SCOUT, RED), game.getPieceAt(loc54));
+		assertEquals(new Piece(FIRST_LIEUTENANT, RED), game.getPieceAt(loc54));
 	}
 	
 	@Test(expected=StrategyException.class)
@@ -216,7 +216,7 @@ public class EpsilonStrategyPolliceBetaTest
 		game.move(SCOUT, loc13, loc14);
 		game.move(MARSHAL, loc06, loc05);
 		game.move(SCOUT, loc14, loc04);
-		game.move(GENERAL, loc16, loc15);
+		game.move(FIRST_LIEUTENANT, loc16, loc15);
 		final MoveResult moveResult = game.move(SCOUT, loc04, loc05);
 		assertEquals(OK, moveResult.getStatus());
 		assertEquals(
@@ -250,7 +250,7 @@ public class EpsilonStrategyPolliceBetaTest
 	@Test(expected=StrategyException.class)
 	public void attemptToRestartGameInProgress() throws StrategyException
 	{
-		game.move(SCOUT, loc53, loc54);
+		game.move(FIRST_LIEUTENANT, loc53, loc54);
 		game.startGame();
 	}
 	
