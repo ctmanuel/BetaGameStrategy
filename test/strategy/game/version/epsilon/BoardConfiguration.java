@@ -46,12 +46,10 @@ public class BoardConfiguration {
 				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.RED)), new Location2D(3,1)),
 				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.RED)), new Location2D(4,1)),
 				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.RED)), new Location2D(5,1)),
-				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.RED)), new Location2D(6,1)),
-				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.RED)), new Location2D(7,1)),
-				//TODO
+				new PieceLocationDescriptor((new Piece(PieceType.FIRST_LIEUTENANT, PlayerColor.RED)), new Location2D(6,1)),
+				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(7,1)),
 				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.RED)), new Location2D(8,1)),
 				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.RED)), new Location2D(9,1)),
-				
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(0,2)),
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(1,2)),
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.RED)), new Location2D(2,2)),
@@ -67,7 +65,7 @@ public class BoardConfiguration {
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.RED)), new Location2D(2,3)),
 				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.RED)), new Location2D(3,3)),
 				new PieceLocationDescriptor((new Piece(PieceType.MARSHAL, PlayerColor.RED)), new Location2D(4,3)),
-				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(5,3)),
+				new PieceLocationDescriptor((new Piece(PieceType.FIRST_LIEUTENANT, PlayerColor.RED)), new Location2D(5,3)),
 				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.RED)), new Location2D(6,3)),
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.RED)), new Location2D(7,3)),
 				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.RED)), new Location2D(8,3)),
@@ -75,11 +73,11 @@ public class BoardConfiguration {
 
 		final PieceLocationDescriptor[] bluePieces = {
 				new PieceLocationDescriptor((new Piece(PieceType.MARSHAL, PlayerColor.BLUE)), new Location2D(0,6)),
-				new PieceLocationDescriptor((new Piece(PieceType.GENERAL, PlayerColor.BLUE)), new Location2D(1,6)),
+				new PieceLocationDescriptor((new Piece(PieceType.FIRST_LIEUTENANT, PlayerColor.BLUE)), new Location2D(1,6)),
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(2,6)),
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(3,6)),
 				new PieceLocationDescriptor((new Piece(PieceType.MINER, PlayerColor.BLUE)), new Location2D(4,6)),
-				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(5,6)),
+				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(5,6)),
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(6,6)),
 				new PieceLocationDescriptor((new Piece(PieceType.SPY, PlayerColor.BLUE)), new Location2D(7,6)),
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(8,6)),
@@ -96,14 +94,12 @@ public class BoardConfiguration {
 				new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.BLUE)), new Location2D(9,7)),
 				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE)), new Location2D(0,8)),
 				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE)), new Location2D(1,8)),
-				//TODO
-				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE)), new Location2D(2,8)),
-				new PieceLocationDescriptor((new Piece(PieceType.LIEUTENANT, PlayerColor.BLUE)), new Location2D(3,8)),
-				
+				new PieceLocationDescriptor((new Piece(PieceType.GENERAL, PlayerColor.BLUE)), new Location2D(2,8)),
+				new PieceLocationDescriptor((new Piece(PieceType.FIRST_LIEUTENANT, PlayerColor.BLUE)), new Location2D(3,8)),
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(4,8)),
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(5,8)),
 				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(6,8)),
-				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(7,8)),
+				new PieceLocationDescriptor((new Piece(PieceType.BOMB, PlayerColor.BLUE)), new Location2D(7,8)),
 				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(8,8)),
 				new PieceLocationDescriptor((new Piece(PieceType.SERGEANT, PlayerColor.BLUE)), new Location2D(9,8)),
 				new PieceLocationDescriptor((new Piece(PieceType.COLONEL, PlayerColor.BLUE)), new Location2D(0,9)),
@@ -123,21 +119,21 @@ public class BoardConfiguration {
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 9 | COL | COL | CPT | CPT | CPT | CPT | SGT | MAJ | MAJ |MAJ  |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 8 | LT  | LT  | LT  | LT  |  B  |  B  |  B  | SGT | SGT | SGT |
+		 * 8 | LT  | LT  | GEN | 1LT |  B  |  B  |  B  |  B  | SGT | SGT |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 7 |  F  | MIN | SCT | MIN | SCT | MIN | MIN | SCT | SCT | SCT |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 6 | MAR | GEN | SCT |  B  | MIN |  B  | SCT | SPY |  B  | SCT |
+		 * 6 | MAR | 1LT | SCT |  B  | MIN | SGT | SCT | SPY |  B  | SCT |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 5 |     |     | CP  | CP  |     |     | CP  | CP  |     |     |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 4 |     |     | CP  | CP  |     |     | CP  | CP  |     |     |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 3 | SPY | SCT |  B  | MIN | MAR | SCT | MIN |  B  | MIN |  F  |
+		 * 3 | SPY | SCT |  B  | MIN | MAR | 1LT | MIN |  B  | MIN |  F  |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 2 | SCT | SCT |  B  | SCT | SCT | SCT | MIN |  B  | SCT | GEN |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
-		 * 1 | MIN | SGT |  B  | SGT | SGT | SGT | 1LT | LT  | LT  | LT  |
+		 * 1 | MIN | SGT |  B  | SGT | SGT | SGT | 1LT | SCT | LT  | LT  |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 		 * 0 |  B  | CPT | CPT | CPT | CPT | MAJ | MAJ | MAJ | COL | COL |
 		 * - +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+

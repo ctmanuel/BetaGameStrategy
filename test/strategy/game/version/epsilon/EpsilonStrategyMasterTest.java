@@ -167,7 +167,7 @@ public class EpsilonStrategyMasterTest {
 	@Test
 	public void getRedPieceAtLocation() throws StrategyException {
 		game.startGame();
-		assertEquals(new Piece(PieceType.SCOUT, PlayerColor.RED), game.getPieceAt(new Location2D(5,3)));
+		assertEquals(new Piece(PieceType.FIRST_LIEUTENANT, PlayerColor.RED), game.getPieceAt(new Location2D(5,3)));
 	}
 
 	@Test
@@ -193,7 +193,7 @@ public class EpsilonStrategyMasterTest {
 		game.move(PieceType.SPY, new Location2D(0,3), new Location2D(0,4));
 		game.move(PieceType.MARSHAL, new Location2D(0,6), new Location2D(0,5));
 		game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,4));
-		game.move(PieceType.GENERAL, new Location2D(1,6), new Location2D(1,5));
+		game.move(PieceType.FIRST_LIEUTENANT, new Location2D(1,6), new Location2D(1,5));
 		game.move(PieceType.MARSHAL, new Location2D(4,3), new Location2D(4,4));
 		assertNull(game.getPieceAt(new Location2D(0,6)));
 		assertNull(game.getPieceAt(new Location2D(1,6)));
@@ -208,7 +208,7 @@ public class EpsilonStrategyMasterTest {
 		game.startGame();
 		game.move(PieceType.MARSHAL, new Location2D(4,3), new Location2D(4,4));
 		game.move(PieceType.MINER, new Location2D(4,6), new Location2D(4,5));
-		game.move(PieceType.SCOUT, new Location2D(5,3), new Location2D(5,4));
+		game.move(PieceType.FIRST_LIEUTENANT, new Location2D(5,3), new Location2D(5,4));
 		game.move(PieceType.SCOUT, new Location2D(9,6), new Location2D(9,5));
 		game.move(PieceType.SCOUT, new Location2D(4,2), new Location2D(4,3));
 		game.move(PieceType.MARSHAL, new Location2D(0,6), new Location2D(0,5));

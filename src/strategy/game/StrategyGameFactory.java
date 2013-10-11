@@ -192,10 +192,11 @@ public class StrategyGameFactory
 	public StrategyGameController makeEpsilonStrategyGame(
 			Collection<PieceLocationDescriptor> redConfiguration,
 			Collection<PieceLocationDescriptor> blueConfiguration,
-			Collection<StrategyGameObserver>observers)
+			Collection<StrategyGameObserver> observers)
 					throws StrategyException
 	{
-		final StrategyGameController EpsilonGame = new EpsilonStrategyGameController(redConfiguration, blueConfiguration);
+		final StrategyGameController EpsilonGame =
+				new EpsilonStrategyGameController(redConfiguration, blueConfiguration, observers);
 
 		if(EpsilonGame.getClass() != EpsilonStrategyGameController.class) {
 			throw new StrategyRuntimeException("Change this implementation");

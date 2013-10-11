@@ -67,12 +67,12 @@ public class EpsilonStrategyBattleTest {
 	{
 		game.startGame();
 		game.move(PieceType.MARSHAL, new Location2D(4,3), new Location2D(4,4));
-		game.move(PieceType.GENERAL, new Location2D(1,6), new Location2D(1,5));
+		game.move(PieceType.FIRST_LIEUTENANT, new Location2D(1,6), new Location2D(1,5));
 		game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,4));
 		final MoveResult result = 
-				game.move(PieceType.GENERAL, new Location2D(1,5), new Location2D(1,4));
+				game.move(PieceType.FIRST_LIEUTENANT, new Location2D(1,5), new Location2D(1,4));
 		assertEquals(MoveResultStatus.OK, result.getStatus());
-		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.GENERAL, PlayerColor.BLUE), new Location2D(1,4)), 
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.FIRST_LIEUTENANT, PlayerColor.BLUE), new Location2D(1,4)), 
 				result.getBattleWinner());
 
 	}
@@ -124,9 +124,9 @@ public class EpsilonStrategyBattleTest {
 	public void makeMovingRedPieceLose() throws StrategyException
 	{
 		game.startGame();
-		final MoveResult result = Battle.battle(redConfiguration.get(8), blueConfiguration.get(1));
+		final MoveResult result = Battle.battle(redConfiguration.get(38), blueConfiguration.get(1));
 		assertEquals(MoveResultStatus.OK, result.getStatus());
-		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.GENERAL, PlayerColor.BLUE), new Location2D(8,0)), result.getBattleWinner());
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.FIRST_LIEUTENANT, PlayerColor.BLUE), new Location2D(8,3)), result.getBattleWinner());
 	}
 	
 	@Test
@@ -170,8 +170,8 @@ public class EpsilonStrategyBattleTest {
 	public void PieceVsBomb() throws StrategyException
 	{
 		game.startGame();
-		final MoveResult result = Battle.battle(redConfiguration.get(35), blueConfiguration.get(5));
+		final MoveResult result = Battle.battle(redConfiguration.get(35), blueConfiguration.get(3));
 		assertEquals(MoveResultStatus.OK, result.getStatus());
-		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.BOMB, PlayerColor.BLUE), new Location2D(5,6)), result.getBattleWinner());
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.BOMB, PlayerColor.BLUE), new Location2D(3,6)), result.getBattleWinner());
 	}
 }

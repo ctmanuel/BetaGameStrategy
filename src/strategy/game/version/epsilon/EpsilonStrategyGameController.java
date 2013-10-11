@@ -27,6 +27,7 @@ import strategy.game.common.MoveResultStatus;
 import strategy.game.common.Piece;
 import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.common.PieceType;
+import strategy.game.common.StrategyGameObserver;
 import strategy.game.version.Battle;
 import strategy.game.version.RepetitionRule;
 
@@ -70,7 +71,8 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 	 * @throws StrategyException 
 	 */	
 	public EpsilonStrategyGameController(Collection<PieceLocationDescriptor> redConfiguration,
-			Collection<PieceLocationDescriptor> blueConfiguration)
+			Collection<PieceLocationDescriptor> blueConfiguration,
+			Collection<StrategyGameObserver> observers)
 					throws StrategyException {
 
 		new RepetitionRule();
