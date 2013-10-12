@@ -31,6 +31,8 @@ public class Battle {
 	private static Collection<PieceLocationDescriptor> redConfiguration = null;
 	private static Collection<PieceLocationDescriptor> blueConfiguration = null;
 	private static final Map<PieceType, Integer> pieceRanks = new HashMap<PieceType, Integer>();
+	private static int blueflagCount = 0;
+	private static int redflagCount = 0;
 
 	/**
 	 * The constructor for the battle initialization
@@ -43,7 +45,7 @@ public class Battle {
 		Battle.blueConfiguration = blueConfiguration;
 		initializePieceRanks();
 	}
-	
+
 	/**
 	 * EPIC BATTLE FIGHT TO THE DEATH
 	 * @param playerPiece current player's piece
@@ -57,9 +59,9 @@ public class Battle {
 				new PieceLocationDescriptor(opponentPiece.getPiece(), playerPiece.getLocation());
 		final PieceType opponentPieceType = opponentPiece.getPiece().getType();
 		final PlayerColor playerPieceOwner = playerPiece.getPiece().getOwner();
-		
+
 		//if the pieces are the same type, remove both
-		if (playerPiece.getPiece().getType().equals(opponentPieceType)){
+		if (pieceRanks.get(playerPiece.getPiece().getType()) == pieceRanks.get(opponentPiece.getPiece().getType())){
 			if (playerPieceOwner == PlayerColor.RED){
 				redConfiguration.remove(playerPiece);
 				blueConfiguration.remove(opponentPiece);
@@ -71,7 +73,7 @@ public class Battle {
 				return new MoveResult(MoveResultStatus.OK, null);
 			}
 		}
-		
+
 		//if opponent is a bomb
 		if(opponentPiece.getPiece().getType() == PieceType.BOMB 
 				&& playerPiece.getPiece().getType() != PieceType.MINER){
@@ -84,7 +86,7 @@ public class Battle {
 				return new MoveResult(MoveResultStatus.OK, opponentPiece);
 			}
 		}
-		
+
 		//if player is spy vs marshal
 		if(playerPiece.getPiece().getType() == PieceType.SPY 
 				&& opponentPiece.getPiece().getType() == PieceType.MARSHAL){
@@ -99,7 +101,28 @@ public class Battle {
 				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
 			}
 		}
-		
+
+		//if first lieutenant attacks and loses, distance of 2
+		if(playerPiece.getPiece().getType() == PieceType.FIRST_LIEUTENANT
+				&& playerPiece.getLocation().distanceTo(opponentPiece.getLocation()) == 2
+				&& pieceRanks.get(playerPiece.getPiece().getType()) < pieceRanks.get(opponentPiece.getPiece().getType())){
+			//			System.out.println("gets here");
+			//			System.out.println("Player rank is " + pieceRanks.get(playerPiece.getPiece().getType()));
+			//			System.out.println("Player piece type is " + playerPiece.getPiece().getType());
+			//			System.out.println("opponent rank is " + pieceRanks.get(opponentPiece.getPiece().getType()));
+			//			System.out.println("Opponent piece type is " + opponentPiece.getPiece().getType());
+			if(playerPieceOwner == PlayerColor.RED) {
+				redConfiguration.remove(playerPiece);
+				blueConfiguration.remove(opponentPiece);
+				return new MoveResult(MoveResultStatus.OK, opponentPiece);
+			}
+			else {
+				blueConfiguration.remove(playerPiece);
+				redConfiguration.remove(opponentPiece);
+				return new MoveResult(MoveResultStatus.OK, opponentPiece);
+			}
+		}
+
 		//check piece ranks
 		if(pieceRanks.get(playerPiece.getPiece().getType()) > pieceRanks.get(opponentPiece.getPiece().getType())) {
 			//if opponent piece is flag, set game over to true, remove flag from configuration, return battle winner
@@ -116,7 +139,7 @@ public class Battle {
 				return new MoveResult(MoveResultStatus.OK, attackingBattleWinner);
 			}
 		}
-		
+
 		//if moving piece loses, remove moving piece and return opponent
 		if(opponentPiece.getPiece().getOwner() == PlayerColor.RED) {
 			blueConfiguration.remove(playerPiece);
@@ -137,8 +160,28 @@ public class Battle {
 	 * @return
 	 */
 	private static MoveResult flagBattle(PieceLocationDescriptor playerPiece, PieceLocationDescriptor opponentPiece) {
+
 		final PieceLocationDescriptor battleWinner = new PieceLocationDescriptor(playerPiece.getPiece(), opponentPiece.getLocation());
-		if (playerPiece.getPiece().getOwner() == PlayerColor.RED) {
+
+
+		System.out.println("Gets here");
+		if (playerPiece.getPiece().getOwner() == PlayerColor.RED
+				&& blueflagCount == 0) {
+			blueflagCount += 1;
+			blueConfiguration.remove(opponentPiece);
+			redConfiguration.remove(playerPiece);
+			return new MoveResult(MoveResultStatus.FLAG_CAPTURED, battleWinner);
+
+		}
+		else if (playerPiece.getPiece().getOwner() == PlayerColor.BLUE
+				&& redflagCount == 0){
+			redflagCount += 1;
+			redConfiguration.remove(opponentPiece);
+			blueConfiguration.remove(opponentPiece);
+			return new MoveResult(MoveResultStatus.FLAG_CAPTURED, battleWinner);
+		}
+
+		else if (playerPiece.getPiece().getOwner() == PlayerColor.RED) {
 			blueConfiguration.remove(opponentPiece);
 			return new MoveResult(MoveResultStatus.RED_WINS, battleWinner);
 		}
@@ -146,6 +189,7 @@ public class Battle {
 			redConfiguration.remove(opponentPiece);
 			return new MoveResult(MoveResultStatus.BLUE_WINS, battleWinner);
 		}
+
 	}
 
 	/**

@@ -41,7 +41,7 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 
 	private static boolean gameStarted = false;
 	private static boolean gameOver = false;
-	private int playerTurn;
+	private int playerTurn = 0;
 	private MoveResult flagResult;
 	private PieceLocationDescriptor currentPieceDescriptor = null;
 	private PlayerColor playerColor;
@@ -162,6 +162,15 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 	public MoveResult move(PieceType piece, Location from, Location to)
 			throws StrategyException {
 
+		//check if moving with null configurations
+		if(piece == null && from == null && to ==null){
+			if(playerTurn == 0){
+				return new MoveResult(MoveResultStatus.BLUE_WINS, null);
+			}
+			else
+				return new MoveResult(MoveResultStatus.RED_WINS, null);
+		}
+
 		if (gameOver) {
 			throw new StrategyException("The game is over, you cannot make a move");
 		}
@@ -174,76 +183,18 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 
 			throw new StrategyException("Cannot move the " + piece);
 		}
-		
+
 		if (!(startingPieces.containsKey(piece))) {
 			throw new StrategyException(piece + " is not a valid piece for the Epsilon Strategy.");
 		}
 
+		//check if flag is the only piece left
 		final MoveResult flagOnly = checkPlayerTurnAndFlag();
 		if(flagOnly != null) {
 			return flagOnly;
 		}
 
 		currentPieceDescriptor = new PieceLocationDescriptor(new Piece(piece, playerColor), from);
-
-		//if scout 
-		if(piece == PieceType.SCOUT && currentPieceDescriptor.getLocation().distanceTo(to) > 1){
-			Piece tempPieceAtTo;
-			//check for pieces in scouts path
-			for (int i = 1;  i <= currentPieceDescriptor.getLocation().distanceTo(to); i++){
-				//if moving on the y axis
-				if(from.getCoordinate(Coordinate.Y_COORDINATE) != to.getCoordinate(Coordinate.Y_COORDINATE)){
-					if (from.getCoordinate(Coordinate.Y_COORDINATE) > to.getCoordinate(Coordinate.Y_COORDINATE)) {
-						tempPieceAtTo = getPieceAt(new Location2D(to.getCoordinate(Coordinate.X_COORDINATE),
-								from.getCoordinate(Coordinate.Y_COORDINATE) - i));
-					}
-					else {
-						tempPieceAtTo = getPieceAt(new Location2D(to.getCoordinate(Coordinate.X_COORDINATE),
-								from.getCoordinate(Coordinate.Y_COORDINATE) + i));
-					}
-					
-					if(tempPieceAtTo != null){
-						throw new StrategyException("Piece in Scout path " + tempPieceAtTo.getType());
-					}
-				}
-				//if moving on the x axis
-				else {
-					if (from.getCoordinate(Coordinate.X_COORDINATE) > to.getCoordinate(Coordinate.X_COORDINATE)) {
-						tempPieceAtTo = getPieceAt(new Location2D(from.getCoordinate(Coordinate.X_COORDINATE) - i,
-								to.getCoordinate(Coordinate.Y_COORDINATE)));
-					}
-					else {
-						tempPieceAtTo = getPieceAt(new Location2D(from.getCoordinate(Coordinate.X_COORDINATE) + i,
-								to.getCoordinate(Coordinate.Y_COORDINATE)));
-					}
-					
-					if(tempPieceAtTo != null){
-						throw new StrategyException("Piece in Scout path " + tempPieceAtTo.getType());
-					}
-				}
-			}
-			final PieceLocationDescriptor newPiece =
-					new PieceLocationDescriptor(new Piece(piece, playerColor), to);
-
-			if (playerColor == PlayerColor.RED) {
-				redConfiguration.remove(currentPieceDescriptor);
-				redConfiguration.add(newPiece);
-				boardMap.remove(currentPieceDescriptor.getLocation());
-				boardMap.put(to, newPiece.getPiece());
-			}
-			else {
-				blueConfiguration.remove(currentPieceDescriptor);
-				blueConfiguration.add(newPiece);
-				boardMap.remove(currentPieceDescriptor.getLocation());
-				boardMap.put(to, newPiece.getPiece());
-			}
-
-			return new MoveResult(MoveResultStatus.OK, newPiece);
-
-		}
-
-		//check location for valid location
-		checkLocationCoordinates(to);
 
 		//check for repetition rule
 		repetitionWinner = RepetitionRule.checkRepRule(currentPieceDescriptor, to);
@@ -254,54 +205,22 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 			return new MoveResult(repetitionWinner, null);
 		}
 
+		//check location for valid location
 		final Piece tempPieceAtTo = getPieceAt(to);
 
 		//check if occupied
+
+		checkLocationCoordinates(to);
+
+		//if scout or first lieutenant
+		if((piece == PieceType.SCOUT || piece == PieceType.FIRST_LIEUTENANT)
+				&& currentPieceDescriptor.getLocation().distanceTo(to) > 1){
+			return CheckPathOccupied(from, to, piece);
+		}
+
+		//check for battle
 		if (tempPieceAtTo != null) {
-
-			//check if the pieces are the same color
-			if (currentPieceDescriptor.getPiece().getOwner() == tempPieceAtTo.getOwner()) {
-				throw new StrategyException("Space is occupied by same color piece");
-			}
-
-			//go to battle method
-			battleResult = Battle.battle(currentPieceDescriptor, new PieceLocationDescriptor(tempPieceAtTo, to));
-
-			//if both pieces lose
-			if(battleResult.getBattleWinner() == null) { 
-				boardMap.remove(currentPieceDescriptor.getLocation());
-				boardMap.remove(to);
-
-				flagResult = checkFlagOnly(playerColor);
-				if(flagResult != null){
-					return flagResult;
-				}
-				return battleResult;
-			}
-
-			//if red is the winner
-			if(battleResult.getBattleWinner().getPiece().getOwner() == PlayerColor.RED) {
-				redConfiguration.add(battleResult.getBattleWinner());
-			}
-			else {
-				blueConfiguration.add(battleResult.getBattleWinner());
-			}
-			boardMap.remove(currentPieceDescriptor.getLocation());
-			boardMap.remove(to);
-			boardMap.put(battleResult.getBattleWinner().getLocation(), battleResult.getBattleWinner().getPiece());
-
-			//if it was a flag battle, end game
-			if(battleResult.getStatus() == MoveResultStatus.BLUE_WINS
-					|| battleResult.getStatus() == MoveResultStatus.RED_WINS) {
-				gameOver = true;
-				return battleResult;
-			}
-
-			flagResult = checkFlagOnly(playerColor);
-			if(flagResult != null){
-				return flagResult;
-			}
-			return battleResult;
+			return MoveAndBattle(to, tempPieceAtTo);
 		}
 
 		//if no battle go here
@@ -322,6 +241,57 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 		}
 
 		return new MoveResult(MoveResultStatus.OK, newPiece);
+	}
+
+	private MoveResult MoveAndBattle(Location to, Piece tempPieceAtTo) throws StrategyException {
+		//check if the pieces are the same color
+		if (currentPieceDescriptor.getPiece().getOwner() == tempPieceAtTo.getOwner()) {
+			throw new StrategyException("Space is occupied by same color piece");
+		}
+
+		//go to battle method
+		battleResult = Battle.battle(currentPieceDescriptor, new PieceLocationDescriptor(tempPieceAtTo, to));
+
+		redConfiguration.remove(currentPieceDescriptor);
+		blueConfiguration.remove(tempPieceAtTo);
+
+		//if both pieces lose
+		if(battleResult.getBattleWinner() == null) { 
+			boardMap.remove(currentPieceDescriptor.getLocation());
+			boardMap.remove(to);
+
+			flagResult = checkFlagOnly(playerColor);
+			if(flagResult != null){
+				return flagResult;
+			}
+			return battleResult;
+		}
+
+		//if red is the winner
+		if(battleResult.getBattleWinner().getPiece().getOwner() == PlayerColor.RED) {
+			redConfiguration.add(battleResult.getBattleWinner());
+		}
+		else {
+			blueConfiguration.add(battleResult.getBattleWinner());
+		}
+		boardMap.remove(currentPieceDescriptor.getLocation());
+		boardMap.remove(to);
+		boardMap.put(battleResult.getBattleWinner().getLocation(), battleResult.getBattleWinner().getPiece());
+
+		//if it was a flag battle, end game
+		if(battleResult.getStatus() == MoveResultStatus.BLUE_WINS
+				|| battleResult.getStatus() == MoveResultStatus.RED_WINS) {
+			System.out.println("Gets here2");
+
+			gameOver = true;
+			return battleResult;
+		}
+
+		flagResult = checkFlagOnly(playerColor);
+		if(flagResult != null){
+			return flagResult;
+		}
+		return battleResult;
 	}
 
 	/**
@@ -455,8 +425,23 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 				toXcoordinate, toYcoordinate);
 
 		//check for valid X,Y coordinates
-		validateEpsilon.validateCrossMove(currentPieceDescriptor.getLocation(),to);
+		if ((currentPieceDescriptor.getPiece().getType() != PieceType.FIRST_LIEUTENANT)
+				&& (currentPieceDescriptor.getPiece().getType() != PieceType.SCOUT)){
+			validateEpsilon.validateCrossMove(currentPieceDescriptor.getLocation(),to);
+		}
 
+		//check if first lieutenant is moving more than 2 spaces
+		if (currentPieceDescriptor.getPiece().getType() == PieceType.FIRST_LIEUTENANT
+				&& currentPieceDescriptor.getLocation().distanceTo(to) > 2) {
+			throw new StrategyException("First Lieutenant cannot strike more than 2 spaces.");
+		}
+
+		//check if first lieutenant is trying to move more than one space
+		else if (currentPieceDescriptor.getPiece().getType() == PieceType.FIRST_LIEUTENANT
+				&& currentPieceDescriptor.getLocation().distanceTo(to) > 1
+				&& getPieceAt(to) == null){
+			throw new StrategyException ("First Lieutenant can only move up to 1 space unless battling");
+		}
 	}
 
 	@Override
@@ -464,13 +449,80 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 		return boardMap.get(location);
 	}
 
-	private void checkDestinationIsNotOccupied(PieceLocationDescriptor pld) 
-			throws StrategyException
-			{
+	private void checkDestinationIsNotOccupied(PieceLocationDescriptor pld) throws StrategyException
+	{
 		if (getPieceAt(pld.getLocation()) != null) {
 			throw new StrategyException("Attempt to place " + pld.getPiece()
 					+ " on occupied location " + pld.getLocation());
 		}
+	}
+
+	private MoveResult CheckPathOccupied(Location from, Location to, PieceType piece) throws StrategyException{
+
+		Piece tempPieceAtTo = null;
+		//check for pieces in scouts path
+		for (int i = 1;  i <= currentPieceDescriptor.getLocation().distanceTo(to); i++){
+			//if moving on the y axis
+			if(from.getCoordinate(Coordinate.Y_COORDINATE) != to.getCoordinate(Coordinate.Y_COORDINATE)){
+				if (from.getCoordinate(Coordinate.Y_COORDINATE) > to.getCoordinate(Coordinate.Y_COORDINATE)) {
+					tempPieceAtTo = getPieceAt(new Location2D(to.getCoordinate(Coordinate.X_COORDINATE),
+							from.getCoordinate(Coordinate.Y_COORDINATE) - i));
+				}
+				else {
+					tempPieceAtTo = getPieceAt(new Location2D(to.getCoordinate(Coordinate.X_COORDINATE),
+							from.getCoordinate(Coordinate.Y_COORDINATE) + i));
+				}
+
+				if(i != currentPieceDescriptor.getLocation().distanceTo(to)
+						&& tempPieceAtTo != null){
+					throw new StrategyException(tempPieceAtTo.getType() + " in path of " + piece);
+				}
+				else if (currentPieceDescriptor.getPiece().getType() == PieceType.SCOUT
+						&& tempPieceAtTo != null) {
+					throw new StrategyException("Scout cannot move and attack.");
+				}
 			}
+			//if moving on the x axis
+			else {
+				if (from.getCoordinate(Coordinate.X_COORDINATE) > to.getCoordinate(Coordinate.X_COORDINATE)) {
+					tempPieceAtTo = getPieceAt(new Location2D(from.getCoordinate(Coordinate.X_COORDINATE) - i,
+							to.getCoordinate(Coordinate.Y_COORDINATE)));
+				}
+				else {
+					tempPieceAtTo = getPieceAt(new Location2D(from.getCoordinate(Coordinate.X_COORDINATE) + i,
+							to.getCoordinate(Coordinate.Y_COORDINATE)));
+				}
+
+				if(i != currentPieceDescriptor.getLocation().distanceTo(to)
+						&& tempPieceAtTo != null){
+					throw new StrategyException(tempPieceAtTo.getType() + " in path of " + piece);
+				}
+				else if (currentPieceDescriptor.getPiece().getType() == PieceType.SCOUT
+						&& tempPieceAtTo != null) {
+					throw new StrategyException("Scout cannot move and attack.");
+				}
+			}
+		}
+		final PieceLocationDescriptor newPiece =
+				new PieceLocationDescriptor(new Piece(piece, playerColor), to);
+
+		if (piece == PieceType.FIRST_LIEUTENANT && tempPieceAtTo != null){
+			return MoveAndBattle(to, tempPieceAtTo);
+		}
+
+		if (playerColor == PlayerColor.RED) {
+			redConfiguration.remove(currentPieceDescriptor);
+			redConfiguration.add(newPiece);
+			boardMap.remove(currentPieceDescriptor.getLocation());
+			boardMap.put(to, newPiece.getPiece());
+		}
+		else {
+			blueConfiguration.remove(currentPieceDescriptor);
+			blueConfiguration.add(newPiece);
+			boardMap.remove(currentPieceDescriptor.getLocation());
+			boardMap.put(to, newPiece.getPiece());
+		}
+		return new MoveResult(MoveResultStatus.OK, newPiece);
+	}
 
 }

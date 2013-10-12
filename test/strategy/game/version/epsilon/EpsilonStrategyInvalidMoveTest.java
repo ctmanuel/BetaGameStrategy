@@ -215,4 +215,27 @@ public class EpsilonStrategyInvalidMoveTest {
 		assertNotNull(game.getPieceAt(new Location2D(4,4)));
 		game.move(PieceType.SCOUT, new Location2D(4,2), new Location2D(4,6));
 	}
+	
+	@Test(expected=StrategyException.class)
+	public void InvalidFirstLieutenantMove() throws StrategyException{
+		game.startGame();
+		game.move(PieceType.FIRST_LIEUTENANT, new Location2D(5,3), new Location2D(5,5));
+	}
+	
+	@Test(expected=StrategyException.class)
+	public void FirstLieutenantBattleOverPiece() throws StrategyException {
+		game.startGame();
+		game.move(PieceType.FIRST_LIEUTENANT, new Location2D(5,3), new Location2D(5,4));
+		game.move(PieceType.SERGEANT, new Location2D(5,6), new Location2D(5,5));
+		game.move(PieceType.SPY, new Location2D(0,3), new Location2D(0,4));
+		game.move(PieceType.MINER, new Location2D(4,6), new Location2D(5,6));
+		game.move(PieceType.FIRST_LIEUTENANT, new Location2D(5,4), new Location2D(5,6));
+	}
+	
+	@Test(expected=StrategyException.class) 
+	public void ScoutMoveToChokePoint() throws StrategyException {
+		game.startGame();
+		game.move(PieceType.MARSHAL, new Location2D(4,3), new Location2D(4,4));
+		game.move(PieceType.SCOUT, new Location2D(2,6), new Location2D(2,4));
+	}
 }

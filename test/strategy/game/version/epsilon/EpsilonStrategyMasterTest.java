@@ -231,4 +231,19 @@ public class EpsilonStrategyMasterTest {
 		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SCOUT, PlayerColor.BLUE), new Location2D(9,4)), 
 				result.getBattleWinner());
 	}
+	
+	@Test
+	public void RedMakesNullMove() throws StrategyException{
+		game.startGame();
+		final MoveResult result = game.move(null, null, null);
+		assertEquals(MoveResultStatus.BLUE_WINS, result.getStatus());
+	}
+	
+	@Test
+	public void BlueMakesNullMove() throws StrategyException{
+		game.startGame();
+		game.move(PieceType.SPY, new Location2D(0,3), new Location2D(0,4));
+		final MoveResult result = game.move(null, null, null);
+		assertEquals(MoveResultStatus.RED_WINS, result.getStatus());
+	}
 }

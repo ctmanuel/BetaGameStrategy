@@ -106,6 +106,7 @@ public class ValidateEpsilon implements Validate {
 			throw new StrategyException("Invalid coordinate move from " 
 					+ from + " to " + to);
 		}
+		//if piece is first lieutenant and it is moving 2 spaces, its fine
 	}
 
 	@Override

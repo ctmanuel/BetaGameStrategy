@@ -146,7 +146,7 @@ public class BoardConfiguration {
 			redConfiguration.add(piece);
 		}
 		for (PieceLocationDescriptor piece : bluePieces) {
-			blueConfiguration.add(piece);		
+			blueConfiguration.add(piece);
 		}
 	}
 	
