@@ -29,7 +29,7 @@ import strategy.game.common.MoveResultStatus;
 import strategy.game.common.Piece;
 import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.common.PieceType;
-import strategy.game.version.Battle;
+import strategy.game.version.epsilon.EpsilonBattle;
 
 
 public class EpsilonStrategyMasterTest {
@@ -68,11 +68,11 @@ public class EpsilonStrategyMasterTest {
 		game.startGame();
 		PieceLocationDescriptor playerPiece1 = new PieceLocationDescriptor(new Piece(PieceType.SPY, PlayerColor.RED), new Location2D(0,3));
 		PieceLocationDescriptor opponentPiece1 = new PieceLocationDescriptor(new Piece(PieceType.FLAG, PlayerColor.BLUE), new Location2D(0,7));
-		final MoveResult result = Battle.battle(playerPiece1, opponentPiece1);
+		final MoveResult result = EpsilonBattle.epsilonBattle(playerPiece1, opponentPiece1);
 		assertEquals(MoveResultStatus.FLAG_CAPTURED, result.getStatus());
 		PieceLocationDescriptor playerPiece2 = new PieceLocationDescriptor(new Piece(PieceType.MINER, PlayerColor.RED), new Location2D(8,3));
 		PieceLocationDescriptor opponentPiece2 = new PieceLocationDescriptor(new Piece(PieceType.FLAG, PlayerColor.BLUE), new Location2D(6,7));
-		final MoveResult result2 = Battle.battle(playerPiece2, opponentPiece2);
+		final MoveResult result2 = EpsilonBattle.epsilonBattle(playerPiece2, opponentPiece2);
 		assertEquals(MoveResultStatus.RED_WINS, result2.getStatus());
 		game.startGame();
 	}

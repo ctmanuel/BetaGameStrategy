@@ -28,7 +28,6 @@ import strategy.game.common.Piece;
 import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.common.PieceType;
 import strategy.game.common.StrategyGameObserver;
-import strategy.game.version.Battle;
 import strategy.game.version.RepetitionRule;
 
 /**
@@ -69,6 +68,7 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 	 * Constructor for the Epsilon Game Strategy
 	 * @param redConfiguration the list of red pieces
 	 * @param blueConfiguration the list of blue pieces
+	 * @param observers collection of observers for the reporter
 	 * @throws StrategyException 
 	 */	
 	public EpsilonStrategyGameController(Collection<PieceLocationDescriptor> redConfiguration,
@@ -77,11 +77,11 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 					throws StrategyException {
 
 		new RepetitionRule();
-		InitializeEpsilon initialEpsilon = new InitializeEpsilon();
+		final InitializeEpsilon initialEpsilon = new InitializeEpsilon();
 		validateEpsilon.validateConfiguration(redConfiguration, 0, 3);
 		validateEpsilon.validateConfiguration(blueConfiguration, 6, 9);
 
-		new Battle(redConfiguration, blueConfiguration);
+		new EpsilonBattle(redConfiguration, blueConfiguration);
 
 		//set game variables
 		gameStarted = false;
@@ -163,12 +163,13 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 			throws StrategyException {
 
 		//check if moving with null configurations
-		if(piece == null && from == null && to ==null){
+		if(piece == null && from == null && to == null){
 			if(playerTurn == 0){
 				return new MoveResult(MoveResultStatus.BLUE_WINS, null);
 			}
-			else
+			else {
 				return new MoveResult(MoveResultStatus.RED_WINS, null);
+			}
 		}
 
 		if (gameOver) {
@@ -250,7 +251,7 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 		}
 
 		//go to battle method
-		battleResult = Battle.battle(currentPieceDescriptor, new PieceLocationDescriptor(tempPieceAtTo, to));
+		battleResult = EpsilonBattle.epsilonBattle(currentPieceDescriptor, new PieceLocationDescriptor(tempPieceAtTo, to));
 
 		redConfiguration.remove(currentPieceDescriptor);
 		blueConfiguration.remove(tempPieceAtTo);

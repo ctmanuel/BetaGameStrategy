@@ -14,6 +14,7 @@ package strategy.game.common;
  * Used when a reporter is requested
  * for a game
  * @author ctmanuel, dmlarose
+ * @version Oct 11, 2013
  */
 public interface StrategyGameObservable {
 	

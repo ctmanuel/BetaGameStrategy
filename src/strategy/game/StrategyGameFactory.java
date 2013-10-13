@@ -186,6 +186,7 @@ public class StrategyGameFactory
 	 * Create a new Epsilon Strategy game given the 
 	 * @param redConfiguration the initial starting configuration for the RED pieces
 	 * @param blueConfiguration the initial starting configuration for the BLUE pieces
+	 * @param observers collection of observers for the reporter
 	 * @return the Epsilon Strategy game instance with the initial configuration of pieces
 	 * @throws StrategyException if either configuration is correct
 	 */

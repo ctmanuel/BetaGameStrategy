@@ -17,6 +17,7 @@ import strategy.common.StrategyException;
 /**
  * Controls output to the reporter
  * @author ctmanuel, dmlarose
+ * @version Oct 11, 2013
  */
 public interface StrategyGameObserver {
 

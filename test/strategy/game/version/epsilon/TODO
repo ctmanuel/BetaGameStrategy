@@ -17,4 +17,5 @@ X		-opponent wins game
 X	-draw condition with 2 flags
 
 		
-		-add observer to factory call
+	-add observer to factory call
+	-2% code coverage
