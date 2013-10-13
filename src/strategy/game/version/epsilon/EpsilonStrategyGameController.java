@@ -27,7 +27,9 @@ import strategy.game.common.MoveResultStatus;
 import strategy.game.common.Piece;
 import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.common.PieceType;
+import strategy.game.common.StrategyGameObservable;
 import strategy.game.common.StrategyGameObserver;
+import strategy.game.reporter.StrategyGameReporter;
 import strategy.game.version.RepetitionRule;
 
 /**
@@ -36,7 +38,7 @@ import strategy.game.version.RepetitionRule;
  * @author dmlarose, ctmanuel
  * @version Oct 08, 2013
  */
-public class EpsilonStrategyGameController implements StrategyGameController {
+public class EpsilonStrategyGameController implements StrategyGameController, StrategyGameObservable {
 
 	private static boolean gameStarted = false;
 	private static boolean gameOver = false;
@@ -63,6 +65,8 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 	private final Map<Location, Piece> boardMap;
 	private final Collection<PieceLocationDescriptor> chokePointList = new ArrayList<PieceLocationDescriptor>();
 	private final Map<PieceType, Integer> startingPieces;
+	private final StrategyGameObserver reporter;
+	private final List<StrategyGameObserver> observers;
 
 	/**
 	 * Constructor for the Epsilon Game Strategy
@@ -101,6 +105,12 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 		mapConfigurationBoard(blueConfiguration);
 		mapConfigurationBoard(chokePointList);
 		startingPieces = initialEpsilon.getStartingPieces();
+		
+		//observer
+		reporter = new StrategyGameReporter("Reporter1");
+		//reporter.gameStart(redConfiguration, blueConfiguration);
+		this.observers = new ArrayList<StrategyGameObserver>();
+		register(reporter);
 	}
 
 	private void makeChokePoints() {
@@ -161,87 +171,9 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 	@Override
 	public MoveResult move(PieceType piece, Location from, Location to)
 			throws StrategyException {
-
-		//check if moving with null configurations
-		if(piece == null && from == null && to == null){
-			if(playerTurn == 0){
-				return new MoveResult(MoveResultStatus.BLUE_WINS, null);
-			}
-			else {
-				return new MoveResult(MoveResultStatus.RED_WINS, null);
-			}
-		}
-
-		if (gameOver) {
-			throw new StrategyException("The game is over, you cannot make a move");
-		}
-		if (!gameStarted) {
-			throw new StrategyException("You must start the game");
-		}
-		if(piece == PieceType.FLAG
-				|| piece == PieceType.BOMB
-				|| piece == PieceType.CHOKE_POINT) {
-
-			throw new StrategyException("Cannot move the " + piece);
-		}
-
-		if (!(startingPieces.containsKey(piece))) {
-			throw new StrategyException(piece + " is not a valid piece for the Epsilon Strategy.");
-		}
-
-		//check if flag is the only piece left
-		final MoveResult flagOnly = checkPlayerTurnAndFlag();
-		if(flagOnly != null) {
-			return flagOnly;
-		}
-
-		currentPieceDescriptor = new PieceLocationDescriptor(new Piece(piece, playerColor), from);
-
-		//check for repetition rule
-		repetitionWinner = RepetitionRule.checkRepRule(currentPieceDescriptor, to);
-		RepetitionRule.addToQueue(currentPieceDescriptor, to);
-
-		if (repetitionWinner == MoveResultStatus.BLUE_WINS
-				|| repetitionWinner == MoveResultStatus.RED_WINS) {
-			return new MoveResult(repetitionWinner, null);
-		}
-
-		//check location for valid location
-		final Piece tempPieceAtTo = getPieceAt(to);
-
-		//check if occupied
-
-		checkLocationCoordinates(to);
-
-		//if scout or first lieutenant
-		if((piece == PieceType.SCOUT || piece == PieceType.FIRST_LIEUTENANT)
-				&& currentPieceDescriptor.getLocation().distanceTo(to) > 1){
-			return CheckPathOccupied(from, to, piece);
-		}
-
-		//check for battle
-		if (tempPieceAtTo != null) {
-			return MoveAndBattle(to, tempPieceAtTo);
-		}
-
-		//if no battle go here
-		final PieceLocationDescriptor newPiece =
-				new PieceLocationDescriptor(new Piece(piece, playerColor), to);
-
-		if (playerColor == PlayerColor.RED) {
-			redConfiguration.remove(currentPieceDescriptor);
-			redConfiguration.add(newPiece);
-			boardMap.remove(currentPieceDescriptor.getLocation());
-			boardMap.put(to, newPiece.getPiece());
-		}
-		else {
-			blueConfiguration.remove(currentPieceDescriptor);
-			blueConfiguration.add(newPiece);
-			boardMap.remove(currentPieceDescriptor.getLocation());
-			boardMap.put(to, newPiece.getPiece());
-		}
-
-		return new MoveResult(MoveResultStatus.OK, newPiece);
+		MoveResult result = epMove(piece, from, to);
+		notifyReporter(piece, from, to, result, null);
+		return result;
 	}
 
 	private MoveResult MoveAndBattle(Location to, Piece tempPieceAtTo) throws StrategyException {
@@ -527,6 +459,106 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 			boardMap.remove(currentPieceDescriptor.getLocation());
 			boardMap.put(to, newPiece.getPiece());
 		}
+		return new MoveResult(MoveResultStatus.OK, newPiece);
+	}
+
+	@Override
+	public void register(StrategyGameObserver observer) {
+		if (observer == null) throw new NullPointerException ("Null Observer");
+		observers.add(observer);
+	}
+
+	@Override
+	public void unregister(StrategyGameObserver observer) {
+		observers.remove(observer);
+	}
+	
+	public void notifyReporter(PieceType piece, Location from, Location to, MoveResult result, StrategyException fault){
+		for (StrategyGameObserver sgo: observers){
+			sgo.moveHappened(piece, from, to, result, fault);
+		}
+	}
+	
+	private MoveResult epMove(PieceType piece, Location from, Location to) throws StrategyException{
+
+		//check if moving with null configurations
+		if(piece == null && from == null && to == null){
+			if(playerTurn == 0){
+				return new MoveResult(MoveResultStatus.BLUE_WINS, null);
+			}
+			else {
+				return new MoveResult(MoveResultStatus.RED_WINS, null);
+			}
+		}
+
+		if (gameOver) {
+			throw new StrategyException("The game is over, you cannot make a move");
+		}
+		if (!gameStarted) {
+			throw new StrategyException("You must start the game");
+		}
+		if(piece == PieceType.FLAG
+				|| piece == PieceType.BOMB
+				|| piece == PieceType.CHOKE_POINT) {
+
+			throw new StrategyException("Cannot move the " + piece);
+		}
+
+		if (!(startingPieces.containsKey(piece))) {
+			throw new StrategyException(piece + " is not a valid piece for the Epsilon Strategy.");
+		}
+
+		//check if flag is the only piece left
+		final MoveResult flagOnly = checkPlayerTurnAndFlag();
+		if(flagOnly != null) {
+			return flagOnly;
+		}
+
+		currentPieceDescriptor = new PieceLocationDescriptor(new Piece(piece, playerColor), from);
+
+		//check for repetition rule
+		repetitionWinner = RepetitionRule.checkRepRule(currentPieceDescriptor, to);
+		RepetitionRule.addToQueue(currentPieceDescriptor, to);
+
+		if (repetitionWinner == MoveResultStatus.BLUE_WINS
+				|| repetitionWinner == MoveResultStatus.RED_WINS) {
+			return new MoveResult(repetitionWinner, null);
+		}
+
+		//check location for valid location
+		final Piece tempPieceAtTo = getPieceAt(to);
+
+		//check if occupied
+		checkLocationCoordinates(to);
+
+		//if scout or first lieutenant
+		if((piece == PieceType.SCOUT || piece == PieceType.FIRST_LIEUTENANT)
+				&& currentPieceDescriptor.getLocation().distanceTo(to) > 1){
+			return CheckPathOccupied(from, to, piece);
+		}
+
+		//check for battle
+		if (tempPieceAtTo != null) {
+			return MoveAndBattle(to, tempPieceAtTo);
+		}
+
+		//if no battle go here
+		final PieceLocationDescriptor newPiece =
+				new PieceLocationDescriptor(new Piece(piece, playerColor), to);
+
+		if (playerColor == PlayerColor.RED) {
+			redConfiguration.remove(currentPieceDescriptor);
+			redConfiguration.add(newPiece);
+			boardMap.remove(currentPieceDescriptor.getLocation());
+			boardMap.put(to, newPiece.getPiece());
+		}
+		else {
+			blueConfiguration.remove(currentPieceDescriptor);
+			blueConfiguration.add(newPiece);
+			boardMap.remove(currentPieceDescriptor.getLocation());
+			boardMap.put(to, newPiece.getPiece());
+		}
+
 		return new MoveResult(MoveResultStatus.OK, newPiece);
 	}
 
