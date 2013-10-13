@@ -126,9 +126,17 @@ public class EpsilonStrategyBattleTest {
 		}
 
 	@Test
-	public void battleSameTypePiece() throws StrategyException {
+	public void RedBattleSameTypePiece() throws StrategyException {
 		game.startGame();
 		final MoveResult result = EpsilonBattle.epsilonBattle(redConfiguration.get(1), blueConfiguration.get(35));
+		assertEquals(MoveResultStatus.OK, result.getStatus());
+		assertEquals(null, result.getBattleWinner());
+	}
+	
+	@Test
+	public void BlueBattleSameTypePiece() throws StrategyException {
+		game.startGame();
+		final MoveResult result = EpsilonBattle.epsilonBattle(blueConfiguration.get(36), redConfiguration.get(14));
 		assertEquals(MoveResultStatus.OK, result.getStatus());
 		assertEquals(null, result.getBattleWinner());
 	}
@@ -152,7 +160,7 @@ public class EpsilonStrategyBattleTest {
 	}
 
 	@Test
-	public void SpyVsMarshal() throws StrategyException
+	public void RedSpyVsMarshal() throws StrategyException
 	{
 		game.startGame();
 		final MoveResult result = EpsilonBattle.epsilonBattle(redConfiguration.get(30), blueConfiguration.get(0));
@@ -161,6 +169,16 @@ public class EpsilonStrategyBattleTest {
 		assertEquals(new Location2D(0,6), result.getBattleWinner().getLocation());
 		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SPY, PlayerColor.RED), new Location2D(0,6)), result.getBattleWinner());
 	}
+	
+	@Test
+	public void BlueSpyVsMarshal() throws StrategyException
+	{
+		game.startGame();
+		final MoveResult result = EpsilonBattle.epsilonBattle(blueConfiguration.get(7), redConfiguration.get(34));
+		assertEquals(MoveResultStatus.OK, result.getStatus());
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SPY, PlayerColor.BLUE), new Location2D(4,3)), result.getBattleWinner());
+	}
+	
 	@Test
 	public void MarshalVsSpy() throws StrategyException
 	{
@@ -180,12 +198,21 @@ public class EpsilonStrategyBattleTest {
 	}
 
 	@Test
-	public void PieceVsBomb() throws StrategyException
+	public void RedPieceVsBomb() throws StrategyException
 	{
 		game.startGame();
 		final MoveResult result = EpsilonBattle.epsilonBattle(redConfiguration.get(35), blueConfiguration.get(3));
 		assertEquals(MoveResultStatus.OK, result.getStatus());
 		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.BOMB, PlayerColor.BLUE), new Location2D(3,6)), result.getBattleWinner());
+	}
+	
+	@Test
+	public void BluePieceVsBomb() throws StrategyException
+	{
+		game.startGame();
+		final MoveResult result = EpsilonBattle.epsilonBattle(blueConfiguration.get(21), redConfiguration.get(32));
+		assertEquals(MoveResultStatus.OK, result.getStatus());
+		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.BOMB, PlayerColor.RED), new Location2D(2,3)), result.getBattleWinner());
 	}
 
 	@Test
@@ -209,7 +236,7 @@ public class EpsilonStrategyBattleTest {
 	}
 
 	@Test
-	public void FirstLieutenantTwoMoveLose() throws StrategyException{
+	public void RedFirstLieutenantTwoMoveLose() throws StrategyException{
 		blueConfiguration.remove(5);
 		blueConfiguration.remove(0);
 		blueConfiguration.add(new PieceLocationDescriptor((new Piece(PieceType.MARSHAL, PlayerColor.BLUE)), new Location2D(5,6)));
@@ -223,6 +250,22 @@ public class EpsilonStrategyBattleTest {
 		assertEquals(5, result.getBattleWinner().getLocation().getCoordinate(Coordinate.Y_COORDINATE));
 		assertEquals(PieceType.MARSHAL, result.getBattleWinner().getPiece().getType());
 		assertEquals(PlayerColor.BLUE, result.getBattleWinner().getPiece().getOwner());
+	}
+	
+	@Test
+	public void BlueFirstLieutenantTwoMoveLose() throws StrategyException{
+		redConfiguration.remove(34);
+		redConfiguration.remove(31);
+		redConfiguration.add(new PieceLocationDescriptor((new Piece(PieceType.MARSHAL, PlayerColor.RED)), new Location2D(1,3)));
+		redConfiguration.add(new PieceLocationDescriptor((new Piece(PieceType.SCOUT, PlayerColor.RED)), new Location2D(4,3)));
+		game.startGame();
+		game.move(PieceType.MARSHAL,  new Location2D(1,3),  new Location2D(1,4));
+		final MoveResult result = game.move(PieceType.FIRST_LIEUTENANT,  new Location2D(1,6),  new Location2D(1,4));
+		assertEquals(MoveResultStatus.OK, result.getStatus());
+		assertEquals(1, result.getBattleWinner().getLocation().getCoordinate(Coordinate.X_COORDINATE));
+		assertEquals(4, result.getBattleWinner().getLocation().getCoordinate(Coordinate.Y_COORDINATE));
+		assertEquals(PieceType.MARSHAL, result.getBattleWinner().getPiece().getType());
+		assertEquals(PlayerColor.RED, result.getBattleWinner().getPiece().getOwner());
 	}
 
 	@Test
