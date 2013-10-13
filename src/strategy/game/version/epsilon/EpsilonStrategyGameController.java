@@ -339,6 +339,8 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 		int redBombCount = 0;
 		int blueCount = 0;
 		int redCount = 0;
+		int blueFlagCount = 0;
+		int redFlagCount = 0;
 
 		for (Location location : boardMap.keySet()) {
 			if(location != null) {
@@ -346,6 +348,7 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 				if(temp.getOwner() != null && temp.getOwner().equals(PlayerColor.BLUE)) {
 					blueCount += 1;
 					if(temp.getType().equals(PieceType.FLAG)) {
+						blueFlagCount += 1;
 						shouldBeBlueFlag = temp.getType();
 					}
 					if(temp.getType().equals(PieceType.BOMB)) {
@@ -355,6 +358,7 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 				else if(temp.getOwner() != null && temp.getOwner().equals(PlayerColor.RED)) {
 					redCount += 1;
 					if(temp.getType().equals(PieceType.FLAG)) {
+						redFlagCount += 1;
 						shouldBeRedFlag = temp.getType();
 					}
 					if(temp.getType().equals(PieceType.BOMB)) {
@@ -363,16 +367,16 @@ public class EpsilonStrategyGameController implements StrategyGameController {
 				}
 			}
 		}
-		if((blueCount == (blueBombCount + 1) && shouldBeBlueFlag.equals(PieceType.FLAG))
-				&& (redCount == (redBombCount + 1) && shouldBeRedFlag.equals(PieceType.FLAG))) {
+		if((blueCount == (blueBombCount + blueFlagCount) && shouldBeBlueFlag.equals(PieceType.FLAG))
+				&& (redCount == (redBombCount + redFlagCount) && shouldBeRedFlag.equals(PieceType.FLAG))) {
 			gameOver = true;
 			return new MoveResult(MoveResultStatus.DRAW, null);
 		}
-		else if (blueCount == (blueBombCount + 1) && shouldBeBlueFlag.equals(PieceType.FLAG)) {
+		else if (blueCount == (blueBombCount + blueFlagCount) && shouldBeBlueFlag.equals(PieceType.FLAG)) {
 			gameOver = true;
 			return new MoveResult(MoveResultStatus.RED_WINS, null);
 		}
-		else if (redCount == (redBombCount + 1) && shouldBeRedFlag.equals(PieceType.FLAG)) {
+		else if (redCount == (redBombCount + redFlagCount) && shouldBeRedFlag.equals(PieceType.FLAG)) {
 			gameOver = true;
 			return new MoveResult(MoveResultStatus.BLUE_WINS, null);
 		}

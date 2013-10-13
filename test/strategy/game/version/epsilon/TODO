@@ -14,7 +14,7 @@ X		-second flag captured, status = WIN
 X	-resign
 X		-move with null configuration
 X		-opponent wins game
-	-draw condition with 2 flags
+X	-draw condition with 2 flags
 
 		
 		-add observer to factory call
