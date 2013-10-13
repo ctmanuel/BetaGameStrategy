@@ -163,33 +163,40 @@ public class Battle {
 
 		final PieceLocationDescriptor battleWinner = new PieceLocationDescriptor(playerPiece.getPiece(), opponentPiece.getLocation());
 
-
-		System.out.println("Gets here");
 		if (playerPiece.getPiece().getOwner() == PlayerColor.RED
 				&& blueflagCount == 0) {
 			blueflagCount += 1;
 			blueConfiguration.remove(opponentPiece);
 			redConfiguration.remove(playerPiece);
+			redConfiguration.add(battleWinner);
 			return new MoveResult(MoveResultStatus.FLAG_CAPTURED, battleWinner);
-
 		}
+		
 		else if (playerPiece.getPiece().getOwner() == PlayerColor.BLUE
-				&& redflagCount == 0){
+				&& redflagCount == 0) {
 			redflagCount += 1;
 			redConfiguration.remove(opponentPiece);
-			blueConfiguration.remove(opponentPiece);
+			blueConfiguration.remove(playerPiece);
+			blueConfiguration.add(battleWinner);
 			return new MoveResult(MoveResultStatus.FLAG_CAPTURED, battleWinner);
 		}
 
-		else if (playerPiece.getPiece().getOwner() == PlayerColor.RED) {
+		else if (playerPiece.getPiece().getOwner() == PlayerColor.RED
+				&& blueflagCount == 1) {
+			blueflagCount = 0;
+			redflagCount = 0;
 			blueConfiguration.remove(opponentPiece);
 			return new MoveResult(MoveResultStatus.RED_WINS, battleWinner);
 		}
-		else {
+		else if (playerPiece.getPiece().getOwner() == PlayerColor.BLUE
+				&& redflagCount == 1){
+			redflagCount = 0;
+			blueflagCount = 0;
 			redConfiguration.remove(opponentPiece);
 			return new MoveResult(MoveResultStatus.BLUE_WINS, battleWinner);
 		}
-
+		
+		return null;
 	}
 
 	/**

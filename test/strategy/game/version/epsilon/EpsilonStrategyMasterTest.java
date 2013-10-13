@@ -40,16 +40,13 @@ public class EpsilonStrategyMasterTest {
 	private final static StrategyGameFactory EpsilonStrategy = StrategyGameFactory.getInstance();
 
 	@Before
-	public void setup() {
+	public void setup() throws StrategyException {
 		BoardConfiguration.setup();
 		redConfiguration = BoardConfiguration.getRedConfiguration();
 		blueConfiguration = BoardConfiguration.getBlueConfiguration();
 
-		try {
-			game = EpsilonStrategy.makeEpsilonStrategyGame(redConfiguration, blueConfiguration, null);
-		} catch (StrategyException e) {
-			e.printStackTrace();
-		}
+		game = EpsilonStrategy.makeEpsilonStrategyGame(redConfiguration, blueConfiguration, null);
+
 	}
 
 	@Test(expected=StrategyException.class)
@@ -57,22 +54,26 @@ public class EpsilonStrategyMasterTest {
 	{
 		game = EpsilonStrategy.makeEpsilonStrategyGame(null, null, null);
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void cannotStartGameAlreadyInProgress() throws StrategyException{
 		game.startGame();
 		game.move(PieceType.SPY, new Location2D(0,3), new Location2D(0,4));
 		game.startGame();
-		
+
 	}
-	
+
 	@Test(expected=StrategyException.class)
 	public void cannotStartGameOver() throws StrategyException{
 		game.startGame();
-		PieceLocationDescriptor playerPiece = new PieceLocationDescriptor(new Piece(PieceType.SPY, PlayerColor.RED), new Location2D(0,3));
-		PieceLocationDescriptor opponentPiece = new PieceLocationDescriptor(new Piece(PieceType.FLAG, PlayerColor.BLUE), new Location2D(0,7));
-		final MoveResult result = Battle.battle(playerPiece, opponentPiece);
-		assertEquals(MoveResultStatus.RED_WINS, result.getStatus());
+		PieceLocationDescriptor playerPiece1 = new PieceLocationDescriptor(new Piece(PieceType.SPY, PlayerColor.RED), new Location2D(0,3));
+		PieceLocationDescriptor opponentPiece1 = new PieceLocationDescriptor(new Piece(PieceType.FLAG, PlayerColor.BLUE), new Location2D(0,7));
+		final MoveResult result = Battle.battle(playerPiece1, opponentPiece1);
+		assertEquals(MoveResultStatus.FLAG_CAPTURED, result.getStatus());
+		PieceLocationDescriptor playerPiece2 = new PieceLocationDescriptor(new Piece(PieceType.MINER, PlayerColor.RED), new Location2D(8,3));
+		PieceLocationDescriptor opponentPiece2 = new PieceLocationDescriptor(new Piece(PieceType.FLAG, PlayerColor.BLUE), new Location2D(6,7));
+		final MoveResult result2 = Battle.battle(playerPiece2, opponentPiece2);
+		assertEquals(MoveResultStatus.RED_WINS, result2.getStatus());
 		game.startGame();
 	}
 
@@ -186,7 +187,7 @@ public class EpsilonStrategyMasterTest {
 		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SCOUT, PlayerColor.RED), new Location2D(1,5)), 
 				result.getBattleWinner());
 	}
-	
+
 	@Test
 	public void ScoutMoveNegativeX() throws StrategyException {
 		game.startGame();
@@ -202,7 +203,7 @@ public class EpsilonStrategyMasterTest {
 		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SCOUT, PlayerColor.BLUE), new Location2D(0,6)), 
 				result.getBattleWinner());
 	}
-	
+
 	@Test
 	public void ScoutMovePositiveX() throws StrategyException {
 		game.startGame();
@@ -221,7 +222,7 @@ public class EpsilonStrategyMasterTest {
 		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SCOUT, PlayerColor.RED), new Location2D(5,2)), 
 				result.getBattleWinner());
 	}
-	
+
 	@Test
 	public void ScoutMoveNegativeY() throws StrategyException {
 		game.startGame();
@@ -231,14 +232,14 @@ public class EpsilonStrategyMasterTest {
 		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.SCOUT, PlayerColor.BLUE), new Location2D(9,4)), 
 				result.getBattleWinner());
 	}
-	
+
 	@Test
 	public void RedMakesNullMove() throws StrategyException{
 		game.startGame();
 		final MoveResult result = game.move(null, null, null);
 		assertEquals(MoveResultStatus.BLUE_WINS, result.getStatus());
 	}
-	
+
 	@Test
 	public void BlueMakesNullMove() throws StrategyException{
 		game.startGame();

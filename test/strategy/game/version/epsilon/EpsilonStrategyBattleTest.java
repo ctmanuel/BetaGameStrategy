@@ -102,30 +102,30 @@ public class EpsilonStrategyBattleTest {
 				result.getBattleWinner());
 	}
 
-	//	@Test
-	//	//TODO: make this work with 2 flags
-	//	public void makeBlueWinsGame() throws StrategyException
-	//	{
-	//		game.startGame();
-	//		game.move(PieceType.MINER, new Location2D(8,3), new Location2D(8,4));
-	//		game.move(PieceType.SCOUT, new Location2D(9,6), new Location2D(9,5));
-	//		game.move(PieceType.MINER, new Location2D(8,4), new Location2D(8,5));
-	//		game.move(PieceType.SCOUT, new Location2D(9,5), new Location2D(9,4));
-	//		game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,4));
-	//		final MoveResult flagResult = game.move(PieceType.SCOUT, new Location2D(9,4), new Location2D(9,3));
-	//		assertEquals(MoveResultStatus.FLAG_CAPTURED, flagResult.getStatus());
-	//		game.move(PieceType.SPY, new Location2D(0,3), new Location2D(0,4));
-	//		game.move(PieceType.FIRST_LIEUTENANT, new Location2D(1,6), new Location2D(1,5));
-	//		game.move(PieceType.SCOUT, new Location2D(1,4), new Location2D(1,5));
-	//		game.move(PieceType.FIRST_LIEUTENANT, new Location2D(1,4), new Location2D(1,3));
-	//		game.move(PieceType.MINER, new Location2D(8,5), new Location2D(8,4));
-	//
-	//		final MoveResult result = 
-	//				game.move(PieceType.FIRST_LIEUTENANT, new Location2D(1,3), new Location2D(1,2));
-	//		assertEquals(MoveResultStatus.BLUE_WINS, result.getStatus());
-	//		assertEquals(new PieceLocationDescriptor(new Piece(PieceType.FIRST_LIEUTENANT, PlayerColor.BLUE), new Location2D(1,2)), 
-	//				result.getBattleWinner());
-	//	}
+		@Test
+		//TODO: make this work with 2 flags
+		public void makeBlueWinsGame() throws StrategyException
+		{
+			game.startGame();
+			game.move(PieceType.MINER, new Location2D(8,3), new Location2D(8,4));
+			game.move(PieceType.SCOUT, new Location2D(9,6), new Location2D(9,5));
+			game.move(PieceType.MINER, new Location2D(8,4), new Location2D(8,5));
+			game.move(PieceType.SCOUT, new Location2D(9,5), new Location2D(9,4));
+			game.move(PieceType.SCOUT, new Location2D(1,3), new Location2D(1,4));
+			final MoveResult flagResult = game.move(PieceType.SCOUT, new Location2D(9,4), new Location2D(9,3));
+			assertEquals(MoveResultStatus.FLAG_CAPTURED, flagResult.getStatus());
+			game.move(PieceType.SPY, new Location2D(0,3), new Location2D(0,4));
+			game.move(PieceType.FIRST_LIEUTENANT, new Location2D(1,6), new Location2D(1,5));
+			game.move(PieceType.SCOUT, new Location2D(1,4), new Location2D(1,5));
+			game.move(PieceType.FIRST_LIEUTENANT, new Location2D(1,4), new Location2D(1,3));
+			game.move(PieceType.MINER, new Location2D(8,5), new Location2D(8,4));
+	
+			final MoveResult result = 
+					game.move(PieceType.FIRST_LIEUTENANT, new Location2D(1,3), new Location2D(1,2));
+			assertEquals(MoveResultStatus.BLUE_WINS, result.getStatus());
+			assertEquals(new PieceLocationDescriptor(new Piece(PieceType.FIRST_LIEUTENANT, PlayerColor.BLUE), new Location2D(1,2)), 
+					result.getBattleWinner());
+		}
 
 	@Test
 	public void battleSameTypePiece() throws StrategyException {

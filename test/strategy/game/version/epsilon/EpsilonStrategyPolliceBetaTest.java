@@ -50,7 +50,6 @@ public class EpsilonStrategyPolliceBetaTest
 		loc05 = new Location2D(0, 5),
 		loc93 = new Location2D(9, 3),
 		loc94 = new Location2D(9, 4),
-		loc07 = new Location2D(0, 7),
 		loc16 = new Location2D(1, 6),
 		loc15 = new Location2D(1, 5);
 	
@@ -178,22 +177,6 @@ public class EpsilonStrategyPolliceBetaTest
 		game.move(SPY, loc03, loc04);
 		game.move(MARSHAL, loc06, loc05);
 		assertEquals(new Piece(MARSHAL, BLUE), game.getPieceAt(loc05));
-	}
-	
-	@Test
-	public void redWins() throws StrategyException
-	{
-		final MoveResult moveResult = Battle.battle(new PieceLocationDescriptor(new Piece(SPY, RED), loc03), 
-				new PieceLocationDescriptor(new Piece(FLAG, BLUE), loc07));
-		assertEquals(RED_WINS, moveResult.getStatus());
-	}
-	
-	@Test
-	public void blueWins() throws StrategyException
-	{
-		final MoveResult moveResult = Battle.battle(new PieceLocationDescriptor(new Piece(MARSHAL, BLUE), loc06), 
-				new PieceLocationDescriptor(new Piece(FLAG, RED), loc93));
-		assertEquals(BLUE_WINS, moveResult.getStatus());
 	}
 	
 	@Test
