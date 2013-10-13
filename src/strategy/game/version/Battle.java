@@ -31,8 +31,8 @@ public class Battle {
 	private static Collection<PieceLocationDescriptor> redConfiguration = null;
 	private static Collection<PieceLocationDescriptor> blueConfiguration = null;
 	private static final Map<PieceType, Integer> pieceRanks = new HashMap<PieceType, Integer>();
-	private static int blueflagCount = 0;
-	private static int redflagCount = 0;
+	private static int blueflagCount;
+	private static int redflagCount;
 
 	/**
 	 * The constructor for the battle initialization
@@ -44,6 +44,8 @@ public class Battle {
 		Battle.redConfiguration = redConfiguration;
 		Battle.blueConfiguration = blueConfiguration;
 		initializePieceRanks();
+		blueflagCount = 0;
+		redflagCount = 0;
 	}
 
 	/**
@@ -106,11 +108,6 @@ public class Battle {
 		if(playerPiece.getPiece().getType() == PieceType.FIRST_LIEUTENANT
 				&& playerPiece.getLocation().distanceTo(opponentPiece.getLocation()) == 2
 				&& pieceRanks.get(playerPiece.getPiece().getType()) < pieceRanks.get(opponentPiece.getPiece().getType())){
-			//			System.out.println("gets here");
-			//			System.out.println("Player rank is " + pieceRanks.get(playerPiece.getPiece().getType()));
-			//			System.out.println("Player piece type is " + playerPiece.getPiece().getType());
-			//			System.out.println("opponent rank is " + pieceRanks.get(opponentPiece.getPiece().getType()));
-			//			System.out.println("Opponent piece type is " + opponentPiece.getPiece().getType());
 			if(playerPieceOwner == PlayerColor.RED) {
 				redConfiguration.remove(playerPiece);
 				blueConfiguration.remove(opponentPiece);
@@ -162,7 +159,8 @@ public class Battle {
 	private static MoveResult flagBattle(PieceLocationDescriptor playerPiece, PieceLocationDescriptor opponentPiece) {
 
 		final PieceLocationDescriptor battleWinner = new PieceLocationDescriptor(playerPiece.getPiece(), opponentPiece.getLocation());
-
+		
+		//if red player is capturing first blue flag
 		if (playerPiece.getPiece().getOwner() == PlayerColor.RED
 				&& blueflagCount == 0) {
 			blueflagCount += 1;
@@ -172,6 +170,7 @@ public class Battle {
 			return new MoveResult(MoveResultStatus.FLAG_CAPTURED, battleWinner);
 		}
 		
+		//if blue player is capturing first red flag
 		else if (playerPiece.getPiece().getOwner() == PlayerColor.BLUE
 				&& redflagCount == 0) {
 			redflagCount += 1;
@@ -181,17 +180,15 @@ public class Battle {
 			return new MoveResult(MoveResultStatus.FLAG_CAPTURED, battleWinner);
 		}
 
+		//if red player is capturing second blue flag
 		else if (playerPiece.getPiece().getOwner() == PlayerColor.RED
 				&& blueflagCount == 1) {
-			blueflagCount = 0;
-			redflagCount = 0;
 			blueConfiguration.remove(opponentPiece);
 			return new MoveResult(MoveResultStatus.RED_WINS, battleWinner);
 		}
+		//if blue player is capturing second red flag
 		else if (playerPiece.getPiece().getOwner() == PlayerColor.BLUE
 				&& redflagCount == 1){
-			redflagCount = 0;
-			blueflagCount = 0;
 			redConfiguration.remove(opponentPiece);
 			return new MoveResult(MoveResultStatus.BLUE_WINS, battleWinner);
 		}

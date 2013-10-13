@@ -7,12 +7,14 @@ X			-win: move to defending piece's spot
 X			-lose: defending pieces don't move
 X		-Lieutenant vs. first Lieutenant, both removed
 X	-2 flags
-		-flags replace any piece of player's choosing
-	-game ends when both flags captured
-		-first flag captured, status = FLAG_CAPTURED
-		-second flag captured, status = WIN
+X		-flags replace any piece of player's choosing
+X	-game ends when both flags captured
+X		-first flag captured, status = FLAG_CAPTURED
+X		-second flag captured, status = WIN
 X	-resign
 X		-move with null configuration
 X		-opponent wins game
+	-draw condition with 2 flags
+
 		
 		-add observer to factory call
