@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * This files was developed for CS4233: Object-Oriented Analysis & Design.
+ * The course was taken at Worcester Polytechnic Institute.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+
 package strategy.game.reporter;
 
 import java.util.Collection;
@@ -10,6 +20,12 @@ import strategy.game.common.PieceLocationDescriptor;
 import strategy.game.common.PieceType;
 import strategy.game.common.StrategyGameObserver;
 
+/**
+ * The reporter for the Epsilon strategy
+ * @author dmlarose, ctmanuel
+ * @version Oct 12, 2013
+ *
+ */
 public class StrategyGameReporter implements StrategyGameObserver{
 
 	private int moveCount = 1;
@@ -58,6 +74,6 @@ public class StrategyGameReporter implements StrategyGameObserver{
 					" Result: " + resultWinner + " Status: " 
 					+ result.getStatus().toString());
 			moveCount++;
-		}		
+		}
 	}
 }

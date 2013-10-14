@@ -109,8 +109,7 @@ public class EpsilonStrategyGameController implements StrategyGameController, St
 
 		//observer
 		if (observers != null){
-			this.reporter = new StrategyGameReporter();
-			//reporter.gameStart(redConfiguration, blueConfiguration);
+			reporter = new StrategyGameReporter();
 			this.observers = new ArrayList<StrategyGameObserver>();
 			register(reporter);
 		}
@@ -181,7 +180,6 @@ public class EpsilonStrategyGameController implements StrategyGameController, St
 	public MoveResult move(PieceType piece, Location from, Location to)
 			throws StrategyException {
 		//call the move logic method
-		//StrategyException ep = null;
 		if(observers != null){
 			try{
 				result = epMove(piece, from, to);
@@ -189,7 +187,7 @@ public class EpsilonStrategyGameController implements StrategyGameController, St
 				return result;
 			}
 			catch (StrategyException e){
-				notifyReporter(piece, from, to, null, e);	
+				notifyReporter(piece, from, to, null, e);
 				throw e;
 			}
 
@@ -357,54 +355,49 @@ public class EpsilonStrategyGameController implements StrategyGameController, St
 		final int toXcoordinate = to.getCoordinate(Coordinate.X_COORDINATE);
 		final int toYcoordinate = to.getCoordinate(Coordinate.Y_COORDINATE);
 
-		try{
-			//if piece doesn't exist within the either collection configuration
-			if (!(redConfiguration.contains(currentPieceDescriptor) || blueConfiguration.contains(currentPieceDescriptor))) {
-				throw new StrategyException(currentPieceDescriptor.getPiece() + " at " 
-						+ currentPieceDescriptor.getLocation() + " doesn't exist in this configuration");
-			}
+		//if piece doesn't exist within the either collection configuration
+		if (!(redConfiguration.contains(currentPieceDescriptor) || blueConfiguration.contains(currentPieceDescriptor))) {
+			throw new StrategyException(currentPieceDescriptor.getPiece() + " at " 
+					+ currentPieceDescriptor.getLocation() + " doesn't exist in this configuration");
+		}
 
-			//check if choke point
-			final PieceLocationDescriptor[] chokePointArray = new PieceLocationDescriptor[chokePointList.size()];
-			chokePointList.toArray(chokePointArray);
-			for (int i = 0; i < chokePointList.size(); i++) {
-				PieceLocationDescriptor chokePoint = chokePointArray[i];
-				final int chokePointX = chokePoint.getLocation().getCoordinate(Coordinate.X_COORDINATE);
-				final int chokePointY = chokePoint.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
-				if(toXcoordinate == chokePointX && toYcoordinate == chokePointY) {
-					throw new StrategyException("Cannot move to a choke point position");
-				}
-			}
-
-			//check if out of bounds
-			validateEpsilon.validateOutOfBounds(to);
-
-
-			//check for diagonals moves
-			validateEpsilon.validateDiagonalMove(currentXcoordinate, currentYcoordinate,
-					toXcoordinate, toYcoordinate);
-
-			//check for valid X,Y coordinates
-			if ((currentPieceDescriptor.getPiece().getType() != PieceType.FIRST_LIEUTENANT)
-					&& (currentPieceDescriptor.getPiece().getType() != PieceType.SCOUT)){
-				validateEpsilon.validateCrossMove(currentPieceDescriptor.getLocation(),to);
-			}
-
-			//check if first lieutenant is moving more than 2 spaces
-			if (currentPieceDescriptor.getPiece().getType() == PieceType.FIRST_LIEUTENANT
-					&& currentPieceDescriptor.getLocation().distanceTo(to) > 2) {
-				throw new StrategyException("First Lieutenant cannot strike more than 2 spaces.");
-			}
-
-			//check if first lieutenant is trying to move more than one space
-			else if (currentPieceDescriptor.getPiece().getType() == PieceType.FIRST_LIEUTENANT
-					&& currentPieceDescriptor.getLocation().distanceTo(to) > 1
-					&& getPieceAt(to) == null){
-				throw new StrategyException ("First Lieutenant can only move up to 1 space unless battling");
+		//check if choke point
+		final PieceLocationDescriptor[] chokePointArray = new PieceLocationDescriptor[chokePointList.size()];
+		chokePointList.toArray(chokePointArray);
+		for (int i = 0; i < chokePointList.size(); i++) {
+			PieceLocationDescriptor chokePoint = chokePointArray[i];
+			final int chokePointX = chokePoint.getLocation().getCoordinate(Coordinate.X_COORDINATE);
+			final int chokePointY = chokePoint.getLocation().getCoordinate(Coordinate.Y_COORDINATE);
+			if(toXcoordinate == chokePointX && toYcoordinate == chokePointY) {
+				throw new StrategyException("Cannot move to a choke point position");
 			}
 		}
-		catch(StrategyException e){
-			throw e;
+
+		//check if out of bounds
+		validateEpsilon.validateOutOfBounds(to);
+
+
+		//check for diagonals moves
+		validateEpsilon.validateDiagonalMove(currentXcoordinate, currentYcoordinate,
+				toXcoordinate, toYcoordinate);
+
+		//check for valid X,Y coordinates
+		if ((currentPieceDescriptor.getPiece().getType() != PieceType.FIRST_LIEUTENANT)
+				&& (currentPieceDescriptor.getPiece().getType() != PieceType.SCOUT)){
+			validateEpsilon.validateCrossMove(currentPieceDescriptor.getLocation(),to);
+		}
+
+		//check if first lieutenant is moving more than 2 spaces
+		if (currentPieceDescriptor.getPiece().getType() == PieceType.FIRST_LIEUTENANT
+				&& currentPieceDescriptor.getLocation().distanceTo(to) > 2) {
+			throw new StrategyException("First Lieutenant cannot strike more than 2 spaces.");
+		}
+
+		//check if first lieutenant is trying to move more than one space
+		else if (currentPieceDescriptor.getPiece().getType() == PieceType.FIRST_LIEUTENANT
+				&& currentPieceDescriptor.getLocation().distanceTo(to) > 1
+				&& getPieceAt(to) == null){
+			throw new StrategyException ("First Lieutenant can only move up to 1 space unless battling");
 		}
 	}
 
@@ -552,63 +545,58 @@ public class EpsilonStrategyGameController implements StrategyGameController, St
 			throw new StrategyException(piece + " is not a valid piece for the Epsilon Strategy.");
 		}
 
-		try {
-			//check if flag is the only piece left
-			final MoveResult flagOnly = checkPlayerTurnAndFlag();
-			if(flagOnly != null) {
-				return flagOnly;
-			}
-
-			currentPieceDescriptor = new PieceLocationDescriptor(new Piece(piece, playerColor), from);
-
-			//check for repetition rule
-			repetitionWinner = RepetitionRule.checkRepRule(currentPieceDescriptor, to);
-			RepetitionRule.addToQueue(currentPieceDescriptor, to);
-
-			if (repetitionWinner == MoveResultStatus.BLUE_WINS
-					|| repetitionWinner == MoveResultStatus.RED_WINS) {
-				return new MoveResult(repetitionWinner, null);
-			}
-
-			//check location for valid location
-			final Piece tempPieceAtTo = getPieceAt(to);
-
-			//check if occupied
-			checkLocationCoordinates(to);
-
-			//if scout or first lieutenant
-			if((piece == PieceType.SCOUT || piece == PieceType.FIRST_LIEUTENANT)
-					&& currentPieceDescriptor.getLocation().distanceTo(to) > 1){
-				return CheckPathOccupied(from, to, piece);
-			}
-
-			//check for battle
-			if (tempPieceAtTo != null) {
-				return MoveAndBattle(to, tempPieceAtTo);
-			}
-
-			//if no battle go here
-			final PieceLocationDescriptor newPiece =
-					new PieceLocationDescriptor(new Piece(piece, playerColor), to);
-
-			if (playerColor == PlayerColor.RED) {
-				redConfiguration.remove(currentPieceDescriptor);
-				redConfiguration.add(newPiece);
-				boardMap.remove(currentPieceDescriptor.getLocation());
-				boardMap.put(to, newPiece.getPiece());
-			}
-			else {
-				blueConfiguration.remove(currentPieceDescriptor);
-				blueConfiguration.add(newPiece);
-				boardMap.remove(currentPieceDescriptor.getLocation());
-				boardMap.put(to, newPiece.getPiece());
-			}
-
-			return new MoveResult(MoveResultStatus.OK, newPiece);
+		//check if flag is the only piece left
+		final MoveResult flagOnly = checkPlayerTurnAndFlag();
+		if(flagOnly != null) {
+			return flagOnly;
 		}
-		catch(StrategyException e) {
-			throw e;
+
+		currentPieceDescriptor = new PieceLocationDescriptor(new Piece(piece, playerColor), from);
+
+		//check for repetition rule
+		repetitionWinner = RepetitionRule.checkRepRule(currentPieceDescriptor, to);
+		RepetitionRule.addToQueue(currentPieceDescriptor, to);
+
+		if (repetitionWinner == MoveResultStatus.BLUE_WINS
+				|| repetitionWinner == MoveResultStatus.RED_WINS) {
+			return new MoveResult(repetitionWinner, null);
 		}
+
+		//check location for valid location
+		final Piece tempPieceAtTo = getPieceAt(to);
+
+		//check if occupied
+		checkLocationCoordinates(to);
+
+		//if scout or first lieutenant
+		if((piece == PieceType.SCOUT || piece == PieceType.FIRST_LIEUTENANT)
+				&& currentPieceDescriptor.getLocation().distanceTo(to) > 1){
+			return CheckPathOccupied(from, to, piece);
+		}
+
+		//check for battle
+		if (tempPieceAtTo != null) {
+			return MoveAndBattle(to, tempPieceAtTo);
+		}
+
+		//if no battle go here
+		final PieceLocationDescriptor newPiece =
+				new PieceLocationDescriptor(new Piece(piece, playerColor), to);
+
+		if (playerColor == PlayerColor.RED) {
+			redConfiguration.remove(currentPieceDescriptor);
+			redConfiguration.add(newPiece);
+			boardMap.remove(currentPieceDescriptor.getLocation());
+			boardMap.put(to, newPiece.getPiece());
+		}
+		else {
+			blueConfiguration.remove(currentPieceDescriptor);
+			blueConfiguration.add(newPiece);
+			boardMap.remove(currentPieceDescriptor.getLocation());
+			boardMap.put(to, newPiece.getPiece());
+		}
+
+		return new MoveResult(MoveResultStatus.OK, newPiece);
 	}
 
 }
