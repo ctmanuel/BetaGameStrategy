@@ -26,10 +26,19 @@ import strategy.game.common.StrategyGameObserver;
  * @version Oct 12, 2013
  *
  */
-public class StrategyGameReporter implements StrategyGameObserver{
-
+public class StrategyGameReporter implements StrategyGameObserver
+{
+	
+	private static Collection<PieceLocationDescriptor> reporterRedConfiguration;
+	private static Collection<PieceLocationDescriptor> reporterBlueConfiguration;
 	private int moveCount = 1;
 
+	public StrategyGameReporter(Collection<PieceLocationDescriptor> redConfiguration,
+			Collection<PieceLocationDescriptor> blueConfiguration) {
+		reporterRedConfiguration = redConfiguration;
+		reporterBlueConfiguration = blueConfiguration;
+	}
+	
 	@Override
 	public void gameStart(Collection<PieceLocationDescriptor> redConfiguration,
 			Collection<PieceLocationDescriptor> blueConfiguration) {
@@ -75,5 +84,13 @@ public class StrategyGameReporter implements StrategyGameObserver{
 					+ result.getStatus().toString());
 			moveCount++;
 		}
+	}
+	
+	public static Collection<PieceLocationDescriptor> getRedConfiguration() {
+		return reporterRedConfiguration;
+	}
+	
+	public static Collection<PieceLocationDescriptor> getBlueConfiguration() {
+		return reporterBlueConfiguration;
 	}
 }

@@ -109,7 +109,7 @@ public class EpsilonStrategyGameController implements StrategyGameController, St
 
 		//observer
 		if (observers != null){
-			reporter = new StrategyGameReporter();
+			reporter = new StrategyGameReporter(redConfiguration, blueConfiguration);
 			this.observers = new ArrayList<StrategyGameObserver>();
 			register(reporter);
 		}

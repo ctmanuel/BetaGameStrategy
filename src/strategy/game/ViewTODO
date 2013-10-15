@@ -1,0 +1,4 @@
+	-List of locations
+		-each location mapped to space in object array
+		-(hashmap -> locations to integers)
+	
