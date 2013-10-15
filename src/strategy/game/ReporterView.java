@@ -3,6 +3,7 @@ package strategy.game;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.util.Collection;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,6 +20,9 @@ import strategy.game.common.PieceType;
 
 public class ReporterView {
 
+	private static Collection<PieceLocationDescriptor> RedConfiguration;
+	private static Collection<PieceLocationDescriptor> BlueConfiguration;
+	
 	PieceLocationDescriptor temp1 = new PieceLocationDescriptor(new Piece(PieceType.MARSHAL, PlayerColor.BLUE), new Location2D(0,9));
 	private JFrame frame;
 	private JTable table;
@@ -49,7 +53,7 @@ public class ReporterView {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize() {		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 648, 349);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
